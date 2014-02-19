@@ -32,6 +32,7 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{mysql['version']}.tar.gz" do
   source mysql['url']
   checksum mysql['checksum']
   action :create
+    notifies :run, 'bash[Extract ConnectorJ]', :immediately
 end
 
 # => Extract MySQL Connector/J
@@ -41,6 +42,7 @@ bash 'Extract ConnectorJ' do
   tar xzf #{mysql['version']}.tar.gz -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{mysql['jar']}
   chown #{wildfly['user']}:#{wildfly['group']} -R #{connectorj_dir}/../
   EOF
+  not_if { File.exists?(File.join(connectorj_dir, mysql['jar'])) }
 end
 
 # => Configure MySQL Connector/J Module
