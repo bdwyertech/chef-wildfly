@@ -23,6 +23,14 @@ user wildfly['user'] do
   action [:create, :lock]
 end
 
+# => Create Wildfly Group
+group wildfly['group'] do
+  append true
+  members wildfly['user']
+  action :create
+  only_if { wildfly['user'] != wildfly['group'] }
+end
+
 # => Create Wildfly Directory
 directory wildfly['base'] do
   owner wildfly['user']
@@ -36,7 +44,7 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{wildfly['version']}.tar.gz" do
   source wildfly['url']
   checksum wildfly['checksum']
   action :create
-  notifies :run, "bash[Extract Wildfly]", :immediately
+  notifies :run, 'bash[Extract Wildfly]', :immediately
 end
 
 # => Extract Wildfly
