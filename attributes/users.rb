@@ -1,6 +1,9 @@
 # encoding: UTF-8
 # => Wildfly User Configuration
 
+# => Access Control Provider (simple, or rbac)
+default['wildfly']['acp'] = 'simple'
+
 # => By default, Wildfly expexts this password hash format:
 # => # => username=HEX( MD5( username ':' realm ':' password))
 
