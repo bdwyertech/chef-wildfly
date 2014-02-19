@@ -72,7 +72,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'standalone.x
     mgmt_https_port: wildfly['int']['mgmt']['https_port'],
     pub_int: wildfly['int']['pub']['bind'],
     pub_http_port: wildfly['int']['pub']['http_port'],
-    pub_https_port: wildfly['int']['pub']['http_port'],
+    pub_https_port: wildfly['int']['pub']['https_port'],
     wsdl_int: wildfly['int']['wsdl']['bind'],
     ajp_port: wildfly['int']['ajp']['port'],
     smtp_host: wildfly['smtp']['host'],
