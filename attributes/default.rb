@@ -36,3 +36,6 @@ default['wildfly']['int']['ajp']['port'] = '8009'
 # => SMTP Settings
 default['wildfly']['smtp']['host'] = 'localhost'
 default['wildfly']['smtp']['port'] = '25'
+default['wildfly']['smtp']['ssl'] = false
+default['wildfly']['smtp']['username'] = nil
+default['wildfly']['smtp']['password'] = nil
