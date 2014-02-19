@@ -55,9 +55,14 @@ template File.join('etc', 'init.d', wildfly['service']) do
   user 'root'
   group 'root'
   mode '0755'
-  variables({
-    user: wildfly['user']
-  })
+end
+
+# Deploy Service Configuration
+template File.join('etc', 'default', 'wildfly.conf') do
+  source 'wildfly.conf.erb'
+  user 'root'
+  group 'root'
+  mode '0644'
 end
 
 # => Configure Wildfly Standalone - Interfaces

@@ -4,37 +4,81 @@
 
 # Location of JDK	
 #
+<%- if node['wildfly']['java']['enforce_java_home'] === true %>
+<%- if node['java']['java_home'] && File.exists?(node['java']['java_home']) %>
+JAVA_HOME=<%= node['java']['java_home'] %>
+<%- else %>
 # JAVA_HOME=/usr/lib/jvm/default-java
+<%- end %>
+<%- else %>
+# JAVA_HOME=/usr/lib/jvm/default-java
+<%- end %>
 
 # Location of WildFly
 #
+<%- if node['wildfly']['base'] && File.exists?(node['wildfly']['base']) %>
+JBOSS_HOME=<%= node['wildfly']['base'] %>
+<%- else %>
 # JBOSS_HOME=/opt/wildfly
+<%- end %>
 
 # The username who should own the process.
 #
+<%- if node['wildfly']['user'] %>
+JBOSS_USER=<%= node['wildfly']['user'] %>
+<%- else %>
 # JBOSS_USER=wildfly
+<%- end %>
 
 # The mode WildFly should start, standalone or domain
 #
+<%- if node['wildfly']['mode'] %>
+JBOSS_MODE=<%= node['wildfly']['mode'] %>
+<%- else %>
 # JBOSS_MODE=standalone
+<%- end %>
 
 # Configuration for standalone mode
 #
+<%- if node['wildfly']['sa']['conf'] %>
+JBOSS_CONFIG=<%= node['wildfly']['sa']['conf'] %>
+<%- else %>
 # JBOSS_CONFIG=standalone.xml
+<%- end %>
 
 # Configuration for domain mode
 #
+<%- if node['wildfly']['dom']['conf'] %>
+JBOSS_DOMAIN_CONFIG=<%= node['wildfly']['dom']['conf'] %>
+<%- else %>
 # JBOSS_DOMAIN_CONFIG=domain.xml
+<%- end %>
+<%- if node['wildfly']['dom']['host_conf'] %>
+JBOSS_HOST_CONFIG=<%= node['wildfly']['dom']['host_conf'] %>
+<%- else %>
 # JBOSS_HOST_CONFIG=host-master.xml
+<%- end %>
 
 # The amount of time to wait for startup
 #
+<%- if node['wildfly']['initd']['startup_wait'] %>
+STARTUP_WAIT=<%= node['wildfly']['initd']['startup_wait'] %>
+<%- else %>
 # STARTUP_WAIT=60
+<%- end %>
 
 # The amount of time to wait for shutdown
 #
+<%- if node['wildfly']['initd']['shutdown_wait'] %>
+SHUTDOWN_WAIT=<%= node['wildfly']['initd']['shutdown_wait'] %>
+<%- else %>
 # SHUTDOWN_WAIT=60
+<%- end %>
 
 # Location to keep the console log
 #
+<%- if node['wildfly']['log']['console_log'] %>
+JBOSS_CONSOLE_LOG=<%= node['wildfly']['log']['console_log'] %>
+<%- else %>
 # JBOSS_CONSOLE_LOG=/var/log/wildfly/console.log
+<%- end %>

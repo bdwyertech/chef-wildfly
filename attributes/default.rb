@@ -17,10 +17,18 @@ default['wildfly']['group'] = 'wildfly'
 # => Set Wildfly Service Name
 default['wildfly']['service'] = 'wildfly'
 
-# => Wildfly Deployment Type
-# => (standalone/ha, standalone-full/ha)
-default['wildfly']['type'] = 'standalone'
+# => Wildfly Deployment Type (standalone or domain)
+default['wildfly']['mode'] = 'standalone'
 
+# => Standalone Mode Configuration
+# => (standalone/ha.xml, standalone-full/ha.xml)
+default['wildfly']['sa']['conf'] = 'standalone.xml'
+
+# => Domain Mode Configuration
+default['wildfly']['dom']['conf'] = 'domain.xml'
+default['wildfly']['dom']['host_conf'] = 'host-master.xml'
+
+# => Interface Configuration
 # => Should probably put a proxy in front of these... Maybe NginX?
 default['wildfly']['int']['mgmt']['bind'] = '0.0.0.0'
 default['wildfly']['int']['mgmt']['http_port'] = '9990'
@@ -39,3 +47,14 @@ default['wildfly']['smtp']['port'] = '25'
 default['wildfly']['smtp']['ssl'] = false
 default['wildfly']['smtp']['username'] = nil
 default['wildfly']['smtp']['password'] = nil
+
+# => Console Log Location
+default['wildfly']['log']['console_log'] = '/var/log/wildfly/console.log'
+
+# => Init Script Timeouts (Seconds)
+default['wildfly']['initd']['startup_wait'] = '60'
+default['wildfly']['initd']['shutdown_wait'] = '60'
+
+# => Hardcode JAVA_HOME into init.d configuration.
+# => Based on value of node['java']['java_home']
+default['wildfly']['java']['enforce_java_home'] = true
