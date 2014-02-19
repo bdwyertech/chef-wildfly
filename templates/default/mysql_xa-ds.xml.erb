@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+    <xa-datasource jndi-name="java:jboss/datasources/MySQL2" pool-name="MySQLXA" enabled="true" use-ccm="false">
+        <xa-datasource-property name="ServerName">
+        127.0.0.1
+        </xa-datasource-property>
+        <xa-datasource-property name="DatabaseName">
+        test
+        </xa-datasource-property>
+            <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+        <driver>mysql</driver>
+        <xa-pool>
+            <is-same-rm-override>false</is-same-rm-override>
+            <interleaving>false</interleaving>
+            <pad-xid>false</pad-xid>
+            <wrap-xa-resource>false</wrap-xa-resource>
+        </xa-pool>
+        <security>
+            <user-name>root</user-name>
+        </security>
+            <validation>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+        </validation>
+        <statement>
+            <share-prepared-statements>false</share-prepared-statements>
+        </statement>
+    </xa-datasource>
+</datasources>

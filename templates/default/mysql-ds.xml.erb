@@ -1,24 +1,29 @@
-<datasources>
-    <local-tx-datasource>
-
-        <jndi-name><%= @jndi_name %></jndi-name>
-        <connection-url>jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @mysql_db_name %></connection-url>
-        <driver-class>com.mysql.jdbc.Driver</driver-class>
+<?xml version="1.0" encoding="UTF-8"?>
+<datasource jta="false" jndi-name="<%= @jndi_name %>" pool-name="MySQL" enabled="true" use-ccm="false">
+    <connection-url>jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @mysql_db_name %></connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <driver>mysql</driver>
+    <pool>
+        <min-pool-size><%= @mysql_pool_min %></min-pool-size>
+        <max-pool-size><%= @mysql_pool_max %></max-pool-size>
+        <prefill>true</prefill>
+        <flush-strategy>IdleConnections</flush-strategy>
+    </pool>
+    <security>
         <user-name><%= @mysql_user %></user-name>
         <password><%= @mysql_pass %></password>
-
-        <min-pool-size><%= @mysql_pool_min %></min-pool-size>
-
-        <max-pool-size><%= @mysql_pool_max %></max-pool-size>
-
+    </security>
+    <validation>
+        <validate-on-match>false</validate-on-match>
+        <background-validation>false</background-validation>
+        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
+        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
+    </validation>
+    <timeout>
         <idle-timeout-minutes><%= @mysql_timeout %></idle-timeout-minutes>
-
-        <exception-sorter-class-name>
-  com.mysql.jdbc.integration.jboss.ExtendedMysqlExceptionSorter
-        </exception-sorter-class-name>
-        <valid-connection-checker-class-name>
-  com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker
-        </valid-connection-checker-class-name>
-
-    </local-tx-datasource>
-</datasources>
+    </timeout>
+    <statement>
+        <track-statements>true</track-statements>
+        <share-prepared-statements>false</share-prepared-statements>
+    </statement>
+</datasource>

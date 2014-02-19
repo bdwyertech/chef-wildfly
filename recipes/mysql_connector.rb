@@ -58,24 +58,3 @@ template File.join(connectorj_dir, 'module.xml') do
   })
   action :create
 end
-
-
-# => Configure MySQL Datasource
-template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.properties') do
-  source 'mysql-ds.erb'
-  user wildfly['user']
-  group wildfly['group']
-  mode '0600'
-  variables({
-    jndi_name: 'MySQLDB',
-    mysql_server: wildfly['users']['mgmt'],
-    mysql_port: wildfly['users']['mgmt'],
-    mysql_db_name: wildfly['users']['mgmt'],
-    mysql_user: wildfly['users']['mgmt'],
-    mysql_pass: wildfly['users']['mgmt'],
-    mysql_pool_min: '5',
-    mysql_pool_min: '20',
-    mysql_timeout: '5'
-  })
-  action :nothing
-end
