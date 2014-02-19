@@ -82,7 +82,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'standalone.x
     smtp_pass: wildfly['smtp']['password'],
     acp: wildfly['acp']
   })
-  notifies :restart, "service[wildfly]", :delayed
+  notifies :restart, "service[#{wildfly['service']}]", :delayed
 end
 
 # => Configure Wildfly Standalone - MGMT Users
