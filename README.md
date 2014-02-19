@@ -1,8 +1,9 @@
-# wildfly cookbook
+# Wildfly Cookbook
 Cookbook to deploy Wildfly Java Application Server
 
 # Requirements
 Chef Client 11+
+
 Java Opscode Community Cookbook
 
 # Platform
@@ -37,9 +38,9 @@ You can customize the Java version, and the Connector/J if you'd like.
 
 
 # Recipes
-::default - Installs Java & Wildfly.  Also installs Connector/J if you've got it enabled.
-::install - Installs Wildfly.
-::mysql_connector - Installs Connector/J into appropriate Wildfly directory.
+* `::default` - Installs Java & Wildfly.  Also installs Connector/J if you've got it enabled.
+* `::install` - Installs Wildfly.
+* `::mysql_connector` - Installs Connector/J into appropriate Wildfly directory.
 
 # Author
 
