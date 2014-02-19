@@ -147,9 +147,12 @@
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
+            <%- if node['wildfly']['mysql']['enabled'] %>
                     <driver name="mysql" module="com.mysql">
                         <driver-class>com.mysql.jdbc.Driver</driver-class>
+                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
                     </driver>
+            <%- end %>
                 </drivers>
             </datasources>
         </subsystem>
@@ -389,7 +392,7 @@
         <socket-binding name="txn-recovery-environment" port="4712"/>
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">
-            <remote-destination host="localhost" port="25"/>
+            <remote-destination host="<%= @smtp_host %>" port="<%= @smtp_port %>"/>
         </outbound-socket-binding>
     </socket-binding-group>
 </server>

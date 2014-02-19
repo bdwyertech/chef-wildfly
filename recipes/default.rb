@@ -10,4 +10,4 @@
 
 include_recipe 'java'
 include_recipe 'wildfly::install'
-include_recipe 'wildfly::mysql_connector'
+include_recipe 'wildfly::mysql_connector' if node['wildfly']['mysql']['enabled']

@@ -17,6 +17,10 @@ default['wildfly']['group'] = 'wildfly'
 # => Set Wildfly Service Name
 default['wildfly']['service'] = 'wildfly'
 
+# => Wildfly Deployment Type
+# => (standalone/ha, standalone-full/ha)
+default['wildfly']['type'] = 'standalone'
+
 # => Should probably put a proxy in front of these... Maybe NginX?
 default['wildfly']['int']['mgmt']['bind'] = '0.0.0.0'
 default['wildfly']['int']['mgmt']['http_port'] = '9990'
@@ -28,3 +32,7 @@ default['wildfly']['int']['pub']['https_port'] = '8443'
 
 default['wildfly']['int']['wsdl']['bind'] = '0.0.0.0'
 default['wildfly']['int']['ajp']['port'] = '8009'
+
+# => SMTP Settings
+default['wildfly']['smtp']['host'] = 'localhost'
+default['wildfly']['smtp']['port'] = '25'

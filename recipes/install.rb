@@ -74,7 +74,9 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'standalone.x
     pub_http_port: wildfly['int']['pub']['http_port'],
     pub_https_port: wildfly['int']['pub']['http_port'],
     wsdl_int: wildfly['int']['wsdl']['bind'],
-    ajp_port: wildfly['int']['ajp']['port']
+    ajp_port: wildfly['int']['ajp']['port'],
+    smtp_host: wildfly['smtp']['host'],
+    smtp_port: wildfly['smtp']['port']
   })
   notifies :restart, "service[wildfly]", :delayed
 end
