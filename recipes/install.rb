@@ -4,7 +4,7 @@
 # Recipe:: install
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
-# 
+#
 # All rights reserved - Do Not Redistribute
 #
 
@@ -106,6 +106,21 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
   mode '0600'
   variables({
     mgmt_users: wildfly['users']['mgmt']
+  })
+end
+
+# => Configure Java Options
+template File.join(wildfly['base'], 'bin', 'standalone.conf') do
+  source 'standalone.conf.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0644'
+  variables({
+    xms: wildfly['java_opts']['xms'],
+    xmx: wildfly['java_opts']['xmx'],
+    maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
+    preferipv4: wildfly['java_opts']['preferipv4'],
+    headless: wildfly['java_opts']['headless']
   })
 end
 
