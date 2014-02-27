@@ -74,8 +74,8 @@ template File.join('etc', 'default', 'wildfly.conf') do
 end
 
 # => Configure Wildfly Standalone - Interfaces
-template File.join(wildfly['base'], 'standalone', 'configuration', 'standalone.xml') do
-  source 'standalone.xml.erb'
+template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf']) do
+  source "#{wildfly['sa']['conf']}.erb"
   user wildfly['user']
   group wildfly['group']
   mode '0644'
