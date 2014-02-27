@@ -21,8 +21,13 @@ default['wildfly']['service'] = 'wildfly'
 default['wildfly']['mode'] = 'standalone'
 
 # => Standalone Mode Configuration
-# => (standalone/ha.xml, standalone-full/ha.xml)
-default['wildfly']['sa']['conf'] = 'standalone.xml'
+# => (standalone/ha.xml, standalone-full/ha/ha-aws.xml)
+default['wildfly']['sa']['conf'] = 'standalone-full.xml'
+
+# => AWS S3_Ping Configuration
+default['wildfly']['aws']['s3_access_key'] = 'a'
+default['wildfly']['aws']['s3_secret_access_key'] = 'b'
+default['wildfly']['aws']['s3_bucket'] = 'c'
 
 # => Domain Mode Configuration
 default['wildfly']['dom']['conf'] = 'domain.xml'

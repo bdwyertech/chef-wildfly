@@ -93,7 +93,10 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
     smtp_ssl: wildfly['smtp']['ssl'],
     smtp_user: wildfly['smtp']['username'],
     smtp_pass: wildfly['smtp']['password'],
-    acp: wildfly['acp']
+    acp: wildfly['acp'],
+    s3_access_key: wildfly['aws']['s3_access_key'],
+    s3_secret_access_key: wildfly['aws']['s3_secret_access_key'],
+    s3_bucket: wildfly['aws']['s3_bucket']
   })
   notifies :restart, "service[#{wildfly['service']}]", :delayed
 end
