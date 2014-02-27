@@ -39,6 +39,18 @@ directory wildfly['base'] do
   recursive true
 end
 
+# => Ensure LibAIO Present for Java NIO Journal
+case node[:platform_family]
+when 'rhel'
+  package 'libaio' do
+    action :install
+  end
+when 'debian'
+  package 'libaio1' do
+    action :install
+  end
+end
+
 # => Download Wildfly Tarball
 remote_file "#{Chef::Config[:file_cache_path]}/#{wildfly['version']}.tar.gz" do
   source wildfly['url']
