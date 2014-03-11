@@ -46,6 +46,10 @@ default['wildfly']['int']['pub']['https_port'] = '8443'
 default['wildfly']['int']['wsdl']['bind'] = '0.0.0.0'
 default['wildfly']['int']['ajp']['port'] = '8009'
 
+# => Debugging Settings
+default['wildfly']['jpda']['enabled'] = true
+default['wildfly']['jpda']['port'] = '8787'
+
 # => SMTP Settings
 default['wildfly']['smtp']['host'] = 'localhost'
 default['wildfly']['smtp']['port'] = '25'
