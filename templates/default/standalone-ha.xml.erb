@@ -29,6 +29,13 @@
         <extension module="org.wildfly.extension.io"/>
         <extension module="org.wildfly.extension.undertow"/>
     </extensions>
+<% if !node['wildfly']['system_properties'].empty? -%>
+    <system-properties>
+  <% @node['wildfly']['system_properties'].each do |property| -%>
+        <property name="<%= property['name'] %>" value="<%= property['value'] %>"/>
+  <% end -%>
+    </system-properties>
+<% end -%>
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
