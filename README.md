@@ -42,6 +42,18 @@ You can customize the Java version, and the Connector/J if you'd like.
 * `::install` - Installs Wildfly.
 * `::mysql_connector` - Installs Connector/J into appropriate Wildfly directory.
 
+# Providers
+
+Datasource LWRP
+
+```ruby
+wildfly_datasource 'example' do
+  jndiname "java:jboss/datasource/example"
+  drivername "some-jdbc-driver"
+  connectionurl "jdbc:some://127.0.0.1/example"
+end
+```
+
 # Author
 
 Author:: Brian Dwyer - Intelligent Digital Services
