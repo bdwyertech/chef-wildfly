@@ -20,6 +20,9 @@ default['wildfly']['service'] = 'wildfly'
 # => Wildfly Deployment Type (standalone or domain)
 default['wildfly']['mode'] = 'standalone'
 
+# => Enforce Configuration (Force's redeployment of configuration, overwriting any local changes)
+default['wildfly']['enforce_config'] = false
+
 # => Standalone Mode Configuration
 # => (standalone/ha.xml, standalone-full/ha/ha-aws.xml)
 default['wildfly']['sa']['conf'] = 'standalone-full.xml'

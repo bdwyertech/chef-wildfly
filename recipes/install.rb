@@ -111,6 +111,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
     s3_bucket: wildfly['aws']['s3_bucket']
   })
   notifies :restart, "service[#{wildfly['service']}]", :delayed
+  only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
 # => Configure Wildfly Standalone - MGMT Users
@@ -137,6 +138,14 @@ template File.join(wildfly['base'], 'bin', 'standalone.conf') do
     preferipv4: wildfly['java_opts']['preferipv4'],
     headless: wildfly['java_opts']['headless']
   })
+  only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+end
+
+# Create file to indicate deployment and prevent recurring configuration deployment
+file File.join(wildfly['base'], '.chef_deployed') do
+  owner wildfly['user']
+  group wildfly['group']
+  action :create_if_missing
 end
 
 # => Start the Wildfly Service
