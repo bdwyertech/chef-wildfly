@@ -67,6 +67,7 @@ bash 'Extract Wildfly' do
   chown #{wildfly['user']}:#{wildfly['group']} -R #{wildfly['base']}
   EOF
   action :nothing
+  notifies :create, "template[#{File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf'])}]" , :immediately
 end
 
 # Deploy Init Script
@@ -111,6 +112,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
     s3_bucket: wildfly['aws']['s3_bucket']
   })
   notifies :restart, "service[#{wildfly['service']}]", :delayed
+  action :nothing
 end
 
 # => Configure Wildfly Standalone - MGMT Users
