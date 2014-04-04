@@ -375,7 +375,12 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:1.2">
             <modify-wsdl-address>true</modify-wsdl-address>
-            <wsdl-host>${jboss.bind.address:<%= @wsdl_int %>}</wsdl-host>
+            <% if "0.0.0.0" == @wsdl_int %>
+              <% Chef::Log.warn "Unable to set wsdl-host to a wildcard address, fallack to 127.0.0.1" %>
+              <wsdl-host>127.0.0.1</wsdl-host>
+            <% else %>
+              <wsdl-host>${jboss.bind.address:<%= @wsdl_int %>}</wsdl-host>
+            <% end %>
             <endpoint-config name="Standard-Endpoint-Config"/>
             <endpoint-config name="Recording-Endpoint-Config">
                 <pre-handler-chain name="recording-handlers" protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
@@ -388,12 +393,19 @@
     </profile>
     <interfaces>
         <interface name="management">
+          <% if "0.0.0.0" == @mgmt_int %>
+            <any-address/>
+          <% else %>
             <inet-address value="${jboss.bind.address.management:<%= @mgmt_int %>}"/>
+          <% end %>
         </interface>
         <interface name="public">
+          <% if "0.0.0.0" == @pub_int %>
+            <any-address/>
+          <% else %>
             <inet-address value="${jboss.bind.address:<%= @pub_int %>}"/>
+          <% end %>
         </interface>
-        <!-- TODO - only show this if the jacorb subsystem is added  -->
         <interface name="unsecure">
             <!--
               ~  Used for IIOP sockets in the standard configuration.
