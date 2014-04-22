@@ -4,7 +4,7 @@ maintainer_email 'bdwyertech'
 license          'Apache v2.0'
 description      'Installs/Configures wildfly'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.1.16'
+version          '0.1.17'
 
 %w{ centos redhat }.each do |os|
   supports os
