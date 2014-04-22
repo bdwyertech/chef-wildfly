@@ -23,15 +23,15 @@ mysql['jndi']['datasources'].each do |source|
     group wildfly['group']
     mode '0600'
     variables({
-      jndi_name: source['jndi_name'],
-      mysql_server: source['server'],
-      mysql_port: source['port'],
-      mysql_db_name: source['db_name'],
-      mysql_user: source['db_user'],
-      mysql_pass: source['db_pass'],
-      mysql_pool_min: '5',
-      mysql_pool_max: '20',
-      mysql_timeout: '5'
+      jndi_name => source['jndi_name'],
+      mysql_server => source['server'],
+      mysql_port => source['port'],
+      mysql_db_name => source['db_name'],
+      mysql_user => source['db_user'],
+      mysql_pass => source['db_pass'],
+      mysql_pool_min => '5',
+      mysql_pool_max => '20',
+      mysql_timeout => '5'
     })
     action :create
   end

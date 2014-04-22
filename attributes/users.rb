@@ -9,5 +9,5 @@ default['wildfly']['acp'] = 'simple'
 
 # => Default user - wildfly - wildfly
 default['wildfly']['users']['mgmt'] = [
-  { id: 'wildfly', passhash: '2c6368f4996288fcc621c5355d3e39b7' }
+  { 'id' => 'wildfly', 'passhash' => '2c6368f4996288fcc621c5355d3e39b7' }
 ]

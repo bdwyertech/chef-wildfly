@@ -52,9 +52,9 @@ template File.join(connectorj_dir, 'module.xml') do
   group wildfly['group']
   mode '0644'
   variables({
-    module_name: mysql['mod_name'],
-    resource_path: mysql['jar'],
-    module_dependencies: mysql['mod_deps']
+    module_name => mysql['mod_name'],
+    resource_path => mysql['jar'],
+    module_dependencies => mysql['mod_deps']
   })
   action :create
 end
