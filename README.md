@@ -59,14 +59,18 @@ Deploy LWRP
 Allows you to deploy JARs and WARs via chef
 
 Example 1 (from a url)
+```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       url "http://artifacts.company.com/artifacts/mssql-java-driver/sqljdbc4.jar"
 end
+```
 
 Example 2 (from disk)
+```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       path "/opt/resources/sqljdb4.jar"
 end
+```
 
 # Author
 
