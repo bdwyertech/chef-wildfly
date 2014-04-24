@@ -21,7 +21,7 @@ def load_current_resource
   @current_resource.path(@new_resource.path)
   @current_resource.url(@new_resource.url)
   @current_resource.exists = false
-  @current_resource.cli("--file_path=#{@new_resource.path}")
+  @current_resource.cli(" #{@new_resource.path}")
   if deploy_exists?(@current_resource.name)
     @current_resource.exists = true
   end
