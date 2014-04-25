@@ -26,7 +26,7 @@ action :delete do
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::WildflyDatasource.new(@new_resource.name)
+  @current_resource = Chef::Resource::SbpWildflyDatasource.new(@new_resource.name)
   @current_resource.name(@new_resource.name)
   @current_resource.jndiname(@new_resource.jndiname)
   @current_resource.drivername(@new_resource.drivername)

@@ -92,23 +92,23 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
   group wildfly['group']
   mode '0644'
   variables({
-    mgmt_int => wildfly['int']['mgmt']['bind'],
-    mgmt_http_port => wildfly['int']['mgmt']['http_port'],
-    mgmt_https_port => wildfly['int']['mgmt']['https_port'],
-    pub_int => wildfly['int']['pub']['bind'],
-    pub_http_port => wildfly['int']['pub']['http_port'],
-    pub_https_port => wildfly['int']['pub']['https_port'],
-    wsdl_int => wildfly['int']['wsdl']['bind'],
-    ajp_port => wildfly['int']['ajp']['port'],
-    smtp_host => wildfly['smtp']['host'],
-    smtp_port => wildfly['smtp']['port'],
-    smtp_ssl => wildfly['smtp']['ssl'],
-    smtp_user => wildfly['smtp']['username'],
-    smtp_pass => wildfly['smtp']['password'],
-    acp => wildfly['acp'],
-    s3_access_key => wildfly['aws']['s3_access_key'],
-    s3_secret_access_key => wildfly['aws']['s3_secret_access_key'],
-    s3_bucket => wildfly['aws']['s3_bucket']
+    mgmt_int: wildfly['int']['mgmt']['bind'],
+    mgmt_http_port: wildfly['int']['mgmt']['http_port'],
+    mgmt_https_port: wildfly['int']['mgmt']['https_port'],
+    pub_int: wildfly['int']['pub']['bind'],
+    pub_http_port: wildfly['int']['pub']['http_port'],
+    pub_https_port: wildfly['int']['pub']['https_port'],
+    wsdl_int: wildfly['int']['wsdl']['bind'],
+    ajp_port: wildfly['int']['ajp']['port'],
+    smtp_host: wildfly['smtp']['host'],
+    smtp_port: wildfly['smtp']['port'],
+    smtp_ssl: wildfly['smtp']['ssl'],
+    smtp_user: wildfly['smtp']['username'],
+    smtp_pass: wildfly['smtp']['password'],
+    acp: wildfly['acp'],
+    s3_access_key: wildfly['aws']['s3_access_key'],
+    s3_secret_access_key: wildfly['aws']['s3_secret_access_key'],
+    s3_bucket: wildfly['aws']['s3_bucket']
   })
   notifies :restart, "service[#{wildfly['service']}]", :delayed
   only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
@@ -121,7 +121,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
   group wildfly['group']
   mode '0600'
   variables({
-    mgmt_users => wildfly['users']['mgmt']
+    mgmt_users: wildfly['users']['mgmt']
   })
 end
 
@@ -132,11 +132,11 @@ template File.join(wildfly['base'], 'bin', 'standalone.conf') do
   group wildfly['group']
   mode '0644'
   variables({
-    xms => wildfly['java_opts']['xms'],
-    xmx => wildfly['java_opts']['xmx'],
-    maxpermsize => wildfly['java_opts']['xx_maxpermsize'],
-    preferipv4 => wildfly['java_opts']['preferipv4'],
-    headless => wildfly['java_opts']['headless']
+    xms: wildfly['java_opts']['xms'],
+    xmx: wildfly['java_opts']['xmx'],
+    maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
+    preferipv4: wildfly['java_opts']['preferipv4'],
+    headless: wildfly['java_opts']['headless']
   })
   only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
