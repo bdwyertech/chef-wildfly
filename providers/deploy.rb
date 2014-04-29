@@ -33,7 +33,7 @@ end
 private
 
 def deploy_exists?(name)
-  result = `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info --name=#{name}'"`
+  result = `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info --name=#{name}'"`
   $?.exitstatus == 0
 end
 
