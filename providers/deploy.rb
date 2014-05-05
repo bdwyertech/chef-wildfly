@@ -16,7 +16,7 @@ action :install do
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::SbpWildflyDeploy.new(@new_resource.name)
+  @current_resource = Chef::Resource::WildflyDeploy.new(@new_resource.name)
   @current_resource.name(@new_resource.name)
   @current_resource.path(@new_resource.path)
   @current_resource.url(@new_resource.url)
