@@ -104,6 +104,10 @@ wildfly_attribute "max-post-size" do
 end
 ```
 
-# Author
+# Authors
 
 Author:: Brian Dwyer - Intelligent Digital Services
+
+# Contributors
+Contributor:: Hugo Trippaers
+Contributor:: Ian Southam
