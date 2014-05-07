@@ -72,6 +72,38 @@ wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
 end
 ```
 
+Attribute LWRP
+
+Allows you to set an attribute in the server config
+
+To change the max-post-size parameter
+```xml
+            <server name="default-server">
+			       <http-listener name="default" socket-binding="http" max-post-size="20971520"/>
+				   <host name="default-host" alias="localhost">
+
+```
+
+```ruby
+wildfly_attribute "max-post-size" do
+   path "/subsystem=undertow/server=default-server/http-listener=default"
+   parameter "max-post-size"
+   value "20971520L"
+   notifies :restart, "service[wildfly]"
+end
+```
+
+If the attribute restart is set to false, the wildfly will never restart
+
+```ruby
+wildfly_attribute "max-post-size" do
+   path "/subsystem=undertow/server=default-server/http-listener=default"
+   parameter "max-post-size"
+   value "20971520L"
+   restart false
+end
+```
+
 # Author
 
 Author:: Brian Dwyer - Intelligent Digital Services
