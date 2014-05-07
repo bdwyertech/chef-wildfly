@@ -85,6 +85,14 @@ template File.join('etc', 'default', 'wildfly.conf') do
   mode '0644'
 end
 
+# => Create Wildfly Conf Directory
+directory File.join(wildfly['base'], 'standalone', 'configuration') do
+  owner wildfly['user']
+  group wildfly['group']
+  mode 0755
+  recursive true
+end
+
 # => Configure Wildfly Standalone - Interfaces
 template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf']) do
   source "#{wildfly['sa']['conf']}.erb"
@@ -123,6 +131,14 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
   variables({
     mgmt_users: wildfly['users']['mgmt']
   })
+end
+
+# => Create Wildfly Bin Directory
+directory File.join(wildfly['base'], 'bin') do
+  owner wildfly['user']
+  group wildfly['group']
+  mode 0755
+  recursive true
 end
 
 # => Configure Java Options
