@@ -40,7 +40,7 @@ directory wildfly['base'] do
 end
 
 # => Ensure LibAIO Present for Java NIO Journal
-case node[:platform_family]
+case node['platform_family']
 when 'rhel'
   package 'libaio' do
     action :install
