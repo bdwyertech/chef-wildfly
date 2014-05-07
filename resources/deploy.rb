@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # LWRP that deploys war "name"
 # From either path :path or url :url
