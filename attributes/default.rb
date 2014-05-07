@@ -1,6 +1,7 @@
 # encoding: UTF-8
 #
 # => Wildfly Configuration
+# rubocop:disable LineLength
 
 # => Source
 default['wildfly']['version'] = '8.1.0'

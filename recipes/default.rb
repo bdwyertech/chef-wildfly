@@ -4,8 +4,9 @@
 # Recipe:: default
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
-# 
+#
 # All rights reserved - Do Not Redistribute
+# rubocop:disable LineLength
 #
 
 include_recipe 'java'

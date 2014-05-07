@@ -2,6 +2,7 @@
 #
 # LWRP that sets an attribute
 #
+# rubocop:disable LineLength, SpecialGlobalVars, HashSyntax
 
 actions :set
 default_action :set

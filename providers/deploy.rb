@@ -1,5 +1,6 @@
 # encoding: UTF-8
 #
+# rubocop:disable LineLength, SpecialGlobalVars
 require 'etc'
 
 # Support whyrun
@@ -24,23 +25,19 @@ def load_current_resource
   @current_resource.url(@new_resource.url)
   @current_resource.exists = false
   @current_resource.cli(" #{@new_resource.path}")
-  if deploy_exists?(@current_resource.name)
-    @current_resource.exists = true
-  end
-  if @current_resource.url != 'nourl'
-      @current_resource.cli("--url=#{@new_resource.url}")
-  end
+  @current_resource.exists = true if deploy_exists?(@current_resource.name)
+  @current_resource.cli("--url=#{@new_resource.url}") if @current_resource.url != 'nourl'
 end
 
 private
 
 def deploy_exists?(name)
-  result = `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info --name=#{name}'"`
+  `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info --name=#{name}'"`
   $?.exitstatus == 0
 end
 
 def deploy_install
-  bash "deploy_install" do
+  bash 'deploy_install' do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH

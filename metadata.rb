@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# rubocop:disable SingleSpaceBeforeFirstArg
 name             'wildfly'
 maintainer       'Brian Dwyer - Intelligent Digital Services'
 maintainer_email 'bdwyertech'

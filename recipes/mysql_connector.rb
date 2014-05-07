@@ -4,8 +4,9 @@
 # Recipe:: mysql_connector
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
-# 
+#
 # All rights reserved - Do Not Redistribute
+# rubocop:disable LineLength
 #
 
 # => Make MySQL Connector/J Information Retrievable
@@ -17,7 +18,7 @@ wildfly = node['wildfly']
 mysql = node['wildfly']['mysql']
 
 # => Shorten Connector/J Directory Name
-connectorj_dir = File.join(wildfly['base'], 'modules', 'system', 'layers', 'base', 'com', 'mysql', 'main' )
+connectorj_dir = File.join(wildfly['base'], 'modules', 'system', 'layers', 'base', 'com', 'mysql', 'main')
 
 # => Create MySQL Connector/J Directory
 directory connectorj_dir do
@@ -32,7 +33,7 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{mysql['version']}.tar.gz" do
   source mysql['url']
   checksum mysql['checksum']
   action :create
-    notifies :run, 'bash[Extract ConnectorJ]', :immediately
+  notifies :run, 'bash[Extract ConnectorJ]', :immediately
 end
 
 # => Extract MySQL Connector/J
@@ -42,7 +43,7 @@ bash 'Extract ConnectorJ' do
   tar xzf #{mysql['version']}.tar.gz -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{mysql['jar']}
   chown #{wildfly['user']}:#{wildfly['group']} -R #{connectorj_dir}/../
   EOF
-  not_if { File.exists?(File.join(connectorj_dir, mysql['jar'])) }
+  not_if { File.exist?(File.join(connectorj_dir, mysql['jar'])) }
 end
 
 # => Configure MySQL Connector/J Module
@@ -51,10 +52,10 @@ template File.join(connectorj_dir, 'module.xml') do
   user wildfly['user']
   group wildfly['group']
   mode '0644'
-  variables({
+  variables(
     module_name: mysql['mod_name'],
     resource_path: mysql['jar'],
     module_dependencies: mysql['mod_deps']
-  })
+  )
   action :create
 end

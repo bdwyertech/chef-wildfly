@@ -2,6 +2,7 @@
 #
 # LWRP that deploys war "name"
 # From either path :path or url :url
+# rubocop:disable LineLength, SpecialGlobalVars, HashSyntax
 #
 actions :install
 default_action :install

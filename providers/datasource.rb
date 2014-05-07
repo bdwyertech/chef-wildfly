@@ -1,5 +1,6 @@
 # encoding: UTF-8
 #
+# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
 require 'etc'
 
 # Support whyrun
@@ -42,12 +43,12 @@ end
 private
 
 def datasource_exists?(name)
-  result = `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name}:read-resource'"`
-  $?.exitstatus == 0 
+  `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name}:read-resource'"`
+  $?.exitstatus == 0
 end
 
 def create_datasource
-  bash "install_datasource" do
+  bash 'install_datasource' do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
@@ -57,9 +58,9 @@ def create_datasource
 end
 
 def delete_datasource
-  bash "remove_datasource" do
+  bash 'remove_datasource' do
     user node['wildfly']['user']
-    cwd  node['wildfly']['base']
+    cwd node['wildfly']['base']
     code <<-EOH
       bin/jboss-cli.sh -c command="data-source remove --name=#{new_resource.name}"
     EOH
