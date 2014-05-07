@@ -125,6 +125,28 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
   })
 end
 
+# => Configure Wildfly Standalone - Application Users
+template File.join(wildfly['base'], 'standalone', 'configuration', 'application-users.properties') do
+  source 'application-users.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables({
+    app_users: wildfly['users']['app']
+  })
+end
+
+# => Configure Wildfly Standalone - Application Roles
+template File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
+  source 'application-roles.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables({
+    app_roles: wildfly['roles']['app']
+  })
+end
+
 # => Configure Java Options
 template File.join(wildfly['base'], 'bin', 'standalone.conf') do
   source 'standalone.conf.erb'
