@@ -4,12 +4,12 @@
 # Recipe:: mysql_connector
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
-# 
+#
 # All rights reserved - Do Not Redistribute
 #
 # => Check this out for defining datasources...
 # => http://www.ironjacamar.org/doc/schema/datasources_1_2.xsd
-
+# rubocop:disable LineLength
 
 # => Shorten Hashes
 wildfly = node['wildfly']
@@ -22,7 +22,7 @@ mysql['jndi']['datasources'].each do |source|
     user wildfly['user']
     group wildfly['group']
     mode '0600'
-    variables({
+    variables(
       jndi_name: source['jndi_name'],
       mysql_server: source['server'],
       mysql_port: source['port'],
@@ -32,7 +32,7 @@ mysql['jndi']['datasources'].each do |source|
       mysql_pool_min: '5',
       mysql_pool_max: '20',
       mysql_timeout: '5'
-    })
+    )
     action :create
   end
 end

@@ -1,4 +1,5 @@
 # Encoding: UTF-8
+# rubocop:disable LineLength
 
 # => Default Wildfly Java Options
 # =>  JAVA_OPTS="-Xms64m -Xmx512m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true"
@@ -12,6 +13,6 @@ default['wildfly']['java_opts']['preferipv4'] = 'true'
 default['wildfly']['java_opts']['headless'] = 'true'
 
 # => Specify other java options in this space-deliniated array.
-default['wildfly']['java_opts']['other'] = %w{
-  
-}
+default['wildfly']['java_opts']['other'] = %w(
+
+)

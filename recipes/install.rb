@@ -6,6 +6,7 @@
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
 # All rights reserved - Do Not Redistribute
+# rubocop:disable LineLength
 #
 
 # => Shorten Hashes
@@ -40,7 +41,7 @@ directory wildfly['base'] do
 end
 
 # => Ensure LibAIO Present for Java NIO Journal
-case node[:platform_family]
+case node['platform_family']
 when 'rhel'
   package 'libaio' do
     action :install
@@ -91,7 +92,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
   user wildfly['user']
   group wildfly['group']
   mode '0644'
-  variables({
+  variables(
     mgmt_int: wildfly['int']['mgmt']['bind'],
     mgmt_http_port: wildfly['int']['mgmt']['http_port'],
     mgmt_https_port: wildfly['int']['mgmt']['https_port'],
@@ -109,9 +110,9 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
     s3_access_key: wildfly['aws']['s3_access_key'],
     s3_secret_access_key: wildfly['aws']['s3_secret_access_key'],
     s3_bucket: wildfly['aws']['s3_bucket']
-  })
+  )
   notifies :restart, "service[#{wildfly['service']}]", :delayed
-  only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  only_if { !File.exist?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
 # => Configure Wildfly Standalone - MGMT Users
@@ -120,9 +121,31 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
   user wildfly['user']
   group wildfly['group']
   mode '0600'
-  variables({
+  variables(
     mgmt_users: wildfly['users']['mgmt']
-  })
+  )
+end
+
+# => Configure Wildfly Standalone - Application Users
+template File.join(wildfly['base'], 'standalone', 'configuration', 'application-users.properties') do
+  source 'application-users.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables(
+    app_users: wildfly['users']['app']
+  )
+end
+
+# => Configure Wildfly Standalone - Application Roles
+template File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
+  source 'application-roles.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables(
+    app_roles: wildfly['roles']['app']
+  )
 end
 
 # => Configure Java Options
@@ -131,14 +154,14 @@ template File.join(wildfly['base'], 'bin', 'standalone.conf') do
   user wildfly['user']
   group wildfly['group']
   mode '0644'
-  variables({
+  variables(
     xms: wildfly['java_opts']['xms'],
     xmx: wildfly['java_opts']['xmx'],
     maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
     preferipv4: wildfly['java_opts']['preferipv4'],
     headless: wildfly['java_opts']['headless']
-  })
-  only_if { !File.exists?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  )
+  only_if { !File.exist?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
 # Create file to indicate deployment and prevent recurring configuration deployment

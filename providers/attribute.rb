@@ -1,3 +1,6 @@
+# encoding: UTF-8
+#
+# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
 require 'etc'
 
 # Support whyrun
@@ -23,27 +26,27 @@ def load_current_resource
   @current_resource.restart(@new_resource.restart)
   @current_resource.exists = false
   @current_resource.path(@new_resource.path)
-  if attribute_exists?(@current_resource.name)
+  if attribute_exists?
     @current_resource.exists = true
   else
     # Only notify if restart parameter is true
     if @current_resource.restart
-       @new_resource.updated_by_last_action(true) 
+      @new_resource.updated_by_last_action(true)
     else
-       @new_resource.updated_by_last_action(false) 
+      @new_resource.updated_by_last_action(false)
     end
   end
 end
 
 private
 
-def attribute_exists?(name)
-  result = `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})' | grep ' #{current_resource.value}'"`
+def attribute_exists?
+  `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})' | grep ' #{current_resource.value}'"`
   $?.exitstatus == 0
 end
 
 def attribute_set
-  bash "attribute_set" do
+  bash 'attribute_set' do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH

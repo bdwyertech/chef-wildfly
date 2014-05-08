@@ -1,5 +1,7 @@
+# encoding: UTF-8
 #
 # LWRP that provisions a datasource
+# rubocop:disable LineLength, SpecialGlobalVars, HashSyntax
 #
 
 actions :create, :delete

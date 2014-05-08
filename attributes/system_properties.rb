@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# rubocop:disable LineLength
 # => Wildfly System Properties Configuration
 
 # => Simply add properties to this array of hashes

@@ -23,3 +23,6 @@
 # is for illustration only and does not correspond to a usable password.
 #
 #admin=2a0923285184943425d1f53ddd58ec7a
+<% @app_users.each do |user| -%>
+<%= user['id'] %>=<%= user['passhash'] %>
+<% end -%>
