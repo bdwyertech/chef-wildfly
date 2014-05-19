@@ -6,20 +6,20 @@
 #
 <%- if node['wildfly']['java']['enforce_java_home'] === true %>
 <%- if node['java']['java_home'] && File.exists?(node['java']['java_home']) %>
-JAVA_HOME=<%= node['java']['java_home'] %>
+JAVA_HOME="<%= node['java']['java_home'] %>"
 <%- else %>
-# JAVA_HOME=/usr/lib/jvm/default-java
+# JAVA_HOME="/usr/lib/jvm/default-java"
 <%- end %>
 <%- else %>
-# JAVA_HOME=/usr/lib/jvm/default-java
+# JAVA_HOME="/usr/lib/jvm/default-java"
 <%- end %>
 
 # Location of WildFly
 #
 <%- if node['wildfly']['base'] && File.exists?(node['wildfly']['base']) %>
-JBOSS_HOME=<%= node['wildfly']['base'] %>
+JBOSS_HOME="<%= node['wildfly']['base'] %>"
 <%- else %>
-# JBOSS_HOME=/opt/wildfly
+# JBOSS_HOME="/opt/wildfly"
 <%- end %>
 
 # The username who should own the process.
@@ -78,7 +78,7 @@ SHUTDOWN_WAIT=<%= node['wildfly']['initd']['shutdown_wait'] %>
 # Location to keep the console log
 #
 <%- if node['wildfly']['log']['console_log'] %>
-JBOSS_CONSOLE_LOG=<%= node['wildfly']['log']['console_log'] %>
+JBOSS_CONSOLE_LOG="<%= node['wildfly']['log']['console_log'] %>"
 <%- else %>
-# JBOSS_CONSOLE_LOG=/var/log/wildfly/console.log
+# JBOSS_CONSOLE_LOG="/var/log/wildfly/console.log"
 <%- end %>
