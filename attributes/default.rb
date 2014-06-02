@@ -5,8 +5,8 @@
 
 # => Source
 default['wildfly']['version'] = '8.1.0'
-default['wildfly']['url'] = 'http://download.jboss.org/wildfly/8.1.0.CR2/wildfly-8.1.0.CR2.tar.gz'
-default['wildfly']['checksum'] = '7f8e2320de35e47d29bb765d2e4571a5f9245d7ae8442b5d7d81801987e55f86'
+default['wildfly']['url'] = 'http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.tar.gz'
+default['wildfly']['checksum'] = '719dc074ace7320dee52ccdd8e3b41beda038f2f09d69af085273d4f00a75266'
 
 # => Base Directory
 default['wildfly']['base'] = '/opt/wildfly'
