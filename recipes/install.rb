@@ -66,6 +66,7 @@ bash 'Extract Wildfly' do
   code <<-EOF
   tar xzf #{wildfly['version']}.tar.gz -C #{wildfly['base']} --strip 1
   chown #{wildfly['user']}:#{wildfly['group']} -R #{wildfly['base']}
+  rm -f #{File.join(wildfly['base'], '.chef_deployed')}
   EOF
   action :nothing
 end
