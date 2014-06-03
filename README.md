@@ -18,7 +18,7 @@ You can add users in the proper format to `attributes\users.rb`
 
 You can customize the Java version, and the Connector/J if you'd like.
 
-If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify both the Wildfly version, as well as the version of this cookbook as well.  This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Wildfly will be wiped out.
+If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify both the Wildfly version, as well as the version of this cookbook as well.  This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
 
 # Attributes
 * `node['wildfly']['base']` - Base directory to run Wildfly from
