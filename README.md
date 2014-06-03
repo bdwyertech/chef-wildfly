@@ -106,6 +106,19 @@ wildfly_attribute "max-post-size" do
 end
 ```
 
+Property LWRP
+
+Allows you to set or delete system properties in the server config. (Supported Actions: :set, :delete)
+
+```ruby
+wildfly_property "Database URL" do
+   property "JdbcUrl"
+   value "jdbc:mysql://1.2.3.4:3306/testdb"
+   action :set
+   notifies :restart, "service[wildfly]", :delayed
+end
+```
+
 # Authors
 
 Author:: Brian Dwyer - Intelligent Digital Services
