@@ -50,9 +50,7 @@ def notify?
 end
 
 def property_value_exists?
-  if property_exists?
     `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-attribute(name=value)'"`.include? " \"#{current_resource.value}\""
-  end
 end
 
 def property_exists?
