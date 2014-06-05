@@ -165,6 +165,17 @@ template File.join(wildfly['base'], 'bin', 'standalone.conf') do
   only_if { !File.exist?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
+# => Configure Lograte for Wildfly
+template 'Wildfly Logrotate Configuration' do
+  path File.join('etc', 'logrotate.d', node['wildfly']['service'])
+  source 'logrotate.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  only_if { File.directory?('/etc/logrotate.d') && wildfly['log']['rotation'] }
+  action :create
+end
+
 # Create file to indicate deployment and prevent recurring configuration deployment
 file File.join(wildfly['base'], '.chef_deployed') do
   owner wildfly['user']

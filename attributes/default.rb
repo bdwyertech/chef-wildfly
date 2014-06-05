@@ -63,6 +63,10 @@ default['wildfly']['smtp']['password'] = nil
 
 # => Console Log Location
 default['wildfly']['log']['console_log'] = '/var/log/wildfly/console.log'
+# => Enable Log Rotation on *.log in Console Log Directory
+default['wildfly']['log']['rotation'] = true
+# => Purge rotated logs older than this many days
+default['wildfly']['log']['max_age'] = 375
 
 # => Init Script Timeouts (Seconds)
 default['wildfly']['initd']['startup_wait'] = '60'
