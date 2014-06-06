@@ -4,7 +4,9 @@
 
 <%= File.join(File.dirname(wildfly['log']['console_log']), '*.log') %> {
         daily
+        rotate <%= wildfly['log']['max_age'].to_i %>
         missingok
+        dateext
         copytruncate
         compress
         delaycompress
