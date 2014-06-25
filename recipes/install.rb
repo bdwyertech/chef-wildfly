@@ -185,5 +185,5 @@ end
 
 # => Start the Wildfly Service
 service wildfly['service'] do
-  action :start
+  action [:enable, :start]
 end
