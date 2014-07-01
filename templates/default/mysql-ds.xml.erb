@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Managed by Chef - local changes may be overwritten -->
+
 <datasource jta="false" jndi-name="<%= @jndi_name %>" pool-name="MySQL" enabled="true" use-ccm="false">
     <connection-url>jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @mysql_db_name %></connection-url>
     <driver-class>com.mysql.jdbc.Driver</driver-class>
