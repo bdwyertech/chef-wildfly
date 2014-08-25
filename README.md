@@ -74,6 +74,21 @@ wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
 end
 ```
 
+Example 3 with automated update (requires a common runtime_name and version specific name)
+```ruby
+wildfly_deploy 'my-app-1.0.war' do
+      url "http://artifacts.company.com/artifacts/my-app.1.0.war"
+      runtime_name "my-app.war"
+end
+```
+
+Example 4 undeploy
+```ruby
+wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
+      action :remove
+end
+```
+
 Attribute LWRP
 
 Allows you to set an attribute in the server config
