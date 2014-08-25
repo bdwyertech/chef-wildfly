@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
@@ -24,18 +25,32 @@ def whyrun_supported?
 end
 
 action :install do
-  if @current_resource.exists
-    Chef::Log.info "#{ @new_resource } already exists - nothing to do."
-  else
-    converge_by("Create #{ @new_resource }") do
-      deploy_install
+  if deploy_exists?(@current_resource.runtime_name)
+    Chef::Log.info "#{ @new_resource.runtime_name } already exists"
+    if deploy_name_exists?(@current_resource.runtime_name, @current_resource.name)
+      Chef::Log.info "#{ @new_resource.name } already enabled - nothing to do."
+    else
+      Chef::Log.info "#{ @new_resource.name } is not the active resource."
+      deploy_remove(@current_resource.runtime_name)
+      deploy_install(@current_resource.name, @current_resource.runtime_name)
     end
+  else
+    deploy_install(@current_resource.name, @current_resource.runtime_name)
+  end
+end
+
+action :remove do
+  if deploy_exists?(@current_resource.runtime_name)
+    deploy_remove(@current_resource.runtime_name)
+  else
+    Chef::Log.info "#{ @new_resource.runtime_name } does not exist - nothing to do."
   end
 end
 
 def load_current_resource
   @current_resource = Chef::Resource::WildflyDeploy.new(@new_resource.name)
   @current_resource.name(@new_resource.name)
+  @current_resource.runtime_name( @new_resource.runtime_name == 'noname' ? @new_resource.name : @new_resource.runtime_name )
   @current_resource.path(@new_resource.path)
   @current_resource.url(@new_resource.url)
   @current_resource.exists = false
@@ -46,17 +61,55 @@ end
 
 private
 
-def deploy_exists?(name)
-  `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info --name=#{name}'"`
-  $?.exitstatus == 0
+def deploy_exists?(runtime_name)
+  return read_deployment_details.has_key?(runtime_name)
 end
 
-def deploy_install
-  bash 'deploy_install' do
-    user node['wildfly']['user']
-    cwd node['wildfly']['base']
-    code <<-EOH
-      bin/jboss-cli.sh -c "deploy #{current_resource.cli} --name=#{current_resource.name}"
-    EOH
+def deploy_name_exists?(runtime_name, name)
+  return read_deployment_details[runtime_name].any? { |h| h[name] }
+end
+
+def deploy_install(name, runtime_name)
+  Chef::Log.info "Deploying #{name}"
+  converge_by("Deploying #{ detailed_name(runtime_name,name) }") do
+    result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deploy #{current_resource.cli} --name=#{name} --runtime-name=#{runtime_name}'\"")
+    result.error! if result.exitstatus != 0
   end
+  return true
+end
+
+def deploy_remove(runtime_name)
+  deployments = read_deployment_details
+  deployments[runtime_name].each do | deployed |
+    converge_by("Removing #{ detailed_name(runtime_name, deployed.keys.first) }") do
+      Chef::Log.info "Undeploying #{detailed_name(runtime_name, deployed.keys.first)}"
+        Chef::Log.info "Undeploying #{deployed.keys.first} with runtime name #{runtime_name}"
+        result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first}'\"")
+        result.error! if result.exitstatus != 0
+    end
+  end
+  return true
+end
+
+def read_deployment_details
+  Chef::Log.info "Getting list of deployed applications"
+  data = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info '\"")
+  return format_output(data.stdout)
+end
+
+def detailed_name(runtime_name,name)
+  return runtime_name==name ? "#{runtime_name}" : "#{runtime_name} (#{name})"
+end
+
+def format_output(data)
+  result = {}
+  data.split(/\n/).each do | item |
+    output = item.split(/\s+/)
+    if result.has_key?(output[1])
+      result[output[1]] << { output[0] => { :persistent => output[2], :enabled => output[3], :status => output[4] } }
+    else
+      result = { output[1] => [ output[0] => { :persistent => output[2], :enabled => output[3], :status => output[4] } ] }.merge(result)
+    end
+  end
+  return result
 end

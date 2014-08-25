@@ -17,10 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :install
+actions :install, :remove
 default_action :install
 
 attribute :name,          :kind_of => String, :required => true, :name_attribute => true
+attribute :runtime_name,  :kind_of => String, :default => 'noname'
 attribute :path,          :kind_of => String, :default => 'nopath'
 attribute :url,           :kind_of => String, :default => 'nourl'
 attribute :cli,           :kind_of => String
