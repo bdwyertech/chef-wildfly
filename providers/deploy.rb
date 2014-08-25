@@ -72,7 +72,8 @@ end
 def deploy_install(name, runtime_name)
   Chef::Log.info "Deploying #{name}"
   converge_by("Deploying #{ detailed_name(runtime_name,name) }") do
-    result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deploy #{current_resource.cli} --name=#{name} --runtime-name=#{runtime_name}'\"")
+    #result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deploy #{current_resource.cli} --name=#{name} --runtime-name=#{runtime_name}'\"")
+    result = shell_out("bin/jboss-cli.sh -c ' deploy #{current_resource.cli} --name=#{name} --runtime-name=#{runtime_name}'", :user => node['wildfly']['user'], :cwd => node['wildfly']['base'])
     result.error! if result.exitstatus != 0
   end
   return true
@@ -84,7 +85,8 @@ def deploy_remove(runtime_name)
     converge_by("Removing #{ detailed_name(runtime_name, deployed.keys.first) }") do
       Chef::Log.info "Undeploying #{detailed_name(runtime_name, deployed.keys.first)}"
         Chef::Log.info "Undeploying #{deployed.keys.first} with runtime name #{runtime_name}"
-        result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first}'\"")
+        #result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first}'\"")
+        result = shell_out("bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first}'", :user => node['wildfly']['user'], :cwd => node['wildfly']['base'])
         result.error! if result.exitstatus != 0
     end
   end
@@ -93,7 +95,8 @@ end
 
 def read_deployment_details
   Chef::Log.info "Getting list of deployed applications"
-  data = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info '\"")
+  #data = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' deployment-info '\"")
+  data = shell_out("bin/jboss-cli.sh -c ' deployment-info '", :user => node['wildfly']['user'], :cwd => node['wildfly']['base'])
   return format_output(data.stdout)
 end
 
