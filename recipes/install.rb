@@ -76,13 +76,13 @@ bash 'Extract Wildfly' do
   code <<-EOF
   tar xzf #{wildfly['version']}.tar.gz -C #{wildfly['base']} --strip 1
   chown #{wildfly['user']}:#{wildfly['group']} -R #{wildfly['base']}
-  rm -f #{File.join(wildfly['base'], '.chef_deployed')}
+  rm -f #{::File.join(wildfly['base'], '.chef_deployed')}
   EOF
   action :nothing
 end
 
 # Deploy Init Script
-template File.join('etc', 'init.d', wildfly['service']) do
+template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
   source 'wildfly-init-redhat.sh.erb'
   user 'root'
   group 'root'
@@ -90,7 +90,7 @@ template File.join('etc', 'init.d', wildfly['service']) do
 end
 
 # Deploy Service Configuration
-template File.join('etc', 'default', 'wildfly.conf') do
+template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly.conf') do
   source 'wildfly.conf.erb'
   user 'root'
   group 'root'
@@ -98,7 +98,7 @@ template File.join('etc', 'default', 'wildfly.conf') do
 end
 
 # => Configure Wildfly Standalone - Interfaces
-template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf']) do
+template ::File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf']) do
   source "#{wildfly['sa']['conf']}.erb"
   user wildfly['user']
   group wildfly['group']
@@ -123,11 +123,11 @@ template File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']
     s3_bucket: wildfly['aws']['s3_bucket']
   )
   notifies :restart, "service[#{wildfly['service']}]", :delayed
-  only_if { !File.exist?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
 # => Configure Wildfly Standalone - MGMT Users
-template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.properties') do
+template ::File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.properties') do
   source 'mgmt-users.properties.erb'
   user wildfly['user']
   group wildfly['group']
@@ -138,7 +138,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.p
 end
 
 # => Configure Wildfly Standalone - Application Users
-template File.join(wildfly['base'], 'standalone', 'configuration', 'application-users.properties') do
+template ::File.join(wildfly['base'], 'standalone', 'configuration', 'application-users.properties') do
   source 'application-users.properties.erb'
   user wildfly['user']
   group wildfly['group']
@@ -149,7 +149,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'application-
 end
 
 # => Configure Wildfly Standalone - Application Roles
-template File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
+template ::File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
   source 'application-roles.properties.erb'
   user wildfly['user']
   group wildfly['group']
@@ -160,7 +160,7 @@ template File.join(wildfly['base'], 'standalone', 'configuration', 'application-
 end
 
 # => Configure Java Options
-template File.join(wildfly['base'], 'bin', 'standalone.conf') do
+template ::File.join(wildfly['base'], 'bin', 'standalone.conf') do
   source 'standalone.conf.erb'
   user wildfly['user']
   group wildfly['group']
@@ -172,22 +172,22 @@ template File.join(wildfly['base'], 'bin', 'standalone.conf') do
     preferipv4: wildfly['java_opts']['preferipv4'],
     headless: wildfly['java_opts']['headless']
   )
-  only_if { !File.exist?(File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
 # => Configure Lograte for Wildfly
 template 'Wildfly Logrotate Configuration' do
-  path File.join('etc', 'logrotate.d', node['wildfly']['service'])
+  path ::File.join(::File::SEPARATOR, 'etc', 'logrotate.d', node['wildfly']['service'])
   source 'logrotate.erb'
   owner 'root'
   group 'root'
   mode '0644'
-  only_if { File.directory?('/etc/logrotate.d') && wildfly['log']['rotation'] }
+  only_if { ::File.directory?(::File.join(::File::SEPARATOR, 'etc', 'logrotate.d')) && wildfly['log']['rotation'] }
   action :create
 end
 
 # Create file to indicate deployment and prevent recurring configuration deployment
-file File.join(wildfly['base'], '.chef_deployed') do
+file ::File.join(wildfly['base'], '.chef_deployed') do
   owner wildfly['user']
   group wildfly['group']
   action :create_if_missing
