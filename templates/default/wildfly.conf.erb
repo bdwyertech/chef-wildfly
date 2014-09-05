@@ -9,7 +9,7 @@
 # Location of JDK	
 #
 <%- if node['wildfly']['java']['enforce_java_home'] === true %>
-<%- if node['java']['java_home'] && File.exists?(node['java']['java_home']) %>
+<%- if node['java']['java_home'] && ::File.exists?(node['java']['java_home']) %>
 JAVA_HOME="<%= node['java']['java_home'] %>"
 <%- else %>
 # JAVA_HOME="/usr/lib/jvm/default-java"
@@ -20,7 +20,7 @@ JAVA_HOME="<%= node['java']['java_home'] %>"
 
 # Location of WildFly
 #
-<%- if node['wildfly']['base'] && File.exists?(node['wildfly']['base']) %>
+<%- if node['wildfly']['base'] && ::File.exists?(node['wildfly']['base']) %>
 JBOSS_HOME="<%= node['wildfly']['base'] %>"
 <%- else %>
 # JBOSS_HOME="/opt/wildfly"
