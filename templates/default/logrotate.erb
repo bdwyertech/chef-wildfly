@@ -3,7 +3,7 @@
 #
 
 <% wildfly = node['wildfly'] -%>
-<%= File.join(File.dirname(wildfly['log']['console_log']), '*.log') %> {
+<%= ::File.join(::File.dirname(wildfly['log']['console_log']), '*.log') %> {
         daily
         rotate <%= wildfly['log']['max_age'].to_i %>
         missingok
