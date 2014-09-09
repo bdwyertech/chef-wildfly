@@ -82,7 +82,7 @@ wildfly_deploy 'my-app-1.0.war' do
 end
 ```
 
-Example 4 undeploy
+Example 4 undeploy (use :disable to keep the contents, and :enable to re-deploy previously kept contents)
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       action :remove
