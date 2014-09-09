@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+require 'shellwords'
 
 # Support whyrun
 def whyrun_supported?
@@ -79,9 +80,9 @@ def property_set
     cwd node['wildfly']['base']
     code <<-EOH
       if $(bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource' >/dev/null); then
-        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:write-attribute(name=value,value=#{current_resource.value})"
+        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:write-attribute(name=value,value=#{Shellwords.escape(current_resource.value)})"
       else
-        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:add(value=#{current_resource.value})"
+        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})"
       fi
     EOH
   end
