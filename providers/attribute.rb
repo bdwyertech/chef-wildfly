@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
