@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :install, :remove
+actions :install, :remove, :enable, :disable
 default_action :install
 
 attribute :name,          :kind_of => String, :required => true, :name_attribute => true

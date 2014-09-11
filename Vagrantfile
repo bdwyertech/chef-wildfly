@@ -1,18 +1,19 @@
+# encoding: UTF-8
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 # Set the default provider to VMware Workstation
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'vmware_workstation'
 
-Vagrant.configure("2") do |config|
+Vagrant.configure('2') do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  config.vm.hostname = "chef-wildfly-berkshelf"
+  config.vm.hostname = 'chef-wildfly-berkshelf'
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "CentOS6.5_x64"
+  config.vm.box = 'CentOS6.5_x64'
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -37,8 +38,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.network :public_network
 
-
-
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
@@ -60,11 +59,11 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you're using for more
   # information on available options.
 
-  #config.ssh.max_tries = 40
-  #config.ssh.timeout   = 120
+  # config.ssh.max_tries = 40
+  # config.ssh.timeout   = 120
 
   # The path to the Berksfile to use with Vagrant Berkshelf
-  config.berkshelf.berksfile_path = "./Berksfile"
+  config.berkshelf.berksfile_path = './Berksfile'
 
   # Enabling the Berkshelf plugin. To enable this globally, add this configuration
   # option to your ~/.vagrant.d/Vagrantfile file
@@ -81,20 +80,20 @@ Vagrant.configure("2") do |config|
   config.vm.provision :chef_solo do |chef|
     chef.log_level = :debug
     chef.json = {
-      :mysql => {
-        :server_root_password => 'rootpass',
-        :server_debian_password => 'debpass',
-        :server_repl_password => 'replpass'
+      mysql: {
+        server_root_password: 'rootpass',
+        server_debian_password: 'debpass',
+        server_repl_password: 'replpass'
       }
     }
 
     chef.run_list = [
-        "recipe[wildfly::default]"
+      'recipe[wildfly::default]'
     ]
   end
 
-config.vm.provider "vmware_workstation" do |v|
-  v.vmx["memsize"] = "4096"
-  v.vmx["numvcpus"] = "4"
+  config.vm.provider 'vmware_workstation' do |v|
+    v.vmx['memsize'] = '4096'
+    v.vmx['numvcpus'] = '4'
   end
 end

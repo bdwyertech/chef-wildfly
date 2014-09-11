@@ -48,11 +48,9 @@ def load_current_resource
   @current_resource.name(@new_resource.name)
   @current_resource.use_parent_handlers(@new_resource.use_parent_handlers)
   @current_resource.level(@new_resource.level)
-#  @current_resource.handlers(@new_resource.handlers)
-  if logcategory_exists?(@current_resource.name)
-    # TODO: Set @current_resource port properties from command output
-    @current_resource.exists = true
-  end
+  #  @current_resource.handlers(@new_resource.handlers)
+  @current_resource.exists = true if logcategory_exists?(@current_resource.name)
+  # TODO: Set @current_resource port properties from command output
 end
 
 private
@@ -65,11 +63,9 @@ end
 def create_logcategory
   handlers = '['
   unless new_resource.handlers.nil? || new_resource.handlers.empty?
-    new_resource.handlers.each_with_index do |item, index|
+    new_resource.handlers.each_with_index do |_item, index|
       handlers += '"' + new_resource.handlers[index] + '"'
-      if new_resource.handlers.length-1 != index
-        handlers += ', '
-      end
+      handlers += ', ' if new_resource.handlers.length - 1 != index
     end
   end
   handlers += ']'

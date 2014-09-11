@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
@@ -56,16 +57,11 @@ end
 private
 
 def attribute_exists?
-  `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})' | grep ' #{current_resource.value}'"`
-  $?.exitstatus == 0
+  result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.stdout.include? " #{current_resource.value}"
 end
 
 def attribute_set
-  bash 'attribute_set' do
-    user node['wildfly']['user']
-    cwd node['wildfly']['base']
-    code <<-EOH
-      bin/jboss-cli.sh -c "#{current_resource.path}:write-attribute(name=#{current_resource.parameter},value=#{current_resource.value})"
-    EOH
-  end
+  result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:write-attribute(name=#{current_resource.parameter},value=#{current_resource.value})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.exitstatus == 0
 end

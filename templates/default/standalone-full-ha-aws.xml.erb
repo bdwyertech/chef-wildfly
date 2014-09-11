@@ -362,7 +362,7 @@
                 <transport type="TCP" socket-binding="jgroups-tcp"/>
                 <protocol type="TCPPING">
                     <property name="initial_hosts">
-                        <%= node[:fqdn] %>[7600]
+                        <%= node['fqdn'] %>[7600]
                     </property>
                     <property name="port_range">
                         0

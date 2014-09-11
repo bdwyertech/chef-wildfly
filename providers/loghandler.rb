@@ -44,9 +44,7 @@ action :delete do
 end
 
 def load_current_resource
-  if loghandler_exists?(@new_resource.name)
-    @current_resource_exists = true
-  end
+  @current_resource_exists = true if loghandler_exists?(@new_resource.name)
 end
 
 private
