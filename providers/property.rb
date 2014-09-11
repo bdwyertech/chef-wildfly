@@ -18,6 +18,7 @@
 
 require 'etc'
 require 'shellwords'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
@@ -66,34 +67,25 @@ def notify?
 end
 
 def property_value_exists?
-  `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-attribute(name=value)'"`.include? " \"#{current_resource.value}\""
+  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-attribute(name=value)'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.stdout.include? " \"#{current_resource.value}\""
 end
 
 def property_exists?
-  `su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource' >/dev/null"`
-  $?.exitstatus == 0
+  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.exitstatus == 0
 end
 
 def property_set
-  bash 'property_set' do
-    user node['wildfly']['user']
-    cwd node['wildfly']['base']
-    code <<-EOH
-      if $(bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource' >/dev/null); then
-        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:write-attribute(name=value,value=#{Shellwords.escape(current_resource.value)})"
-      else
-        bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})"
-      fi
-    EOH
+  if property_exists?
+    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:write-attribute(name=value,value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  else
+    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   end
+  result.exitstatus == 0
 end
 
 def property_delete
-  bash 'property_delete' do
-    user node['wildfly']['user']
-    cwd node['wildfly']['base']
-    code <<-EOH
-      bin/jboss-cli.sh -c "/system-property=#{current_resource.property}:remove()"
-    EOH
-  end
+  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:remove()'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.exitstatus == 0
 end

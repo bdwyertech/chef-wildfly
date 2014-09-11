@@ -10,6 +10,6 @@ version          '0.1.12'
 
 supports 'centos'
 
-supports 'apt'
+depends 'apt'
 depends 'yum'
 depends 'java', '~> 1.22'

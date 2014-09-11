@@ -17,8 +17,8 @@
 #
 
 # => Java Configuration
-    default['java']['install_flavor'] = 'oracle'
-    default['java']['oracle']['accept_oracle_download_terms'] = true
-    default['java']['jdk_version'] = '7'
-    default['java']['jdk']['7']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/7u67-b01/jdk-7u67-linux-x64.tar.gz'
-    default['java']['jdk']['7']['x86_64']['checksum'] = '54dd1e13edf18c64941a55da9c91210b53dc5cf48f1a8f4538c863049e346335'
+default['java']['install_flavor'] = 'oracle'
+default['java']['oracle']['accept_oracle_download_terms'] = true
+default['java']['jdk_version'] = '7'
+default['java']['jdk']['7']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/7u67-b01/jdk-7u67-linux-x64.tar.gz'
+default['java']['jdk']['7']['x86_64']['checksum'] = '54dd1e13edf18c64941a55da9c91210b53dc5cf48f1a8f4538c863049e346335'

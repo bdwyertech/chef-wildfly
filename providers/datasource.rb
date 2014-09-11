@@ -49,10 +49,8 @@ def load_current_resource
   @current_resource.jndiname(@new_resource.jndiname)
   @current_resource.drivername(@new_resource.drivername)
   @current_resource.connectionurl(@new_resource.connectionurl)
-  if datasource_exists?(@current_resource.name)
-    # TODO: Set @current_resource port properties from command output
-    @current_resource.exists = true
-  end
+  @current_resource.exists = true if datasource_exists?(@current_resource.name)
+  # TODO: Set @current_resource port properties from command output
 end
 
 private
