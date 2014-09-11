@@ -57,8 +57,6 @@ end
 private
 
 def attribute_exists?
-  #`su #{node['wildfly']['user']} -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})' | grep ' #{current_resource.value}'"`
-  #$?.exitstatus == 0
   result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.stdout.include? " #{current_resource.value}"
 end
