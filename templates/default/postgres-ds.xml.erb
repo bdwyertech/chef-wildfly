@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Managed by Chef - local changes may be overwritten -->
+<datasource jndi-name="<%= @jndi_name %>" pool-name="PostgreSQL" enabled="true">
+  <connection-url>jdbc:postgresql://<%= @postgres_server %>:<%= @postgres_port %>/<%= @postgres_db_name %></connection-url>
+  <driver>postgres</driver>
+  <pool>
+    <min-pool-size><%= @postgres_pool_min %></min-pool-size>
+    <max-pool-size><%= @postgres_pool_max %></max-pool-size>
+  </pool>
+  <security>
+    <user-name><%= @postgres_user %></user-name>
+    <password><%= @postgres_pass %></password>
+  </security>
+</datasource>
