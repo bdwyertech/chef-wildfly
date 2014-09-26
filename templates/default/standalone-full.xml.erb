@@ -162,6 +162,11 @@
                         <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
                     </driver>
             <%- end %>
+            <%- if node['wildfly']['postgresql']['enabled'] %>
+                    <driver name="postgres" module="org.postgresql">
+                        <driver-class>org.postgresql.Driver</driver-class>
+                    </driver>
+            <%- end %>
                 </drivers>
             </datasources>
         </subsystem>
