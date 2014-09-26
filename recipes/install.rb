@@ -83,7 +83,11 @@ end
 
 # Deploy Init Script
 template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
-  source 'wildfly-init-redhat.sh.erb'
+  if platform?("ubuntu")
+    source 'wildfly-init-debian.sh.erb'
+  else
+    source 'wildfly-init-redhat.sh.erb'
+  end
   user 'root'
   group 'root'
   mode '0755'
