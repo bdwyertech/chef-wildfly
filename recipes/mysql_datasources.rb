@@ -2,7 +2,7 @@
 # rubocop:disable LineLength
 #
 # Cookbook Name:: wildfly
-# Recipe:: mysql_connector
+# Recipe:: mysql_datasources
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
