@@ -28,7 +28,7 @@ wildfly = node['wildfly']
 postgresql = node['wildfly']['postgresql']
 
 # => Shorten Postgres Directory Name
-postgres_dir = ::File.join(wildfly['base'], 'modules', 'system', 'layers', 'base', 'org', 'postgres', 'main')
+postgres_dir = ::File.join(wildfly['base'], 'modules', 'system', 'layers', 'base', 'org', 'postgresql', 'main')
 
 # => Create Postgres Directory
 directory postgres_dir do

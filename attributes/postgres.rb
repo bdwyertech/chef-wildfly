@@ -23,6 +23,6 @@ default['wildfly']['postgresql']['url'] = 'http://central.maven.org/maven2/org/p
 default['wildfly']['postgresql']['checksum'] = 'c4530047d03bac8295a9c19fbd7b893b5981edbcd8e52e1597fa2385deec272f'
 
 # => PostgreSQL driver JDBC Module Name
-default['wildfly']['postgresql']['mod_name'] = 'org.postgres'
+default['wildfly']['postgresql']['mod_name'] = 'org.postgresql'
 # => PostgreSQL driver Module Dependencies
 default['wildfly']['postgresql']['mod_deps'] = ['javax.api', 'javax.transaction.api']
