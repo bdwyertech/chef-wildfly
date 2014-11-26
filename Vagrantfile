@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   # If this value is a shorthand to a box in Vagrant Cloud then 
   # config.vm.box_url doesn't need to be specified.
-  config.vm.box = 'CentOS6.5_x64'
+  config.vm.box = 'CentOS6.6_x64'
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.

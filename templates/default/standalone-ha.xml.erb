@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Managed by Chef - local changes may be overwritten -->
-<server xmlns="urn:jboss:domain:2.1">
+<server xmlns="urn:jboss:domain:2.2">
     <extensions>
         <extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.clustering.jgroups"/>
@@ -332,9 +332,9 @@
         <subsystem xmlns="urn:jboss:domain:jsf:1.0"/>
         <subsystem xmlns="urn:jboss:domain:mail:2.0">
             <mail-session name="default" jndi-name="java:jboss/mail/Default">
-            <%- if @smtp_ssl === true && ((@smtp_user.nil? || @smtp_user.empty?) && (@smtp_pass.nil? ||@smtp_pass.empty?)) %>
+            <%- if @smtp_ssl === true && ((@smtp_user.nil? || @smtp_user.empty?) && (@smtp_pass.nil? || @smtp_pass.empty?)) %>
                 <smtp-server outbound-socket-binding-ref="mail-smtp" ssl="true"/>
-            <%- elsif @smtp_ssl === true && (@smtp_pass.nil? ||@smtp_pass.empty?) %>
+            <%- elsif @smtp_ssl === true && (@smtp_pass.nil? || @smtp_pass.empty?) %>
                 <smtp-server outbound-socket-binding-ref="mail-smtp" ssl="true" username="<%= @smtp_user %>"/>
             <%- elsif @smtp_ssl === true %>
                 <smtp-server outbound-socket-binding-ref="mail-smtp" ssl="true" username="<%= @smtp_user %>" password="<%= @smtp_pass %>"/>
@@ -396,7 +396,7 @@
             </core-environment>
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:undertow:1.1">
+        <subsystem xmlns="urn:jboss:domain:undertow:1.2">
             <buffer-cache name="default"/>
             <server name="default-server">
                 <http-listener name="default" socket-binding="http"/>
@@ -409,6 +409,7 @@
             </server>
             <servlet-container name="default">
                 <jsp-config/>
+                <websockets/>
             </servlet-container>
             <handlers>
                 <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
