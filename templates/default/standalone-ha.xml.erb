@@ -30,7 +30,7 @@
     </extensions>
 <% if !node['wildfly']['system_properties'].empty? -%>
     <system-properties>
-  <% @node['wildfly']['system_properties'].each do |property| -%>
+  <% node['wildfly']['system_properties'].each do |property| -%>
         <property name="<%= property['name'] %>" value="<%= property['value'] %>"/>
   <% end -%>
     </system-properties>

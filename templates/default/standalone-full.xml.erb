@@ -31,7 +31,7 @@
     </extensions>
 <% if !node['wildfly']['system_properties'].empty? -%>
     <system-properties>
-  <% @node['wildfly']['system_properties'].each do |property| -%>
+  <% node['wildfly']['system_properties'].each do |property| -%>
         <property name="<%= property['name'] %>" value="<%= property['value'] %>"/>
   <% end -%>
     </system-properties>
@@ -487,14 +487,14 @@
         <interface name="management">
           <% if "0.0.0.0" == @mgmt_int %>
             <any-address/>
-          <% else %>  
+          <% else %>
             <inet-address value="${jboss.bind.address.management:<%= @mgmt_int %>}"/>
           <% end %>
         </interface>
         <interface name="public">
           <% if "0.0.0.0" == @pub_int %>
             <any-address/>
-          <% else %>  
+          <% else %>
             <inet-address value="${jboss.bind.address:<%= @pub_int %>}"/>
           <% end %>
         </interface>
