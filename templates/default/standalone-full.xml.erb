@@ -507,7 +507,7 @@
             <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
         </interface>
     </interfaces>
-    <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+    <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:<%= @port_binding_offset %>}">
         <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:<%= @mgmt_http_port %>}"/>
         <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:<%= @mgmt_https_port %>}"/>
         <socket-binding name="ajp" port="${jboss.ajp.port:<%= @ajp_port %>}"/>

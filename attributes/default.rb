@@ -63,6 +63,9 @@ default['wildfly']['int']['pub']['https_port'] = '8443'
 default['wildfly']['int']['wsdl']['bind'] = '0.0.0.0'
 default['wildfly']['int']['ajp']['port'] = '8009'
 
+# => Use this to offset all port bindings.  Each binding will be incremented by this value.
+default['wildfly']['int']['port_binding_offset'] = '0'
+
 # => Debugging Settings
 default['wildfly']['jpda']['enabled'] = true
 default['wildfly']['jpda']['port'] = '8787'

@@ -109,6 +109,7 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa
   group wildfly['group']
   mode '0644'
   variables(
+    port_binding_offset: wildfly['int']['port_binding_offset'],
     mgmt_int: wildfly['int']['mgmt']['bind'],
     mgmt_http_port: wildfly['int']['mgmt']['http_port'],
     mgmt_https_port: wildfly['int']['mgmt']['https_port'],
