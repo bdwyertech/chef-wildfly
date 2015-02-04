@@ -165,7 +165,7 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', 'applicatio
   )
 end
 
-# => Configure Java Options
+# => Configure Java Options - Standalone
 template ::File.join(wildfly['base'], 'bin', 'standalone.conf') do
   source 'standalone.conf.erb'
   user wildfly['user']
@@ -179,6 +179,22 @@ template ::File.join(wildfly['base'], 'bin', 'standalone.conf') do
     headless: wildfly['java_opts']['headless']
   )
   only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+end
+
+# => Configure Java Options - Domain
+template ::File.join(wildfly['base'], 'bin', 'domain.conf') do
+  source 'domain.conf.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0644'
+  variables(
+    xms: wildfly['java_opts']['xms'],
+    xmx: wildfly['java_opts']['xmx'],
+    maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
+    preferipv4: wildfly['java_opts']['preferipv4'],
+    headless: wildfly['java_opts']['headless']
+  )
+  only_if { wildfly['mode'] == 'domain' && ( !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] ) }
 end
 
 # => Configure Lograte for Wildfly
