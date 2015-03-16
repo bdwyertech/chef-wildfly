@@ -28,9 +28,10 @@ include_recipe 'yum' if platform_family?('rhel')
 
 # => Create Wildfly System User
 user wildfly['user'] do
-  comment 'Wildfly'
-  shell '/bin/bash'
-  supports manage_home: true
+  comment 'Wildfly System User'
+  home wildfly['base']
+  shell '/sbin/nologin'
+  system true
   action [:create, :lock]
 end
 
