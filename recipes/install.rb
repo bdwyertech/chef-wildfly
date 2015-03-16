@@ -26,6 +26,15 @@ wildfly = node['wildfly']
 include_recipe 'apt' if platform?('ubuntu', 'debian')
 include_recipe 'yum' if platform_family?('rhel')
 
+# Create file to indicate user upgrade change (Applicable to 0.1.16 to 0.1.17 upgrade)
+file ::File.join(wildfly['base'], '.chef_useracctchange') do
+  owner wildfly['user']
+  group wildfly['group']
+  action :create_if_missing
+  only_if { ::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) && Dir.home('wildfly') != wildfly['base'] }
+  notifies :stop, "service[#{wildfly['service']}]", :immediately
+end
+
 # => Create Wildfly System User
 user wildfly['user'] do
   comment 'Wildfly System User'
