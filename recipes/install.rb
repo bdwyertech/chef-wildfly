@@ -178,7 +178,7 @@ template ::File.join(wildfly['base'], 'bin', 'standalone.conf') do
     preferipv4: wildfly['java_opts']['preferipv4'],
     headless: wildfly['java_opts']['headless']
   )
-  only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  notifies :restart, "service[#{wildfly['service']}]", :delayed
 end
 
 # => Configure Java Options - Domain
@@ -194,7 +194,8 @@ template ::File.join(wildfly['base'], 'bin', 'domain.conf') do
     preferipv4: wildfly['java_opts']['preferipv4'],
     headless: wildfly['java_opts']['headless']
   )
-  only_if { wildfly['mode'] == 'domain' && ( !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] ) }
+  notifies :restart, "service[#{wildfly['service']}]", :delayed
+  only_if { wildfly['mode'] == 'domain' }
 end
 
 # => Configure Lograte for Wildfly
