@@ -7,11 +7,10 @@ Chef Client 11+
 Java Opscode Community Cookbook
 
 # Platform
-- CentOS, Red Hat, Fedora
-- EC2 Amazon Linux AMI
+- CentOS, Red Hat
 
 Tested on:
-- CentOS 6.5
+- CentOS 6.6
 
 # Usage
 You can add users in the proper format to `attributes\users.rb`
@@ -27,7 +26,7 @@ If running in production, I STRONGLY recommend you use a wrapper cookbook, and m
 * `node['wildfly']['url']` - URL to Wildfly tarball
 * `node['wildfly']['checksum']` - SHA256 hash of said tarball
 
-* `node['wildfly']['user']` - User to run Wildfly as.
+* `node['wildfly']['user']` - User to run Wildfly as. DO NOT MODIFY AFTER INSTALLATION!!!
 * `node['wildfly']['group']` - Group which owns Wildfly directories
 * `node['wildfly']['server']` - Name of service and init.d script for daemonizing
 
