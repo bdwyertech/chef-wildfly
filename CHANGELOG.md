@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 0.1.19 (2015-04-01)
+* Fixed location of wildfly.conf in Debian init script.
+
+
 # 0.1.18 (2015-03-19)
 * Adjusted behavior of the service user update procedure.
   * Fixed hardcoded username.
