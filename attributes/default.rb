@@ -27,6 +27,10 @@ default['wildfly']['base'] = '/opt/wildfly'
 # => Set Wildfly User & Group
 default['wildfly']['user'] = 'wildfly'
 default['wildfly']['group'] = 'wildfly'
+# => Giving user ability to decide whether to create this user
+# => OR to expect the user to exist - to avoid conflict with ldap based users on unix/linux based systems.
+default['wildfly']['user']['create_new'] = true
+default['wildfly']['group']['create_new'] = true
 
 # => Set Wildfly Service Name
 default['wildfly']['service'] = 'wildfly'
