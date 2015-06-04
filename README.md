@@ -28,6 +28,8 @@ If running in production, I STRONGLY recommend you use a wrapper cookbook, and m
 
 * `node['wildfly']['user']` - User to run Wildfly as. DO NOT MODIFY AFTER INSTALLATION!!!
 * `node['wildfly']['group']` - Group which owns Wildfly directories
+* `node['wildfly']['user']['create_new']` - Giving option to create a new user OR use an existing one.. via LDAP.
+* `node['wildfly']['group']['create_new']` - Giving option to create a new group OR use an existing one.. via LDAP.
 * `node['wildfly']['server']` - Name of service and init.d script for daemonizing
 
 * `node['wildfly']['mysql']['enabled']` - Boolean indicating Connector/J support

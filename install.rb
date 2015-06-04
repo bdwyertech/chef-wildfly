@@ -40,7 +40,7 @@ user wildfly['user'] do
   shell '/sbin/nologin'
   system true
   action [:create, :lock]
-  only_if { wildfly['user']['create_new'] }
+  only_if { wildfly['create_new_user'] }
 end
 
 # => Create Wildfly Group
@@ -48,7 +48,7 @@ group wildfly['group'] do
   append true
   members wildfly['user']
   action :create
-  only_if { wildfly['group']['create_new'] && wildfly['user'] != wildfly['group'] }
+  only_if { wildfly['create_new_group'] && wildfly['user'] != wildfly['group'] }
 end
 
 # => Create Wildfly Directory
