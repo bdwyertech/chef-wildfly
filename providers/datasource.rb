@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
@@ -56,8 +57,8 @@ end
 private
 
 def datasource_exists?(name)
-  `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name}:read-resource'"`
-  $?.exitstatus == 0
+  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name}:read-resource'\"")
+  result.exitstatus == 0
 end
 
 def create_datasource
