@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, Metrics/AbcSize
+# rubocop:disable LineLength, Metrics/AbcSize
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
