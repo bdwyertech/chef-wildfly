@@ -30,19 +30,24 @@ action :install do
     if deploy_exists?
       Chef::Log.info "#{@new_resource.name} already enabled - nothing to do."
     else
-      Chef::Log.info "#{@new_resource.name} is not the active resource."
-      deploy_remove(@current_resource.runtime_name, false)
-      read_deployment_details(true)
-      deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+      converge_by("#{@new_resource.name} is not the active resource.") do
+        deploy_remove(@current_resource.runtime_name, false)
+        read_deployment_details(true)
+        deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+      end
     end
   else
-    deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+    converge_by("install #{@new_resource.name}") do
+      deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+    end
   end
 end
 
 action :remove do
   if runtime_exists?
-    deploy_remove(@current_resource.runtime_name, false)
+    converge_by("remove #{@current_resource.runtime_name}") do
+      deploy_remove(@current_resource.runtime_name, false)
+    end
   else
     Chef::Log.info "#{@new_resource.runtime_name} does not exist - nothing to do."
   end
@@ -55,8 +60,9 @@ action :enable do
       if deploy_enabled?(@current_resource.name)
         Chef::Log.info "#{@new_resource.name} resource is already enabled."
       else
-        Chef::Log.info "#{@new_resource.name} activating previously loaded resource."
-        deploy_install('', @current_resource.name, @current_resource.runtime_name)
+        converge_by("#{@new_resource.name} activating previously loaded resource.") do
+          deploy_install('', @current_resource.name, @current_resource.runtime_name)
+        end
       end
     else
       Chef::Log.info "#{@new_resource.name} resource does not exist yet, cannot enable."
@@ -68,7 +74,9 @@ end
 
 action :disable do
   if runtime_exists?
-    deploy_remove(@current_resource.runtime_name, true)
+    converge_by("disable #{@current_resource.runtime_name}") do
+      deploy_remove(@current_resource.runtime_name, true)
+    end
   else
     Chef::Log.info "#{@new_resource.runtime_name} does not exist - nothing to do."
   end
