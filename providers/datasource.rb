@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
+# rubocop:disable LineLength, SpecialGlobalVars, Metrics/AbcSize
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
@@ -25,9 +25,9 @@ end
 
 action :create do
   if @current_resource.exists
-    Chef::Log.info "#{ @new_resource } already exists - nothing to do."
+    Chef::Log.info "#{@new_resource} already exists - nothing to do."
   else
-    converge_by("Create #{ @new_resource }") do
+    converge_by("Create #{@new_resource}") do
       create_datasource
     end
   end
@@ -35,11 +35,11 @@ end
 
 action :delete do
   if @current_resource.exists
-    converge_by("Delete #{ @new_resource }") do
+    converge_by("Delete #{@new_resource}") do
       delete_datasource
     end
   else
-    Chef::Log.info "#{ @current_resource } doesn't exist - can't delete."
+    Chef::Log.info "#{@current_resource} doesn't exist - can't delete."
   end
 end
 

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
+# rubocop:disable LineLength, Metrics/AbcSize, MethodLength
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
@@ -26,9 +26,9 @@ end
 
 action :set do
   if @current_resource.exists
-    Chef::Log.info "#{ @new_resource } already set - nothing to do."
+    Chef::Log.info "#{@new_resource} already set - nothing to do."
   else
-    converge_by("Set #{ @new_resource }") do
+    converge_by("Set #{@new_resource}") do
       attribute_set
     end
   end
