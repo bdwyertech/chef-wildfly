@@ -1,5 +1,4 @@
 # encoding: UTF-8
-# rubocop:disable LineLength
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #

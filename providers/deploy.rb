@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars
+# rubocop:disable LineLength, Metrics/AbcSize
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
@@ -26,51 +26,59 @@ end
 
 action :install do
   if runtime_exists?
-    Chef::Log.info "#{ @new_resource.runtime_name } already exists"
+    Chef::Log.info "#{@new_resource.runtime_name} already exists"
     if deploy_exists?
-      Chef::Log.info "#{ @new_resource.name } already enabled - nothing to do."
+      Chef::Log.info "#{@new_resource.name} already enabled - nothing to do."
     else
-      Chef::Log.info "#{ @new_resource.name } is not the active resource."
-      deploy_remove(@current_resource.runtime_name, false)
-      read_deployment_details(true)
-      deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+      converge_by("#{@new_resource.name} is not the active resource.") do
+        deploy_remove(@current_resource.runtime_name, false)
+        read_deployment_details(true)
+        deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+      end
     end
   else
-    deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+    converge_by("install #{@new_resource.name}") do
+      deploy_install(@current_resource.cli, @current_resource.name, @current_resource.runtime_name)
+    end
   end
 end
 
 action :remove do
   if runtime_exists?
-    deploy_remove(@current_resource.runtime_name, false)
+    converge_by("remove #{@current_resource.runtime_name}") do
+      deploy_remove(@current_resource.runtime_name, false)
+    end
   else
-    Chef::Log.info "#{ @new_resource.runtime_name } does not exist - nothing to do."
+    Chef::Log.info "#{@new_resource.runtime_name} does not exist - nothing to do."
   end
 end
 
 action :enable do
   if runtime_exists?
-    Chef::Log.info "#{ @new_resource.runtime_name } already exists"
+    Chef::Log.info "#{@new_resource.runtime_name} already exists"
     if deploy_exists?
       if deploy_enabled?(@current_resource.name)
-        Chef::Log.info "#{ @new_resource.name } resource is already enabled."
+        Chef::Log.info "#{@new_resource.name} resource is already enabled."
       else
-        Chef::Log.info "#{ @new_resource.name } activating previously loaded resource."
-        deploy_install('', @current_resource.name, @current_resource.runtime_name)
+        converge_by("#{@new_resource.name} activating previously loaded resource.") do
+          deploy_install('', @current_resource.name, @current_resource.runtime_name)
+        end
       end
     else
-      Chef::Log.info "#{ @new_resource.name } resource does not exist yet, cannot enable."
+      Chef::Log.info "#{@new_resource.name} resource does not exist yet, cannot enable."
     end
   else
-    Chef::Log.info "#{ @new_resource.runtime_name } resource does not exist yet, cannot enable."
+    Chef::Log.info "#{@new_resource.runtime_name} resource does not exist yet, cannot enable."
   end
 end
 
 action :disable do
   if runtime_exists?
-    deploy_remove(@current_resource.runtime_name, true)
+    converge_by("disable #{@current_resource.runtime_name}") do
+      deploy_remove(@current_resource.runtime_name, true)
+    end
   else
-    Chef::Log.info "#{ @new_resource.runtime_name } does not exist - nothing to do."
+    Chef::Log.info "#{@new_resource.runtime_name} does not exist - nothing to do."
   end
 end
 
@@ -102,7 +110,7 @@ end
 
 def deploy_install(source, name, runtime_name)
   Chef::Log.info "Deploying #{name}"
-  converge_by((source == '' ? 'Enabling' : 'Deploying') + " #{ detailed_name(runtime_name, name) }") do
+  converge_by((source == '' ? 'Enabling' : 'Deploying') + " #{detailed_name(runtime_name, name)}") do
     result = shell_out("bin/jboss-cli.sh -c ' deploy #{source} --name=#{name} --runtime-name=#{runtime_name}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
     result.error! if result.exitstatus != 0
   end
@@ -111,8 +119,8 @@ end
 
 def deploy_remove(runtime_name, keep_content = false)
   deployments = read_deployment_details
-  deployments[runtime_name].each do | deployed |
-    converge_by((keep_content ? 'Disabling' : 'Removing') + " #{ detailed_name(runtime_name, deployed.keys.first) }") do
+  deployments[runtime_name].each do |deployed|
+    converge_by((keep_content ? 'Disabling' : 'Removing') + " #{detailed_name(runtime_name, deployed.keys.first)}") do
       Chef::Log.info 'Undeploying #{detailed_name(runtime_name, deployed.keys.first)}'
       result = shell_out("bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first} #{keep_content ? '--keep-content' : ''}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
       result.error! if result.exitstatus != 0
@@ -136,7 +144,7 @@ end
 
 def format_output(data)
   result = {}
-  data.split(/\n/).each do | item |
+  data.split(/\n/).each do |item|
     output = item.split(/\s+/)
     if result.key?(output[1])
       result[output[1]] << { output[0] => { persistent: output[2], enabled: output[3], status: output[4] } }

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
+# rubocop:disable LineLength, Metrics/AbcSize
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
@@ -27,9 +27,9 @@ end
 
 action :set do
   if property_value_exists?
-    Chef::Log.info "#{ @new_resource } already set - nothing to do."
+    Chef::Log.info "#{@new_resource} already set - nothing to do."
   else
-    converge_by("Set #{ @new_resource }") do
+    converge_by("Set #{@new_resource}") do
       property_set
     end
     notify?
@@ -38,12 +38,12 @@ end
 
 action :delete do
   if property_exists?
-    converge_by("Delete #{ @new_resource }") do
+    converge_by("Delete #{@new_resource}") do
       property_delete
     end
     notify?
   else
-    Chef::Log.info "#{ @new_resource } not present - nothing to do."
+    Chef::Log.info "#{@new_resource} not present - nothing to do."
   end
 end
 

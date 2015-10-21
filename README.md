@@ -2,9 +2,8 @@
 Cookbook to deploy Wildfly Java Application Server
 
 # Requirements
-Chef Client 11+
-
-Java Opscode Community Cookbook
+- Chef Client 11+
+- Java Cookbook (ignored if node['wildfly']['install_java'] is false)
 
 # Platform
 - CentOS, Red Hat
@@ -17,9 +16,13 @@ You can add users in the proper format to `attributes\users.rb`
 
 You can customize the Java version, and the Connector/J if you'd like.
 
-If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version, Java version, and cookbook version as well.  This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
+If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version, 
+Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  
+This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  
+Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
 
 # Attributes
+* `node['wildfly']['install_java']` - Install Java using Java Cookbook.  Default `true`
 * `node['wildfly']['base']` - Base directory to run Wildfly from
 
 * `node['wildfly']['version']` - Specify the version of Wildfly
@@ -39,7 +42,8 @@ If running in production, I STRONGLY recommend you use a wrapper cookbook, and m
 
 
 # Recipes
-* `::default` - Installs Java & Wildfly.  Also installs Connector/J if you've got it enabled.
+* `::default` - Installs Java (if node['wildfly']['install_java'] is true) & Wildfly.  
+Also installs Connector/J if you've got it enabled.
 * `::install` - Installs Wildfly.
 * `::mysql_connector` - Installs Connector/J into appropriate Wildfly directory.
 

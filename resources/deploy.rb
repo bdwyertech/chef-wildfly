@@ -1,5 +1,4 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, HashSyntax
 #
 # LWRP that deploys war "name" from either path :path or url :url
 #
@@ -20,10 +19,10 @@
 actions :install, :remove, :enable, :disable
 default_action :install
 
-attribute :name,          :kind_of => String, :required => true, :name_attribute => true
-attribute :runtime_name,  :kind_of => String, :default => 'noname'
-attribute :path,          :kind_of => String, :default => 'nopath'
-attribute :url,           :kind_of => String, :default => 'nourl'
-attribute :cli,           :kind_of => String
+attribute :name,          kind_of: String, required: true, name_attribute: true
+attribute :runtime_name,  kind_of: String, default: 'noname'
+attribute :path,          kind_of: String, default: 'nopath'
+attribute :url,           kind_of: String, default: 'nourl'
+attribute :cli,           kind_of: String
 
 attr_accessor :exists

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# rubocop:disable LineLength, SpecialGlobalVars, MethodLength
+# rubocop:disable LineLength, MethodLength, Metrics/AbcSize
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
@@ -17,6 +17,7 @@
 #
 
 require 'etc'
+include Chef::Mixin::ShellOut
 
 # Support whyrun
 def whyrun_supported?
@@ -25,9 +26,9 @@ end
 
 action :create do
   if @current_resource.exists
-    Chef::Log.info "#{ @new_resource } already exists - nothing to do."
+    Chef::Log.info "#{@new_resource} already exists - nothing to do."
   else
-    converge_by("Create #{ @new_resource }") do
+    converge_by("Create #{@new_resource}") do
       create_logcategory
     end
   end
@@ -35,11 +36,11 @@ end
 
 action :delete do
   if @current_resource.exists
-    converge_by("Delete #{ @new_resource }") do
+    converge_by("Delete #{@new_resource}") do
       delete_logcategory
     end
   else
-    Chef::Log.info "#{ @current_resource } doesn't exist - can't delete."
+    Chef::Log.info "#{@current_resource} doesn't exist - can't delete."
   end
 end
 
@@ -56,8 +57,8 @@ end
 private
 
 def logcategory_exists?(name)
-  `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/logger=#{name}:read-resource'"`
-  $?.exitstatus == 0
+  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/logger=#{name}:read-resource'\"")
+  result.exitstatus == 0
 end
 
 def create_logcategory
