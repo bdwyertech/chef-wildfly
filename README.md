@@ -1,6 +1,10 @@
 # Wildfly Cookbook
 Cookbook to deploy Wildfly Java Application Server
 
+[![Cookbook](http://img.shields.io/cookbook/v/wildfly.svg)](https://github.com/bdwyertech/chef-wildfly)
+[![Build Status](https://travis-ci.org/bdwyertech/chef-wildfly.svg)](https://travis-ci.org/bdwyertech/chef-wildfly)
+[![Gitter chat](https://img.shields.io/badge/Gitter-bdwyertech%2Fwildfly-brightgreen.svg)](https://gitter.im/bdwyertech/chef-wildfly)
+
 # Requirements
 - Chef Client 11+
 - Java Cookbook (ignored if node['wildfly']['install_java'] is false)
