@@ -1,3 +1,4 @@
+cache: bundler
 rvm:
   - 2.0.0
   - 2.1.7
@@ -6,3 +7,4 @@ script:
   - bundle exec foodcritic -f any . --tags ~FC007 --tags ~FC024 --tags ~FC048
   # - bundle exec rspec --color --format progress
   - bundle exec rubocop
+sudo: false
