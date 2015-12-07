@@ -100,6 +100,7 @@ template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
   user 'root'
   group 'root'
   mode '0755'
+  cookbooks node['wildfly']['cookbook']
 end
 
 # Deploy Service Configuration

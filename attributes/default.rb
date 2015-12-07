@@ -92,3 +92,6 @@ default['wildfly']['initd']['shutdown_wait'] = '60'
 default['wildfly']['java']['enforce_java_home'] = true
 
 default['wildfly']['install_java'] = true
+
+# adding template attribute for wrapper cookbook
+default['wildfly']['cookbook'] = 'wildfly'
