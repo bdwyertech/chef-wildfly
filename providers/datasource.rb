@@ -50,6 +50,8 @@ def load_current_resource
   @current_resource.jndiname(@new_resource.jndiname)
   @current_resource.drivername(@new_resource.drivername)
   @current_resource.connectionurl(@new_resource.connectionurl)
+  @current_resource.username(@new_resource.username)
+  @current_resource.password(@new_resource.password)
   @current_resource.exists = true if datasource_exists?(@current_resource.name)
   # TODO: Set @current_resource port properties from command output
 end
@@ -65,8 +67,16 @@ def create_datasource
   bash 'install_datasource' do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
+    params = %W(
+      --name=#{new_resource.name}
+      --jndi-name=#{new_resource.jndiname}
+      --driver-name=#{new_resource.drivername}
+      --connection-url=#{new_resource.connectionurl}
+    )
+    params << "--user-name=#{new_resource.username}" if new_resource.username
+    params << "--password=#{new_resource.password}" if new_resource.password
     code <<-EOH
-      bin/jboss-cli.sh -c command="data-source add --name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl}"
+      bin/jboss-cli.sh -c command="data-source add #{params.join(' ')}
     EOH
   end
 end
