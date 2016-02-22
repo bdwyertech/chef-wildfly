@@ -26,4 +26,5 @@ attribute :drivername,    kind_of: String
 attribute :connectionurl, kind_of: String
 attribute :username, kind_of: [String, NilClass]
 attribute :password, kind_of: [String, NilClass]
+attribute :sensitive, kind_of: [TrueClass, FalseClass], default: true
 attr_accessor :exists
