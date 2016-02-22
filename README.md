@@ -60,6 +60,8 @@ wildfly_datasource 'example' do
   jndiname "java:jboss/datasource/example"
   drivername "some-jdbc-driver"
   connectionurl "jdbc:some://127.0.0.1/example"
+  username "db_username"
+  password "db_password"
 end
 ```
 
