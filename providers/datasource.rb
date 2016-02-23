@@ -69,7 +69,7 @@ def create_datasource
   params << "--user-name=#{new_resource.username}" if new_resource.username
   params << "--password=#{new_resource.password}" if new_resource.password
 
-  bash 'install_datasource' do
+  bash "install_datasource #{new_resource.name}" do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code "bin/jboss-cli.sh -c command=\"data-source add #{params.join(' ')}\""
@@ -79,7 +79,7 @@ def create_datasource
 end
 
 def delete_datasource
-  bash 'remove_datasource' do
+  bash "remove_datasource #{new_resource.name}" do
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
