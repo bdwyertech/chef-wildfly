@@ -12,3 +12,6 @@ supports 'centos'
 depends 'apt'
 depends 'yum'
 depends 'java', '~> 1.22'
+
+source_url 'https://github.com/bdwyertech/chef-wildfly' if respond_to?(:source_url)
+issues_url 'https://github.com/bdwyertech/chef-wildfly/issues' if respond_to?(:issues_url)
