@@ -65,12 +65,7 @@ end
 private
 
 def create_datasource
-  params = %W(
-      --name=#{new_resource.name}
-      --jndi-name=#{new_resource.jndiname}
-      --driver-name=#{new_resource.drivername}
-      --connection-url=#{new_resource.connectionurl}
-  )
+  params = %W(--name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl})
   params << "--user-name=#{new_resource.username}" if new_resource.username
   params << "--password=#{new_resource.password}" if new_resource.password
 
