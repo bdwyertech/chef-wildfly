@@ -3,7 +3,7 @@ WildFly Cookbook CHANGELOG
 
 # 0.3.0 (2016-02-23)
 * Add sensitive and optional username/password parameters to datasource resource.
-* Fix missing jboss.jdbc-driver.mysql by restarting Wildfly immediately after installing mysql_connector
+* Fix missing jboss.jdbc-driver.mysql by restarting Wildfly immediately after installing mysql_connector.
 
 # 0.2.0 (2015-09-09)
 * Make install of Java optional.
