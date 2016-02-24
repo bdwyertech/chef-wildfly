@@ -62,6 +62,7 @@ wildfly_datasource 'example' do
   connectionurl "jdbc:some://127.0.0.1/example"
   username "db_username"
   password "db_password"
+  sensitive false  
 end
 ```
 
