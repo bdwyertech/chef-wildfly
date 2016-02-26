@@ -144,6 +144,40 @@ wildfly_property "Database URL" do
 end
 ```
 
+## ChefSpec Matchers
+
+This cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test 
+your own cookbooks.
+
+Example Matcher Usage
+
+```ruby
+expect(chef_run).to create_wildfly_datasource('example').with(
+  jndiname 'java:jboss/datasource/example'
+  drivername 'some-jdbc-driver'
+  connectionurl 'jdbc:some://127.0.0.1/example'
+  username 'db_username'
+  password 'db_password'
+  sensitive: true
+)
+```
+      
+Cookbook Matchers
+
+* set_wildfly_attribute(resource_name)
+* create_wildfly_datasource(resource_name)
+* delete_wildfly_datasource(resource_name)
+* install_wildfly_deploy(resource_name)
+* remove_wildfly_deploy(resource_name)
+* enable_wildfly_deploy(resource_name)
+* disable_wildfly_deploy(resource_name)
+* create_wildfly_logcategory(resource_name)
+* delete_wildfly_logcategory(resource_name)
+* create_wildfly_loghandler(resource_name)
+* delete_wildfly_loghandler(resource_name)
+* set_wildfly_property(resource_name)
+* delete_wildfly_property(resource_name)
+
 # Authors
 
 Author:: Brian Dwyer - Intelligent Digital Services
