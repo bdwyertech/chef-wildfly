@@ -57,11 +57,11 @@ Datasource LWRP
 
 ```ruby
 wildfly_datasource 'example' do
-  jndiname "java:jboss/datasource/example"
-  drivername "some-jdbc-driver"
-  connectionurl "jdbc:some://127.0.0.1/example"
-  username "db_username"
-  password "db_password"
+  jndiname 'java:jboss/datasource/example'
+  drivername 'some-jdbc-driver'
+  connectionurl 'jdbc:some://127.0.0.1/example'
+  username 'db_username'
+  password 'db_password'
   sensitive false  
 end
 ```
@@ -73,22 +73,22 @@ Allows you to deploy JARs and WARs via chef
 Example 1 (from a url)
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
-      url "http://artifacts.company.com/artifacts/mssql-java-driver/sqljdbc4.jar"
+      url 'http://artifacts.company.com/artifacts/mssql-java-driver/sqljdbc4.jar'
 end
 ```
 
 Example 2 (from disk)
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
-      path "/opt/resources/sqljdb4.jar"
+      path '/opt/resources/sqljdb4.jar'
 end
 ```
 
 Example 3 with automated update (requires a common runtime_name and version specific name)
 ```ruby
 wildfly_deploy 'my-app-1.0.war' do
-      url "http://artifacts.company.com/artifacts/my-app.1.0.war"
-      runtime_name "my-app.war"
+      url 'http://artifacts.company.com/artifacts/my-app.1.0.war'
+      runtime_name 'my-app.war'
 end
 ```
 
@@ -112,21 +112,21 @@ To change the max-post-size parameter
 ```
 
 ```ruby
-wildfly_attribute "max-post-size" do
-   path "/subsystem=undertow/server=default-server/http-listener=default"
-   parameter "max-post-size"
-   value "20971520L"
-   notifies :restart, "service[wildfly]"
+wildfly_attribute 'max-post-size' do
+   path '/subsystem=undertow/server=default-server/http-listener=default'
+   parameter 'max-post-size'
+   value '20971520L'
+   notifies :restart, 'service[wildfly]'
 end
 ```
 
 If the attribute restart is set to false, the wildfly will never restart
 
 ```ruby
-wildfly_attribute "max-post-size" do
-   path "/subsystem=undertow/server=default-server/http-listener=default"
-   parameter "max-post-size"
-   value "20971520L"
+wildfly_attribute 'max-post-size' do
+   path '/subsystem=undertow/server=default-server/http-listener=default'
+   parameter 'max-post-size'
+   value '20971520L'
    restart false
 end
 ```
@@ -136,11 +136,11 @@ Property LWRP
 Allows you to set or delete system properties in the server config. (Supported Actions: :set, :delete)
 
 ```ruby
-wildfly_property "Database URL" do
-   property "JdbcUrl"
-   value "jdbc:mysql://1.2.3.4:3306/testdb"
+wildfly_property 'Database URL' do
+   property 'JdbcUrl'
+   value 'jdbc:mysql://1.2.3.4:3306/testdb'
    action :set
-   notifies :restart, "service[wildfly]", :delayed
+   notifies :restart, 'service[wildfly]', :delayed
 end
 ```
 
