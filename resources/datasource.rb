@@ -26,5 +26,12 @@ attribute :drivername,    kind_of: String
 attribute :connectionurl, kind_of: String
 attribute :username, kind_of: [String, NilClass]
 attribute :password, kind_of: [String, NilClass]
-attribute :sensitive, kind_of: [TrueClass, FalseClass], default: true
+attribute :sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
+
 attr_accessor :exists
+
+# Chef will override sensitive back to its global value, so set default to true in init
+def initialize(*args)
+  super
+  @sensitive = true
+end

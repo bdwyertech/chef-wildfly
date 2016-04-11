@@ -1,6 +1,9 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 0.3.1 (2016-04-11)
+* Chef will override sensitive back to its global value
+
 # 0.3.0 (2016-02-24)
 * Add sensitive and optional username/password parameters to datasource resource.
 * Fix missing jboss.jdbc-driver.mysql by restarting Wildfly immediately after installing mysql_connector.
