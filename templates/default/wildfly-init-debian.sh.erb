@@ -21,7 +21,7 @@
 
 NAME=wildfly
 DESC="WildFly Application Server"
-DEFAULT="/etc/default/wildfly.conf"
+DEFAULT="/etc/default/<%= node['wildfly']['service'] %>.conf"
 
 # Check privileges
 if [ `id -u` -ne 0 ]; then

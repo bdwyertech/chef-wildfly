@@ -103,7 +103,7 @@ template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
 end
 
 # Deploy Service Configuration
-template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly.conf') do
+template ::File.join(::File::SEPARATOR, 'etc', 'default', "#{node['wildfly']['service']}.conf") do
   source 'wildfly.conf.erb'
   user 'root'
   group 'root'
@@ -126,6 +126,7 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa
     pub_https_port: wildfly['int']['pub']['https_port'],
     wsdl_int: wildfly['int']['wsdl']['bind'],
     ajp_port: wildfly['int']['ajp']['port'],
+    jacorb_port: wildfly['int']['jacorb']['port'],
     smtp_host: wildfly['smtp']['host'],
     smtp_port: wildfly['smtp']['port'],
     smtp_ssl: wildfly['smtp']['ssl'],
