@@ -111,7 +111,7 @@ end
 def deploy_install(source, name, runtime_name)
   Chef::Log.info "Deploying #{name}"
   converge_by((source == '' ? 'Enabling' : 'Deploying') + " #{detailed_name(runtime_name, name)}") do
-    result = shell_out("bin/jboss-cli.sh -c ' deploy #{source} --name=#{name} --runtime-name=#{runtime_name}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' deploy #{source} --name=#{name} --runtime-name=#{runtime_name}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
     result.error! if result.exitstatus != 0
   end
   true
@@ -122,7 +122,7 @@ def deploy_remove(runtime_name, keep_content = false)
   deployments[runtime_name].each do |deployed|
     converge_by((keep_content ? 'Disabling' : 'Removing') + " #{detailed_name(runtime_name, deployed.keys.first)}") do
       Chef::Log.info 'Undeploying #{detailed_name(runtime_name, deployed.keys.first)}'
-      result = shell_out("bin/jboss-cli.sh -c ' undeploy #{deployed.keys.first} #{keep_content ? '--keep-content' : ''}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+      result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' undeploy #{deployed.keys.first} #{keep_content ? '--keep-content' : ''}'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
       result.error! if result.exitstatus != 0
     end
   end
@@ -132,7 +132,7 @@ end
 def read_deployment_details(refresh = false)
   if !@deployment_details || refresh
     Chef::Log.info 'Getting list of deployed applications'
-    data = shell_out("bin/jboss-cli.sh -c ' deployment-info '", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    data = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' deployment-info '", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
     @deployment_details = format_output(data.stdout)
   end
   @deployment_details

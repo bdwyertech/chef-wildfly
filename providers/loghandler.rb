@@ -51,7 +51,7 @@ end
 private
 
 def loghandler_exists?(name)
-  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/#{new_resource.type}=#{name}:read-resource'\"")
+  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' /subsystem=logging/#{new_resource.type}=#{name}:read-resource'\"")
   result.exitstatus == 0
 end
 
@@ -60,7 +60,7 @@ def create_loghandler
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      bin/jboss-cli.sh -c command="/subsystem=logging/#{new_resource.type}=#{new_resource.name}:add(hostname=#{new_resource.hostname},app-name=#{new_resource.app_name})"
+      bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} command="/subsystem=logging/#{new_resource.type}=#{new_resource.name}:add(hostname=#{new_resource.hostname},app-name=#{new_resource.app_name})"
     EOH
   end
 end
@@ -70,7 +70,7 @@ def delete_loghandler
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/#{new_resource.type}=#{name}:remove'"`
+      `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' /subsystem=logging/#{new_resource.type}=#{name}:remove'"`
     EOH
   end
 end

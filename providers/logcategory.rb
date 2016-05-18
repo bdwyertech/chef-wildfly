@@ -57,7 +57,7 @@ end
 private
 
 def logcategory_exists?(name)
-  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/logger=#{name}:read-resource'\"")
+  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' /subsystem=logging/logger=#{name}:read-resource'\"")
   result.exitstatus == 0
 end
 
@@ -75,7 +75,7 @@ def create_logcategory
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      bin/jboss-cli.sh -c command="/subsystem=logging/logger=#{new_resource.name}:add(use-parent-handlers=#{new_resource.use_parent_handlers},level=#{new_resource.level},handlers=#{handlers})"
+      bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} command="/subsystem=logging/logger=#{new_resource.name}:add(use-parent-handlers=#{new_resource.use_parent_handlers},level=#{new_resource.level},handlers=#{handlers})"
     EOH
   end
 end
@@ -85,7 +85,7 @@ def delete_logcategory
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/logger=#{name}:remove'"`
+      `su #{node['wildfly']['user']} -s /bin/bash -c "#{node['wildfly']['base']}/bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' /subsystem=logging/logger=#{name}:remove'"`
     EOH
   end
 end

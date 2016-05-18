@@ -57,11 +57,11 @@ end
 private
 
 def attribute_exists?
-  result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.stdout.include? " #{current_resource.value}"
 end
 
 def attribute_set
-  result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:write-attribute(name=#{current_resource.parameter},value=#{current_resource.value})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '#{current_resource.path}:write-attribute(name=#{current_resource.parameter},value=#{current_resource.value})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.exitstatus == 0
 end

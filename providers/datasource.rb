@@ -57,7 +57,7 @@ end
 private
 
 def datasource_exists?(name)
-  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name}:read-resource'\"")
+  result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} ' /subsystem=datasources/data-source=#{name}:read-resource'\"")
   result.exitstatus == 0
 end
 
@@ -66,7 +66,7 @@ def create_datasource
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      bin/jboss-cli.sh -c command="data-source add --name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl}"
+      bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} command="data-source add --name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl}"
     EOH
   end
 end
@@ -76,7 +76,7 @@ def delete_datasource
     user node['wildfly']['user']
     cwd node['wildfly']['base']
     code <<-EOH
-      bin/jboss-cli.sh -c command="data-source remove --name=#{new_resource.name}"
+      bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} command="data-source remove --name=#{new_resource.name}"
     EOH
   end
 end

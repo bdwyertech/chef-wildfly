@@ -67,25 +67,25 @@ def notify?
 end
 
 def property_value_exists?
-  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-attribute(name=value)'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '/system-property=#{current_resource.property}:read-attribute(name=value)'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.stdout.include? " \"#{current_resource.value}\""
 end
 
 def property_exists?
-  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '/system-property=#{current_resource.property}:read-resource'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.exitstatus == 0
 end
 
 def property_set
   if property_exists?
-    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:write-attribute(name=value,value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '/system-property=#{current_resource.property}:write-attribute(name=value,value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   else
-    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   end
   result.exitstatus == 0
 end
 
 def property_delete
-  result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:remove()'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result = shell_out("bin/jboss-cli.sh -c controller=localhost:#{node['wildfly']['int']['mgmt']['http_port']} '/system-property=#{current_resource.property}:remove()'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.exitstatus == 0
 end
