@@ -19,8 +19,8 @@
 # => MySQL Database Configuration
 # => MySQL ConnectorJ
 default['wildfly']['mysql']['enabled'] = true
-default['wildfly']['mysql']['url'] = 'http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.34.tar.gz'
-default['wildfly']['mysql']['checksum'] = 'eb33f5e77bab05b6b27f709da3060302bf1d960fad5ddaaa68c199a72102cc5f'
+default['wildfly']['mysql']['url'] = 'http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz'
+default['wildfly']['mysql']['checksum'] = 'fa1bdc9ee5323642c5a533fa73fbcf537b26a979e5981c486c24256c433c7718'
 
 # => MySQL ConnectorJ JDBC Module Name
 default['wildfly']['mysql']['mod_name'] = 'com.mysql'
