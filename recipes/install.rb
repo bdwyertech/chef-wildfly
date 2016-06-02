@@ -29,7 +29,7 @@ include_recipe 'yum' if platform_family?('rhel')
 # Create file to indicate user upgrade change (Applicable to 0.1.16 to 0.1.17 upgrade)
 file ::File.join(wildfly['base'], '.chef_useracctchange') do
   action :touch
-  only_if { ::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) && `getent passwd #{wildfly['user']} | cut -d: -f6`.chomp != wildfly['base'] }
+  only_if { ::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) && shell_out("getent passwd #{wildfly['user']}").stdout.split(':')[5] != wildfly['base'] }
   notifies :stop, "service[#{wildfly['service']}]", :immediately
 end
 
