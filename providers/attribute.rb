@@ -19,6 +19,8 @@
 require 'etc'
 include Chef::Mixin::ShellOut
 
+use_inline_resources
+
 # Support whyrun
 def whyrun_supported?
   true
@@ -44,13 +46,11 @@ def load_current_resource
   @current_resource.path(@new_resource.path)
   if attribute_exists?
     @current_resource.exists = true
-  else
+  elsif @current_resource.restart
     # Only notify if restart parameter is true
-    if @current_resource.restart
-      @new_resource.updated_by_last_action(true)
-    else
-      @new_resource.updated_by_last_action(false)
-    end
+    @new_resource.updated_by_last_action(true)
+  else
+    @new_resource.updated_by_last_action(false)
   end
 end
 

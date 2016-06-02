@@ -68,5 +68,5 @@ template ::File.join(connectorj_dir, 'module.xml') do
     module_dependencies: mysql['mod_deps']
   )
   action :create
-  notifies :restart, "service[#{wildfly['service']}]", :delayed
+  notifies :restart, "service[#{wildfly['service']}]", :immediately
 end
