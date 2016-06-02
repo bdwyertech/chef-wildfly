@@ -61,6 +61,7 @@ default['wildfly']['int']['pub']['https_port'] = '8443'
 
 default['wildfly']['int']['wsdl']['bind'] = '0.0.0.0'
 default['wildfly']['int']['ajp']['port'] = '8009'
+default['wildfly']['int']['jacorb']['port'] = '3528'
 
 # => Use this to offset all port bindings.  Each binding will be incremented by this value.
 default['wildfly']['int']['port_binding_offset'] = '0'
@@ -77,7 +78,7 @@ default['wildfly']['smtp']['username'] = nil
 default['wildfly']['smtp']['password'] = nil
 
 # => Console Log Location
-default['wildfly']['log']['console_log'] = '/var/log/wildfly/console.log'
+default['wildfly']['log']['console_log'] = "/var/log/#{node['wildfly']['service']}/console.log"
 # => Enable Log Rotation on *.log in Console Log Directory
 default['wildfly']['log']['rotation'] = true
 # => Purge rotated logs older than this many days
@@ -86,6 +87,9 @@ default['wildfly']['log']['max_age'] = 375
 # => Init Script Timeouts (Seconds)
 default['wildfly']['initd']['startup_wait'] = '60'
 default['wildfly']['initd']['shutdown_wait'] = '60'
+
+# => Init Script Pid file
+default['wildfly']['initd']['pid_file'] = "/var/run/#{node['wildfly']['service']}/wildfly.pid"
 
 # => Hardcode JAVA_HOME into init.d configuration.
 # => Based on value of node['java']['java_home']

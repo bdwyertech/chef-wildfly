@@ -86,3 +86,9 @@ JBOSS_CONSOLE_LOG="<%= node['wildfly']['log']['console_log'] %>"
 <%- else %>
 # JBOSS_CONSOLE_LOG="/var/log/wildfly/console.log"
 <%- end %>
+
+<%- if node['wildfly']['initd']['pid_file'] %>
+JBOSS_PIDFILE="<%= node['wildfly']['initd']['pid_file'] %>"
+<%- else %>
+# JBOSS_PIDFILE="/var/run/wildfly/wildfly.pid"
+# <%- end %>
