@@ -10,7 +10,7 @@ rvm:
 bundler_args: --without development kitchen_docker kitchen_vagrant
 
 script:
-  - bundle exec foodcritic -f any . --tags ~FC007 --tags ~FC024 --tags ~FC048
+  - bundle exec foodcritic -f any .
   # - bundle exec rspec --color --format progress
   - bundle exec rubocop
 
