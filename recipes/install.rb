@@ -101,11 +101,11 @@ template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
   group 'root'
   mode '0755'
 
-  notifies :run, 'execute[systemctl daemon-reload]', :immediately  if node['init_package'] == 'systemd'
+  notifies :run, 'execute[systemctl daemon-reload]', :immediately if node['init_package'] == 'systemd'
 end
 
 execute 'systemctl daemon-reload' do
-	action :nothing
+  action :nothing
 end
 
 # Deploy Service Configuration
