@@ -20,6 +20,8 @@ require 'etc'
 require 'shellwords'
 include Chef::Mixin::ShellOut
 
+use_inline_resources
+
 # Support whyrun
 def whyrun_supported?
   true
