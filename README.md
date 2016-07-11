@@ -178,6 +178,9 @@ Cookbook Matchers
 * set_wildfly_property(resource_name)
 * delete_wildfly_property(resource_name)
 
+# Updates
+* Removed the user update change in the install recipe.
+
 # Authors
 
 Author:: Brian Dwyer - Intelligent Digital Services
