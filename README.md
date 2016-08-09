@@ -7,7 +7,6 @@ Cookbook to deploy Wildfly Java Application Server
 [![Gitter chat](https://img.shields.io/badge/Gitter-bdwyertech%2Fwildfly-brightgreen.svg)](https://gitter.im/bdwyertech/chef-wildfly)
 
 # Updates 
-- Removes some hiccoughs with install recipe
 - Optimized for Centos 6.6
 
 # Requirements
