@@ -13,7 +13,7 @@ Cookbook to deploy Wildfly Java Application Server
 - CentOS, Red Hat
 
 Tested on:
-- CentOS 6.6
+- CentOS 6.5
 
 # Usage
 You can add users in the proper format to `attributes\users.rb`

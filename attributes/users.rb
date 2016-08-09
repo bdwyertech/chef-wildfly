@@ -28,14 +28,21 @@ default['wildfly']['users']['mgmt'] = [
   { id: 'wildfly', passhash: '2c6368f4996288fcc621c5355d3e39b7' }
 ]
 
-# Add application users to the hash 'app'  eg.
-#
+# => Add application users to the hash 'app'  eg.
 default['wildfly']['users']['app'] = [
-  { id: 'wildfly', passhash: '2c6368f4996288fcc621c5355d3e39b7' }
+  { id: 'wildfly', passhash: '8b1ef623011c8dd9760f89e1847fa135' }
 ]
 
-# Add application roles eg.
-#
+# => Add application roles eg.
 default['wildfly']['roles']['app'] = [
   { id: 'wildfly', roles: 'role1,role2' }
+]
+
+# => Create symbolic links for user files
+default['wildfly']['configuration']['domain_path'] = "#{wildfly['base']}/domain/configuration/"
+default['wildfly']['configuration']['standalone_path'] = "#{wildfly['base']}/standalone/configuration/"
+default['wildfly']['configuration']['filenames'] = [
+   'mgmt-users.properties',
+   'application-roles.properties',
+   'application-users.properties'
 ]
