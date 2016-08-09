@@ -1,9 +1,14 @@
 # Wildfly Cookbook
 Cookbook to deploy Wildfly Java Application Server
 
+
 [![Cookbook](http://img.shields.io/cookbook/v/wildfly.svg)](https://github.com/bdwyertech/chef-wildfly)
 [![Build Status](https://travis-ci.org/bdwyertech/chef-wildfly.svg)](https://travis-ci.org/bdwyertech/chef-wildfly)
 [![Gitter chat](https://img.shields.io/badge/Gitter-bdwyertech%2Fwildfly-brightgreen.svg)](https://gitter.im/bdwyertech/chef-wildfly)
+
+# Updates 
+- Removes some hiccoughs with install recipe
+- Optimized for Centos 6.6
 
 # Requirements
 - Chef Client 11+
@@ -13,15 +18,16 @@ Cookbook to deploy Wildfly Java Application Server
 - CentOS, Red Hat
 
 Tested on:
-- CentOS 6.5
+- CentOS 6.6
+- Chef 12.12.15
 
 # Usage
-You can add users in the proper format to `attributes\users.rb`
+- I suggest you add users as a role attribute. However, you can customize them in attributes/users.rb
+- I also suggest you set the Java attributes at the role level as well.
 
-You can customize the Java version, and the Connector/J if you'd like.
 
 If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version, 
-Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  
+Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  (In the role).
 This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  
 Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
 
