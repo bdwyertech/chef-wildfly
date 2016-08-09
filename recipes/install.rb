@@ -26,18 +26,10 @@ wildfly = node['wildfly']
 include_recipe 'apt' if platform?('ubuntu', 'debian')
 include_recipe 'yum' if platform_family?('rhel')
 
-# Create file to indicate user upgrade change (Applicable to 0.1.16 to 0.1.17 upgrade)
-file ::File.join(wildfly['base'], '.chef_useracctchange') do
-  action :touch
-  only_if { ::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) && shell_out("getent passwd #{wildfly['user']}").stdout.split(':')[5] != wildfly['base'] }
-  notifies :stop, "service[#{wildfly['service']}]", :immediately
-end
-
 # => Create Wildfly System User
 user wildfly['user'] do
   comment 'Wildfly System User'
   home wildfly['base']
-  shell '/sbin/nologin'
   system true
   action [:create, :lock]
 end
@@ -89,12 +81,13 @@ bash 'Extract Wildfly' do
   action :nothing
 end
 
-# Deploy Init Script
+# => Deploy Init Script
 template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
-  case node['platform_family']
-  when 'rhel'
+  if node['platform_family'] === 'rhel' && node['platform_version'] === '6.6'
+    source 'wildfly-init-centos6.sh.erb'
+  elsif node['platform_family'] === 'rhel'
     source 'wildfly-init-redhat.sh.erb'
-  when 'debian'
+  else
     source 'wildfly-init-debian.sh.erb'
   end
   user 'root'
@@ -102,7 +95,7 @@ template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
   mode '0755'
 end
 
-# Deploy Service Configuration
+# => Deploy Service Configuration
 template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly.conf') do
   source 'wildfly.conf.erb'
   user 'root'
@@ -162,6 +155,14 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', 'applicatio
   )
 end
 
+# => Create symbolic links for user files
+wildfly['configuration']['filenames'].each do |file |
+  link "#{wildfly['configuration']['domain_path']}#{file}" do
+    to "#{wildfly['configuration']['standalone_path']}#{file}"
+  end
+end
+
+
 # => Configure Wildfly Standalone - Application Roles
 template ::File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
   source 'application-roles.properties.erb'
@@ -217,7 +218,7 @@ template 'Wildfly Logrotate Configuration' do
   action :create
 end
 
-# Create file to indicate deployment and prevent recurring configuration deployment
+# => Create file to indicate deployment and prevent recurring configuration deployment
 file ::File.join(wildfly['base'], '.chef_deployed') do
   owner wildfly['user']
   group wildfly['group']
