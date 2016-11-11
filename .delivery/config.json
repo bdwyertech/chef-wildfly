@@ -22,6 +22,9 @@
   "skip_phases": [
     "smoke",
     "security",
-    "quality"
+    "quality",
+    "unit",
+    "lint",
+    "syntax"
   ]
 }
