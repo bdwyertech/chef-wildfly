@@ -110,12 +110,6 @@
             <logger category="sun.rmi">
                 <level name="WARN"/>
             </logger>
-            <logger category="jacorb">
-                <level name="WARN"/>
-            </logger>
-            <logger category="jacorb.config">
-                <level name="ERROR"/>
-            </logger>
             <root-logger>
                 <level name="INFO"/>
                 <handlers>
@@ -406,13 +400,8 @@
             <inet-address value="${jboss.bind.address:<%= @pub_int %>}"/>
           <% end %>
         </interface>
-        <interface name="unsecure">
-            <!--
-              ~  Used for IIOP sockets in the standard configuration.
-              ~                  To secure JacORB you need to setup SSL 
-              -->
-            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
-        </interface>
+
+
     </interfaces>
     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:<%= @port_binding_offset %>}">
         <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:<%= @mgmt_http_port %>}"/>
