@@ -110,9 +110,11 @@ template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly.conf') do
   mode '0644'
 end
 
+version = wildfly['version'].split('.').first
+
 # => Configure Wildfly Standalone - Interfaces
 template ::File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa']['conf']) do
-  source "#{wildfly['sa']['conf']}.erb"
+  source "#{wildfly['sa']['conf']}.#{version}.erb"
   user wildfly['user']
   group wildfly['group']
   mode '0644'
