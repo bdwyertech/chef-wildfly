@@ -36,6 +36,7 @@ postgres['jndi']['datasources'].each do |source|
     group wildfly['group']
     mode '0600'
     variables(
+      pool_name: source['pool_name'],
       jndi_name: source['jndi_name'],
       postgres_server: source['server'],
       postgres_port: source['port'],

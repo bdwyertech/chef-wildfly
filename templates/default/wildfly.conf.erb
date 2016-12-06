@@ -50,6 +50,16 @@ JBOSS_CONFIG=<%= node['wildfly']['sa']['conf'] %>
 # JBOSS_CONFIG=standalone.xml
 <%- end %>
 
+# Configuration for port bindings
+#
+<%- if node['wildfly']['int']['mgmt']['bind'] %>
+#JBOSS_MANAGEMENT_BIND=-bmanagement=<%= node['wildfly']['int']['mgmt']['bind'] %>
+<%- end %>
+
+<%- if node['wildfly']['int']['pub']['bind'] %>
+#JBOSS_PORT_BIND=-b=<%= node['wildfly']['int']['pub']['bind'] %>
+<%- end %>
+
 # Configuration for domain mode
 #
 <%- if node['wildfly']['dom']['conf'] %>

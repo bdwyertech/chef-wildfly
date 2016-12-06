@@ -1,5 +1,6 @@
 default['wildfly']['postgresql']['jndi']['datasources'] = [
   {
+    pool_name: 'test',
     jndi_name: 'java:jboss/datasources/test',
     server: '127.0.0.1',
     port: '5432',
@@ -10,6 +11,7 @@ default['wildfly']['postgresql']['jndi']['datasources'] = [
     pool_max: '20'
   },
   {
+    pool_name: 'test2',
     jndi_name: 'java:jboss/datasources/test2',
     server: '127.0.0.1',
     port: '5432',
