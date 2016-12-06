@@ -61,7 +61,7 @@ end
 
 def datasource_exists?(name)
   result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=datasources/data-source=#{name.gsub('/', '\/')}:read-resource'\"")
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end
 
 private

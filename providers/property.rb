@@ -75,7 +75,7 @@ end
 
 def property_exists?
   result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:read-resource'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end
 
 def property_set
@@ -84,10 +84,10 @@ def property_set
   else
     result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:add(value=#{Shellwords.escape(current_resource.value)})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   end
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end
 
 def property_delete
   result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:remove()'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end

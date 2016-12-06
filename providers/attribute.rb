@@ -63,5 +63,5 @@ end
 
 def attribute_set
   result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:write-attribute(name=#{current_resource.parameter},value=#{current_resource.value})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end

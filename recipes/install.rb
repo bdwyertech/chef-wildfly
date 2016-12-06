@@ -54,7 +54,7 @@ end
 directory wildfly['base'] do
   owner wildfly['user']
   group wildfly['group']
-  mode 0755
+  mode '0755'
   recursive true
 end
 
@@ -169,8 +169,6 @@ template ::File.join(wildfly['base'], 'domain', 'configuration', wildfly['dom'][
   notifies :restart, "service[#{wildfly['service']}]", :delayed
   only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
-
-
 
 # => Configure Wildfly Standalone - MGMT Users
 template ::File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.properties') do

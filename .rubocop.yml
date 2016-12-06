@@ -1,2 +1,4 @@
 Metrics/LineLength:
   Max: 99
+BlockLength:
+  Max: 99
