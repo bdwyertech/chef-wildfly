@@ -167,7 +167,7 @@ template ::File.join(wildfly['base'], 'domain', 'configuration', wildfly['dom'][
     s3_bucket: wildfly['aws']['s3_bucket']
   )
   notifies :restart, "service[#{wildfly['service']}]", :delayed
-  only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
+  only_if { wildfly['mode'] == 'domain' && (!::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) ||  wildfly['enforce_config']) }
 end
 
 # => Configure Wildfly Standalone - MGMT Users
