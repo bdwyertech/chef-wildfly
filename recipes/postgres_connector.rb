@@ -34,7 +34,7 @@ postgres_dir = ::File.join(wildfly['base'], 'modules', 'system', 'layers', 'base
 directory postgres_dir do
   owner wildfly['user']
   group wildfly['group']
-  mode 0755
+  mode '0755'
   recursive true
 end
 

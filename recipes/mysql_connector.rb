@@ -34,7 +34,7 @@ connectorj_dir = ::File.join(wildfly['base'], 'modules', 'system', 'layers', 'ba
 directory connectorj_dir do
   owner wildfly['user']
   group wildfly['group']
-  mode 0755
+  mode '0755'
   recursive true
 end
 

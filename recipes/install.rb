@@ -54,7 +54,7 @@ end
 directory wildfly['base'] do
   owner wildfly['user']
   group wildfly['group']
-  mode 0755
+  mode '0755'
   recursive true
 end
 
@@ -140,8 +140,49 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', wildfly['sa
   only_if { !::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config'] }
 end
 
+# => Configure Wildfly Domain - Interfaces
+template ::File.join(wildfly['base'], 'domain', 'configuration', wildfly['dom']['conf']) do
+  source "#{wildfly['dom']['conf']}.erb"
+  user wildfly['user']
+  group wildfly['group']
+  mode '0644'
+  variables(
+    port_binding_offset: wildfly['int']['port_binding_offset'],
+    mgmt_int: wildfly['int']['mgmt']['bind'],
+    mgmt_http_port: wildfly['int']['mgmt']['http_port'],
+    mgmt_https_port: wildfly['int']['mgmt']['https_port'],
+    pub_int: wildfly['int']['pub']['bind'],
+    pub_http_port: wildfly['int']['pub']['http_port'],
+    pub_https_port: wildfly['int']['pub']['https_port'],
+    wsdl_int: wildfly['int']['wsdl']['bind'],
+    ajp_port: wildfly['int']['ajp']['port'],
+    smtp_host: wildfly['smtp']['host'],
+    smtp_port: wildfly['smtp']['port'],
+    smtp_ssl: wildfly['smtp']['ssl'],
+    smtp_user: wildfly['smtp']['username'],
+    smtp_pass: wildfly['smtp']['password'],
+    acp: wildfly['acp'],
+    s3_access_key: wildfly['aws']['s3_access_key'],
+    s3_secret_access_key: wildfly['aws']['s3_secret_access_key'],
+    s3_bucket: wildfly['aws']['s3_bucket']
+  )
+  notifies :restart, "service[#{wildfly['service']}]", :delayed
+  only_if { wildfly['mode'] == 'domain' && (!::File.exist?(::File.join(wildfly['base'], '.chef_deployed')) || wildfly['enforce_config']) }
+end
+
 # => Configure Wildfly Standalone - MGMT Users
 template ::File.join(wildfly['base'], 'standalone', 'configuration', 'mgmt-users.properties') do
+  source 'mgmt-users.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables(
+    mgmt_users: wildfly['users']['mgmt']
+  )
+end
+
+# => Configure Wildfly Domain - MGMT Users
+template ::File.join(wildfly['base'], 'domain', 'configuration', 'mgmt-users.properties') do
   source 'mgmt-users.properties.erb'
   user wildfly['user']
   group wildfly['group']
@@ -162,8 +203,30 @@ template ::File.join(wildfly['base'], 'standalone', 'configuration', 'applicatio
   )
 end
 
+# => Configure Wildfly Domain - Application Users
+template ::File.join(wildfly['base'], 'domain', 'configuration', 'application-users.properties') do
+  source 'application-users.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables(
+    app_users: wildfly['users']['app']
+  )
+end
+
 # => Configure Wildfly Standalone - Application Roles
 template ::File.join(wildfly['base'], 'standalone', 'configuration', 'application-roles.properties') do
+  source 'application-roles.properties.erb'
+  user wildfly['user']
+  group wildfly['group']
+  mode '0600'
+  variables(
+    app_roles: wildfly['roles']['app']
+  )
+end
+
+# => Configure Wildfly Domain - Application Roles
+template ::File.join(wildfly['base'], 'domain', 'configuration', 'application-roles.properties') do
   source 'application-roles.properties.erb'
   user wildfly['user']
   group wildfly['group']

@@ -49,6 +49,15 @@ if [ -z "$SHUTDOWN_WAIT" ]; then
 	SHUTDOWN_WAIT=30
 fi
 
+if [ -z "$JBOSS_MANAGEMENT_BIND" ]; then
+	JBOSS_MANAGEMENT_BIND=""
+fi
+
+if [ -z "$JBOSS_PORT_BIND" ]; then
+	JBOSS_PORT_BIND=""
+fi
+
+
 # Startup mode of wildfly
 if [ -z "$JBOSS_MODE" ]; then
 	JBOSS_MODE=standalone
@@ -106,9 +115,9 @@ start() {
 	if [ ! -z "$JBOSS_USER" ]; then
 		if [ "$JBOSS_MODE" = "standalone" ]; then
 			if [ -r /etc/rc.d/init.d/functions ]; then
-				daemon --user $JBOSS_USER LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG >> $JBOSS_CONSOLE_LOG 2>&1 &
+				daemon --user $JBOSS_USER LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG $JBOSS_PORT_BIND $JBOSS_MANAGEMENT_BIND >> $JBOSS_CONSOLE_LOG 2>&1 &
 			else
-				su - $JBOSS_USER -c "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG" >> $JBOSS_CONSOLE_LOG 2>&1 &
+				su - $JBOSS_USER -c "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG $JBOSS_PORT_BIND $JBOSS_MANAGEMENT_BIND" >> $JBOSS_CONSOLE_LOG 2>&1 &
 			fi
 		else
 			if [ -r /etc/rc.d/init.d/functions ]; then

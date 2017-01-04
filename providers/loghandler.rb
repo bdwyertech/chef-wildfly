@@ -54,7 +54,7 @@ private
 
 def loghandler_exists?(name)
   result = shell_out("su #{node['wildfly']['user']} -s /bin/bash -c \"#{node['wildfly']['base']}/bin/jboss-cli.sh -c ' /subsystem=logging/#{new_resource.type}=#{name}:read-resource'\"")
-  result.exitstatus == 0
+  result.exitstatus.zero?
 end
 
 def create_loghandler
