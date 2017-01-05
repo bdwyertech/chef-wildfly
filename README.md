@@ -1,4 +1,6 @@
 # Wildfly Cookbook
+
+[![Join the chat at https://gitter.im/bdwyertech/chef-wildfly](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bdwyertech/chef-wildfly?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Cookbook to deploy Wildfly Java Application Server
 
 [![Cookbook](http://img.shields.io/cookbook/v/wildfly.svg)](https://github.com/bdwyertech/chef-wildfly)
