@@ -103,7 +103,7 @@ template ::File.join(::File::SEPARATOR, 'etc', 'init.d', wildfly['service']) do
 end
 
 # Deploy Service Configuration
-template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly.conf') do
+template ::File.join(::File::SEPARATOR, 'etc', 'default', 'wildfly') do
   source 'wildfly.conf.erb'
   user 'root'
   group 'root'
