@@ -20,7 +20,7 @@ You can add users in the proper format to `attributes\users.rb`
 
 You can customize the Java version, and the Connector/J if you'd like.
 
-If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version, 
+If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version,
 Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  
 This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  
 Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
@@ -131,6 +131,16 @@ wildfly_attribute 'max-post-size' do
 end
 ```
 
+You can also add a new attribute
+
+```ruby
+wildfly_attribute 'max-post-size' do
+   path '/subsystem=mail/mail-session="postbox"'
+   parameter 'jndi-name="java:/mail/postbox",debug=true'
+   action :add
+end
+```
+
 Property LWRP
 
 Allows you to set or delete system properties in the server config. (Supported Actions: :set, :delete)
@@ -146,7 +156,7 @@ end
 
 ## ChefSpec Matchers
 
-This cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test 
+This cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test
 your own cookbooks.
 
 Example Matcher Usage
@@ -161,7 +171,7 @@ expect(chef_run).to create_wildfly_datasource('example').with(
   sensitive: true
 )
 ```
-      
+
 Cookbook Matchers
 
 * set_wildfly_attribute(resource_name)
