@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:disable LineLength, Metrics/AbcSize, Style/MethodLength
+# rubocop:disable LineLength, Metrics/AbcSize, Metrics/MethodLength
 
 # encoding: UTF-8
 
