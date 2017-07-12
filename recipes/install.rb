@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:disable LineLength
+# rubocop:disable LineLength,SymbolArray
 
 # encoding: UTF-8
 
