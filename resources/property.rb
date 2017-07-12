@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # encoding: UTF-8
-#
+
 # LWRP that sets a system property
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services

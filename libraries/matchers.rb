@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/AccessorMethodName
+
 if defined?(ChefSpec)
   def set_wildfly_attribute(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:wildfly_attribute, :create, resource_name)

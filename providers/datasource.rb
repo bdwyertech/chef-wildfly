@@ -1,6 +1,8 @@
-# encoding: UTF-8
+# frozen_string_literal: true
 # rubocop:disable LineLength, Metrics/AbcSize
-#
+
+# encoding: UTF-8
+
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,7 +69,7 @@ end
 private
 
 def create_datasource
-  params = %W(--name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl})
+  params = %W[--name=#{new_resource.name} --jndi-name=#{new_resource.jndiname} --driver-name=#{new_resource.drivername} --connection-url=#{new_resource.connectionurl}]
   params << "--user-name=#{new_resource.username}" if new_resource.username
   params << "--password=#{new_resource.password}" if new_resource.password
 
