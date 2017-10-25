@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 # encoding: UTF-8
+
 # -*- mode: ruby -*-
+
 # vi: set ft=ruby :
 
 # Set the default provider to VMware Workstation

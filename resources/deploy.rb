@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # encoding: UTF-8
-#
+
 # LWRP that deploys war "name" from either path :path or url :url
 #
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services

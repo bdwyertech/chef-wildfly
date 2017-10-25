@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+# rubocop:disable LineLength,SymbolArray
+
 # encoding: UTF-8
-# rubocop:disable LineLength
-#
+
 # Cookbook Name:: wildfly
 # Recipe:: install
 #

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+# rubocop:disable LineLength, Metrics/AbcSize, Metrics/MethodLength
+
 # encoding: UTF-8
-# rubocop:disable LineLength, Metrics/AbcSize
-#
+
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +56,7 @@ def load_current_resource
   @current_resource.name(@new_resource.name)
   @current_resource.property(@new_resource.property)
   @current_resource.value(@new_resource.value)
+  @current_resource.enable_escape(@new_resource.enable_escape)
   @current_resource.restart(@new_resource.restart)
 end
 
@@ -79,10 +82,15 @@ def property_exists?
 end
 
 def property_set
+  val = if current_resource.enable_escape
+          Shellwords.escape(current_resource.value)
+        else
+          value
+        end
   if property_exists?
-    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:write-attribute(name=value,value=\"#{Shellwords.escape(current_resource.value)}\")'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:write-attribute(name=value,value=\"#{val}\")'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   else
-    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:add(value=\"#{Shellwords.escape(current_resource.value)}\")'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+    result = shell_out("bin/jboss-cli.sh -c '/system-property=#{current_resource.property}:add(value=\"#{val}\")'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   end
   result.exitstatus.zero?
 end

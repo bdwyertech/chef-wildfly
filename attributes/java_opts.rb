@@ -1,6 +1,8 @@
-# Encoding: UTF-8
+# frozen_string_literal: true
 # rubocop:disable LineLength
-#
+
+# encoding: UTF-8
+
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +30,6 @@ default['wildfly']['java_opts']['preferipv4'] = 'true'
 default['wildfly']['java_opts']['headless'] = 'true'
 
 # => Specify other java options in this space-deliniated array.
-default['wildfly']['java_opts']['other'] = %w(
+default['wildfly']['java_opts']['other'] = %w[
 
-)
+]

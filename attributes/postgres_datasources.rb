@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 default['wildfly']['postgresql']['jndi']['datasources'] = [
   {
     pool_name: 'test',
