@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-actions :set
+actions :set, :add
 default_action :set
 
 attribute :name,          kind_of: String, required: true, name_attribute: true

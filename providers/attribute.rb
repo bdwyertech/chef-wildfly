@@ -28,6 +28,12 @@ def whyrun_supported?
   true
 end
 
+action :add do
+  converge_by("Add #{@new_resource}") do
+    attribute_add
+  end
+end
+
 action :set do
   if @current_resource.exists
     Chef::Log.info "#{@new_resource} already set - nothing to do."
@@ -61,6 +67,12 @@ private
 def attribute_exists?
   result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:read-attribute(name=#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
   result.stdout.include? " #{current_resource.value}"
+end
+
+def attribute_add
+  # Allow setting parameters ('/subsystem=mail/mail-session="postbox":add(jndi-name="java:/mail/postbox",debug=true)')
+  result = shell_out("bin/jboss-cli.sh -c '#{current_resource.path}:add(#{current_resource.parameter})'", user: node['wildfly']['user'], cwd: node['wildfly']['base'])
+  result.exitstatus.zero?
 end
 
 def attribute_set
