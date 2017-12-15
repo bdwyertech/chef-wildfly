@@ -1,6 +1,13 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 0.4.2 (2017-12-15)
+* WildFly 10.1
+* Add ability to add attributes
+* Allow better control of ShellEscape for wildfly_property resource
+* Fix for SystemD
+* Only deploy Domain configuration in domain mode
+
 # 0.3.1 (2016-04-11)
 * Chef will override sensitive back to its global value
 
