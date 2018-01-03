@@ -256,7 +256,8 @@ template ::File.join(wildfly['base'], 'bin', 'standalone.conf') do
     xmx: wildfly['java_opts']['xmx'],
     maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
     preferipv4: wildfly['java_opts']['preferipv4'],
-    headless: wildfly['java_opts']['headless']
+    headless: wildfly['java_opts']['headless'],
+    jpda: wildfly['jpda']['enabled'] ? wildfly['jpda']['port'] : false
   )
   notifies :restart, "service[#{wildfly['service']}]", :delayed
 end
@@ -272,7 +273,8 @@ template ::File.join(wildfly['base'], 'bin', 'domain.conf') do
     xmx: wildfly['java_opts']['xmx'],
     maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
     preferipv4: wildfly['java_opts']['preferipv4'],
-    headless: wildfly['java_opts']['headless']
+    headless: wildfly['java_opts']['headless'],
+    jpda: wildfly['jpda']['enabled'] ? wildfly['jpda']['port'] : false
   )
   notifies :restart, "service[#{wildfly['service']}]", :delayed
   only_if { wildfly['mode'] == 'domain' }

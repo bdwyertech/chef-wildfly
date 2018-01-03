@@ -61,8 +61,8 @@ else
 fi
 
 # Sample JPDA settings for remote socket debugging
-<%- if node['wildfly']['jpda']['enabled'] %>
-JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=<%= node['wildfly']['jpda']['port'] %>,server=y,suspend=n"
+<%- if @jpda %>
+JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=<%= @jpda %>,server=y,suspend=n"
 <%- else %>
 #JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n"
 <%- end %>
