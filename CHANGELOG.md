@@ -1,6 +1,9 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 0.4.3 (2018-1-5)
+* Fix Chef version constraint in metadata
+
 # 0.4.2 (2017-12-15)
 * WildFly 10.1
 * Add ability to add attributes
