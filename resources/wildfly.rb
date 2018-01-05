@@ -1,4 +1,5 @@
 # Encoding: UTF-8
+
 # rubocop:disable LineLength
 #
 # Cookbook Name:: wildfly
@@ -26,29 +27,26 @@ wildfly = node['wildfly']
 resource_name :wildfly
 
 # => Define the Resource Properties
-property :service_name, String, name_property: true
-property :base_dir, String, default: wildfly['base']
+property :service_name,   String, name_property: true
+property :base_dir,       String, default: lazy { ::File.join(::File::SEPARATOR, 'opt', service_name) }
 property :provision_user, [FalseClass, TrueClass], default: true
-property :service_user, String, default: lazy { service_name }
-property :service_group, String, default: lazy { service_name }
-property :version, String, default: wildfly['version']
-property :url, String, default: wildfly['url']
-property :checksum, String, default: wildfly['checksum']
-property :mode, String, default: wildfly['mode']
-property :standalone_conf, String, default: wildfly['sa']['conf']
-property :domain_conf, String, default: wildfly['dom']['conf']
-# => JPDA Debugging Console
-property :jpda_enabled, [FalseClass, TrueClass], default: false
-property :jpda_port, String, default: wildfly['jpda']['port']
-property :server_opts, Array, default: []
+property :service_user,   String, default: lazy { service_name }
+property :service_group,  String, default: lazy { service_name }
+property :version,        String, default: wildfly['version']
+property :url,            String, default: wildfly['url']
+property :checksum,       String, default: wildfly['checksum']
+property :mode,           String, equal_to: %w[domain standalone], default: wildfly['mode']
+property :config,         String, default: 'standalone-full.xml'
+property :log_dir,        String, default: lazy { ::File.join(base_dir, mode, 'log') }
+# => Launch Arguments passed through to SystemD
+property :launch_arguments,  Array, default: []
+# => Properties to be dropped into service.properties file
 property :server_properties, Array, default: []
-# => Interface Bindings
-property :bind_public, String, default: '0.0.0.0'
-property :bind_public_http, String, default: '8080'
-property :bind_public_https, String, default: '8443'
-property :bind_management, String, default: '0.0.0.0'
-property :bind_offset, [Integer, String], default: 0
-property :log_dir, String, default: '/var/log/wildfly/'
+# => Interface Binding
+property :bind, String, default: '0.0.0.0'
+property :bind_management_http, String, default: '9990'
+# => JPDA Debugging Console
+property :jpda_port, String, required: false
 
 #
 # => Define the Default Resource Action
@@ -59,9 +57,9 @@ default_action :install
 # => Define the Install Action
 #
 action :install do # rubocop: disable BlockLength
-  # =>
-  # => Deploy the Wildfly Application Server
-  # =>
+  #
+  # => Deploy the WildFly Application Server
+  #
 
   # => Merge the Config
   wildfly = Chef::Mixin::DeepMerge.merge(node['wildfly'].to_h, node['wildfly'][new_resource.service_name])
@@ -70,16 +68,16 @@ action :install do # rubocop: disable BlockLength
   _major, _minor, _patch = new_resource.version.split('.').map { |v| String(v) }
 
   if new_resource.provision_user
-    # => Create Wildfly System User
+    # => Create WildFly System User
     user new_resource.service_user do
-      comment 'Wildfly System User'
+      comment 'WildFly System User'
       home new_resource.base_dir
       shell '/sbin/nologin'
       system true
       action [:create, :lock]
     end
 
-    # => Create Wildfly Group
+    # => Create WildFly Group
     group new_resource.service_group do
       append true
       members new_resource.service_group
@@ -88,8 +86,8 @@ action :install do # rubocop: disable BlockLength
     end
   end
 
-  # => Create Wildfly Directory
-  directory "Wildfly Base Directory (#{new_resource.service_name})" do
+  # => Create WildFly Directory
+  directory "WildFly Base Directory (#{new_resource.service_name})" do
     path new_resource.base_dir
     owner new_resource.service_user
     group new_resource.service_group
@@ -109,17 +107,18 @@ action :install do # rubocop: disable BlockLength
     end
   end
 
-  # => Download Wildfly Tarball
-  remote_file "Download Wildfly #{new_resource.version}" do
+  # => Download WildFly Tarball
+  remote_file "Download WildFly #{new_resource.version}" do
     path ::File.join(Chef::Config[:file_cache_path], "#{new_resource.version}.tar.gz")
     source new_resource.url
     checksum new_resource.checksum
     action :create
-    notifies :run, "bash[Extract Wildfly #{new_resource.version}]", :immediately
+    notifies :run, "bash[Extract WildFly #{new_resource.version}]", :immediately
+    not_if { deployed? }
   end
 
-  # => Extract Wildfly
-  bash "Extract Wildfly #{new_resource.version}" do
+  # => Extract WildFly
+  bash "Extract WildFly #{new_resource.version}" do
     cwd Chef::Config[:file_cache_path]
     code <<-EOF
     tar xzf #{new_resource.version}.tar.gz -C #{new_resource.base_dir} --strip 1
@@ -135,19 +134,11 @@ action :install do # rubocop: disable BlockLength
     action :create
   end
 
-  wf_env = template "WildFly Environment #{new_resource.service_name}" do
-    source 'systemd/wildfly.conf.erb'
-    variables server_opts: new_resource.server_opts,
-              config: new_resource.standalone_conf
-    path ::File.join(wf_cfgdir.path, new_resource.service_name + '.conf')
-    action :create
-  end
-
   wf_props = file 'WildFly Properties' do
     content new_resource.server_properties.join("\n")
-    path "/etc/wildfly/#{new_resource.service_name}.properties"
     path ::File.join(wf_cfgdir.path, new_resource.service_name + '.properties')
     action :create
+    notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
 
   systemd_service new_resource.service_name do
@@ -160,15 +151,14 @@ action :install do # rubocop: disable BlockLength
       environment(
         LAUNCH_JBOSS_IN_BACKGROUND: 1
       )
-      environment_file "-#{wf_env.path}"
       service_user new_resource.service_user
       service_group new_resource.service_group
       exec_start [
-        ::File.join(new_resource.base_dir, 'bin', 'standalone.sh'),
-        '-c $WILDFLY_CONFIG',
-        '-b $WILDFLY_BIND',
-        "-P=#{wf_props.path}"
-        # => new_resource.server_opts.join(' ')
+        ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
+        "-c=#{new_resource.config}",
+        "-b=#{new_resource.bind}",
+        "-P=#{wf_props.path}",
+        new_resource.launch_arguments.join(' ')
       ].join(' ')
       nice '-5'.to_i
       private_tmp true
@@ -178,54 +168,59 @@ action :install do # rubocop: disable BlockLength
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
 
-  # => Configure Logrotate for Wildfly
-  template 'Wildfly Logrotate Configuration' do
-    path ::File.join(::File::SEPARATOR, 'etc', 'logrotate.d', new_resource.service_name)
-    source 'logrotate.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    only_if { ::File.directory?(::File.join(::File::SEPARATOR, 'etc', 'logrotate.d')) && wildfly['log']['rotation'] }
-    action :create
-  end
+  # => Configure Logrotate for WildFly
+  # template 'Wildfly Logrotate Configuration' do
+  #   path ::File.join(::File::SEPARATOR, 'etc', 'logrotate.d', new_resource.service_name)
+  #   source 'logrotate.erb'
+  #   owner 'root'
+  #   group 'root'
+  #   mode '0644'
+  #   only_if { ::File.directory?(::File.join(::File::SEPARATOR, 'etc', 'logrotate.d')) && wildfly['log']['rotation'] }
+  #   action :create
+  # end
 
-# =>  log_dir = ::File.join(::File::SEPARATOR, 'var', 'log', service_name)
-# =>  directory "Log Directory (#{service_name})" do
-# =>    path log_dir
-# =>  end
-# =>
-# =>  logrotate_app service_name do
-# =>    cookbook 'logrotate'
-# =>    path [::File.join(log_dir, 'error.log')]
-# =>    frequency 'daily'
-# =>    options ['missingok', 'dateext', 'compress', 'notifempty', 'sharedscripts']
-# =>    postrotate "invoke-rc.d #{service_name} reopen-logs > /dev/null"
-# =>    rotate 30
-# =>    create '644 root root'
-# =>  end
+  # log_dir = ::File.join(::File::SEPARATOR, 'var', 'log', service_name)
+  # directory "Log Directory (#{new_resource.service_name})" do
+  #   path new_resource.log_dir
+  # end
 
-  # Create file to indicate deployment and prevent recurring configuration deployment
+  # logrotate_app service_name do
+  #   cookbook 'logrotate'
+  #   path [::File.join(log_dir, 'error.log')]
+  #   frequency 'daily'
+  #   options ['missingok', 'dateext', 'compress', 'notifempty', 'sharedscripts']
+  #   postrotate "invoke-rc.d #{service_name} reopen-logs > /dev/null"
+  #   rotate 30
+  #   create '644 root root'
+  # end
+
+  # => Create file to indicate deployment and prevent recurring configuration deployment
   file ::File.join(new_resource.base_dir, '.chef_deployed') do
+    content new_resource.version
     user new_resource.service_user
     group new_resource.service_group
     action :create_if_missing
   end
 
   # => Deploy Configuration
-  new_resource.run_action(:configure_standalone_mode)
+  ruby_block "Deploy WildFly Configuration (#{new_resource.service_name})" do
+    block do
+      new_resource.run_action(new_resource.mode.to_sym)
+    end
+  end
 
   # => Start the WildFly Service
-  service service_name do
+  service new_resource.service_name do
     supports status: true, restart: true, reload: true
     action [:enable, :start]
   end
 end
 
 # => Define the Configure Standalone Mode Action
-action :configure_standalone_mode do
-  # =>
+action :standalone do
+  #
   # => Configure Standalone Mode
-  # =>
+  #
 
   # => Configure Wildfly Standalone - MGMT Users
   template ::File.join(new_resource.base_dir, 'standalone', 'configuration', 'mgmt-users.properties') do
@@ -271,16 +266,17 @@ action :configure_standalone_mode do
       xmx: wildfly['java_opts']['xmx'],
       maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
       preferipv4: wildfly['java_opts']['preferipv4'],
-      headless: wildfly['java_opts']['headless']
+      headless: wildfly['java_opts']['headless'],
+      jpda: new_resource.jpda_port || false
     )
     notifies :restart, "service[#{service_name}]", :delayed
   end
 end
 
-action :configure_domain_mode do
-  # =>
+action :domain do
+  #
   # => Configure Domain Mode
-  # =>
+  #
 
   # => Configure Wildfly Domain - MGMT Users
   template ::File.join(new_resource.base_dir, 'domain', 'configuration', 'mgmt-users.properties') do
@@ -326,33 +322,18 @@ action :configure_domain_mode do
       xmx: wildfly['java_opts']['xmx'],
       maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
       preferipv4: wildfly['java_opts']['preferipv4'],
-      headless: wildfly['java_opts']['headless']
+      headless: wildfly['java_opts']['headless'],
+      jpda: new_resource.jpda_port || false
     )
     notifies :restart, "service[#{service_name}]", :delayed
     only_if { wildfly['mode'] == 'domain' }
   end
 end
 
-#######################
-### => Universal <= ###
-#######################
-
 action_class.class_eval do
-  # => Merge the Config
-  # def wildfly
-  #   Chef::Mixin::DeepMerge.merge(node['wildfly'].to_h, node['wildfly'][new_resource.service_name])
-  # end
-end
-
-#########################
-### => Definitions <= ###
-#########################
-
-def parse_json_config(markerfile = nil, servicename = nil)
-  return unless markerfile && ::File.exist?(markerfile.to_s) && servicename
-  begin
-    ::JSON.parse(::File.read(markerfile.to_s), symbolize_names: false)[servicename]
-  rescue JSON::ParserError
-    return
+  def deployed?
+    marker = ::File.join(new_resource.base_dir, '.chef_deployed')
+    return false unless ::File.exist?(marker)
+    ::File.read(marker) == new_resource.version
   end
 end

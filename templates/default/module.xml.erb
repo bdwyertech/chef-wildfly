@@ -10,5 +10,8 @@
         <% @module_dependencies.each do |dependency| -%>
         <module name="<%= dependency %>"/>
         <% end -%>
+        <% @optional_dependencies.each do |dependency| -%>
+        <module name="<%= dependency %>" optional="true"/>
+        <% end -%>
     </dependencies>
 </module>

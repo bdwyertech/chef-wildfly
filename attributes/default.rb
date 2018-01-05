@@ -18,9 +18,9 @@
 
 # => Wildfly Configuration
 # => Source
-default['wildfly']['version'] = '10.1.0'
-default['wildfly']['url'] = 'http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.tar.gz'
-default['wildfly']['checksum'] = '80781609be387045273f974662dadf7f64ad43ee93395871429bc6b7786ec8bc'
+default['wildfly']['version'] = '11.0.0'
+default['wildfly']['url'] = 'http://download.jboss.org/wildfly/11.0.0.Final/wildfly-11.0.0.Final.tar.gz'
+default['wildfly']['checksum'] = 'a2f5fb4187369196003e31eb086f0a1f7bfc0645a3a61a53ed20ab5853481e71'
 
 # => Base Directory
 default['wildfly']['base'] = '/opt/wildfly'
@@ -68,7 +68,7 @@ default['wildfly']['int']['ajp']['port'] = '8009'
 default['wildfly']['int']['port_binding_offset'] = '0'
 
 # => Debugging Settings
-default['wildfly']['jpda']['enabled'] = true
+default['wildfly']['jpda']['enabled'] = false
 default['wildfly']['jpda']['port'] = '8787'
 
 # => SMTP Settings
