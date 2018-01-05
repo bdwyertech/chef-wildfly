@@ -1,0 +1,60 @@
+---
+driver:
+  name: dokken
+  privileged: true # because Docker and SystemD/Upstart
+  chef_version: current
+  ports: '9990:9990'
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+verifier:
+  name: inspec
+
+#
+# Platforms
+#
+platforms:
+- name: centos-7
+  driver:
+    image: centos:7
+    platform: rhel
+    pid_one_command: /usr/lib/systemd/systemd
+    # security_opt:
+    #   - label:enable # Enable SELinux
+    intermediate_instructions:
+      - RUN yum clean all
+      - RUN yum -y install lsof initscripts net-tools systemd-sysv wget which
+      - RUN yum -y install crontabs selinux-policy-targeted
+
+- name: ubuntu-16.04
+  driver:
+    image: ubuntu:16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo -y
+      - RUN /usr/bin/apt-get install cron -y
+
+#
+# Test Suites
+#
+suites:
+  - name: 'default'
+    run_list:
+      - recipe[wildfly::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      # wildfly:
+      #  version: '11.0.0'
+      #  # => Disable System Tuning
+      #  system_tuning: false
+    includes: [
+      'centos-7',
+      # 'ubuntu-16.04'
+    ]
