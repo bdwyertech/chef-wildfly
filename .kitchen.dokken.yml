@@ -58,3 +58,19 @@ suites:
       'centos-7',
       # 'ubuntu-16.04'
     ]
+suites:
+  - name: 'resource'
+    run_list:
+      - recipe[test::resource]
+    verifier:
+      inspec_tests:
+        - test/integration/resource
+    attributes:
+      # wildfly:
+      #  version: '11.0.0'
+      #  # => Disable System Tuning
+      #  system_tuning: false
+    includes: [
+      'centos-7',
+      # 'ubuntu-16.04'
+    ]
