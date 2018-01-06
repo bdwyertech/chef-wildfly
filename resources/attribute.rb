@@ -57,23 +57,23 @@ action_class.class_eval do
   include WildFly::Helper
 
   def attribute_exists?
-    result = jb_cli("#{new_resource.path}:read-attribute(name=#{new_resource.parameter})")
+    result = jb_cli("#{new_resource.path}:read-attribute(name=#{new_resource.parameter})", new_resource.instance)
     result.exitstatus == 0
   end
 
   def attribute_value_exists?
-    result = jb_cli("#{new_resource.path}:read-attribute(name=#{new_resource.parameter})")
+    result = jb_cli("#{new_resource.path}:read-attribute(name=#{new_resource.parameter})", new_resource.instance)
     return false if result.error?
     jb_cli_to_hash(result.stdout)['result'] == new_resource.value
   end
 
   def attribute_add
-    result = jb_cli("#{new_resource.path}:add(#{new_resource.parameter})")
+    result = jb_cli("#{new_resource.path}:add(#{new_resource.parameter})", new_resource.instance)
     result.exitstatus == 0
   end
 
   def attribute_set
-    result = jb_cli("#{new_resource.path}:write-attribute(name=#{new_resource.parameter},value=#{new_resource.value})")
+    result = jb_cli("#{new_resource.path}:write-attribute(name=#{new_resource.parameter},value=#{new_resource.value})", new_resource.instance)
     result.exitstatus == 0
   end
 end

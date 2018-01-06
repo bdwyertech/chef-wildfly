@@ -65,7 +65,7 @@ action_class.class_eval do
   include WildFly::Helper
 
   def datasource_exists?
-    result = jb_cli("/subsystem=datasources/data-source=#{new_resource.dsname.gsub('/', '\/')}:read-resource")
+    result = jb_cli("/subsystem=datasources/data-source=#{new_resource.dsname.gsub('/', '\/')}:read-resource", new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -79,10 +79,10 @@ action_class.class_eval do
     params << "--user-name=#{new_resource.username}" if new_resource.username
     params << "--password=#{new_resource.password}" if new_resource.password
 
-    jb_cli("data-source add #{params.join(' ')}") unless datasource_exists?
+    jb_cli("data-source add #{params.join(' ')}", new_resource.instance) unless datasource_exists?
   end
 
   def delete_datasource
-    jb_cli("data-source remove --name=#{new_resource.dsname}") if datasource_exists?
+    jb_cli("data-source remove --name=#{new_resource.dsname}", new_resource.instance) if datasource_exists?
   end
 end

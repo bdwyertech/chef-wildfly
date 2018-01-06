@@ -28,11 +28,11 @@ mysql   = wildfly['mysql']
 
 # => Define the Resource Properties
 property :instance, String, required: false
-property :base_dir, String, default: wildfly['base']
+property :base_dir, String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['dir'] }
 property :url,      String, default: mysql['url']
 property :checksum, String, default: mysql['checksum']
-property :user,     String, default: wildfly['user']
-property :group,    String, default: wildfly['group']
+property :user,     String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['user'] }
+property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['group'] }
 
 #
 # => Define the Default Resource Action
@@ -76,6 +76,7 @@ action :install do
     source 'module.xml.erb'
     user new_resource.user
     group new_resource.group
+    cookbook 'wildfly'
     mode '0644'
     variables(
       module_name: 'com.mysql',
@@ -84,7 +85,6 @@ action :install do
       optional_dependencies: mysql['mod_deps_optional']
     )
     action :create
-    notifies :restart, "service[#{wildfly['service']}]", :immediately
   end
 
   if jdbc_driver_exists?
@@ -104,7 +104,7 @@ action_class.class_eval do
   include WildFly::Helper
 
   def jdbc_driver_exists?
-    result = jb_cli('/subsystem=datasources/jdbc-driver=mysql:read-resource')
+    result = jb_cli('/subsystem=datasources/jdbc-driver=mysql:read-resource', new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -115,7 +115,7 @@ action_class.class_eval do
       'driver-datasource-class-name=com.mysql.jdbc.Driver',
       'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource',
     ].join(',')
-    jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})")
+    jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})", new_resource.instance)
   end
 
   # => Shorten Connector/J Directory Name
