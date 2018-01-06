@@ -40,11 +40,6 @@ default['wildfly']['enforce_config'] = false
 # => (standalone/ha.xml, standalone-full/ha/ha-aws.xml)
 default['wildfly']['sa']['conf'] = 'standalone-full.xml'
 
-# => AWS S3_Ping Configuration
-default['wildfly']['aws']['s3_access_key'] = 'a'
-default['wildfly']['aws']['s3_secret_access_key'] = 'b'
-default['wildfly']['aws']['s3_bucket'] = 'c'
-
 # => Domain Mode Configuration
 default['wildfly']['dom']['conf'] = 'domain.xml'
 default['wildfly']['dom']['host_conf'] = 'host-master.xml'
@@ -68,13 +63,6 @@ default['wildfly']['int']['port_binding_offset'] = '0'
 # => Debugging Settings
 default['wildfly']['jpda']['enabled'] = false
 default['wildfly']['jpda']['port'] = '8787'
-
-# => SMTP Settings
-default['wildfly']['smtp']['host'] = 'localhost'
-default['wildfly']['smtp']['port'] = '25'
-default['wildfly']['smtp']['ssl'] = false
-default['wildfly']['smtp']['username'] = nil
-default['wildfly']['smtp']['password'] = nil
 
 # => Console Log Location
 default['wildfly']['log']['console_log'] = '/var/log/wildfly/console.log'
