@@ -3,20 +3,6 @@
 
 include_recipe 'wildfly::default'
 
-service 'wildfly' do
-  action :nothing
-end
-
-wildfly 'wildfly' do
-  launch_arguments [
-    '-Dorg.jboss.as.logging.per-deployment=false',
-  ]
-  server_properties [
-    'jboss.bind.address.management=0.0.0.0',
-  ]
-  action :install
-end
-
 service 'wildfly2' do
   action :nothing
 end
