@@ -22,15 +22,15 @@
 # => Define the Resource Name
 resource_name :wildfly_loghandler
 
-attribute :handler,  String, name_property: true
-attribute :app_name, String, required: true
-attribute :type,     String, required: true
-attribute :enabled,  String, default: 'true'
-attribute :hostname, String, default: 'localhost'
-attribute :port,     String, default: '514'
-attribute :level,    String, default: 'ALL'
-attribute :server_address, String, default: 'localhost'
-attribute :syslog_format, String, default: 'RFC5424'
+property :handler,  String, name_property: true
+property :app_name, String, required: true
+property :type,     String, required: true
+property :enabled,  String, default: 'true'
+property :hostname, String, default: 'localhost'
+property :port,     String, default: '514'
+property :level,    String, default: 'ALL'
+property :server_address, String, default: 'localhost'
+property :syslog_format, String, default: 'RFC5424'
 
 #
 # => Define the Default Resource Action

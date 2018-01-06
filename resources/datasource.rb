@@ -23,14 +23,14 @@
 resource_name :wildfly_datasource
 
 # => Define the Resource Properties
-attribute :dsname,        String, name_property: true
-attribute :jndiname,      String
-attribute :drivername,    String
-attribute :connectionurl, String
-attribute :username,      [String, NilClass]
-attribute :password,      [String, NilClass]
-attribute :sensitive,     [TrueClass, FalseClass], default: true
-attribute :instance,      String
+property :dsname,        String, name_property: true
+property :jndiname,      String
+property :drivername,    String
+property :connectionurl, String
+property :username,      [String, NilClass]
+property :password,      [String, NilClass]
+property :sensitive,     [TrueClass, FalseClass], default: true
+property :instance,      String, required: false
 
 #
 # => Define the Default Resource Action

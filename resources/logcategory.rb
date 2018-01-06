@@ -22,10 +22,10 @@
 # => Define the Resource Name
 resource_name :wildfly_logcategory
 
-attribute :logger, String, name_property: true
-attribute :use_parent_handlers, String
-attribute :level,    String
-attribute :handlers, Array
+property :logger, String, name_property: true
+property :use_parent_handlers, String
+property :level,    String
+property :handlers, Array
 
 #
 # => Define the Default Resource Action
