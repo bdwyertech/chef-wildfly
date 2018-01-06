@@ -56,7 +56,7 @@ action :delete do
       delete_datasource
     end
   else
-    Chef::Log.info "#{current_resource} doesn't exist - can't delete."
+    Chef::Log.info "#{new_resource} doesn't exist - can't delete."
   end
 end
 
