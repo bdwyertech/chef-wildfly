@@ -24,29 +24,34 @@ module WildFly
     module_function
 
     # => Search for a WildFly Instance and grab its Configuration Properties
-    def jb_cli_cfg(resource_type = 'wildfly', resource_name = 'wildfly')
+    def wildfly_cfg(resource_name = 'wildfly')
+      resource_type = 'wildfly'
       rc = Chef.run_context.resource_collection if Chef.run_context
       result = rc.find(resource_type => resource_name) rescue nil # rubocop: disable RescueModifier
       ret = {}
       unless result
-        ret['user'] = Chef.node['wildfly']['user']
-        ret['cwd']  = Chef.node['wildfly']['base']
-        ret['port'] = '9990'
+        ret['user']    = Chef.node['wildfly']['user']
+        ret['group']   = Chef.node['wildfly']['group']
+        ret['dir']     = Chef.node['wildfly']['base']
+        ret['service'] = Chef.node['wildfly']['service']
+        ret['port']    = '9990'
         return ret
       end
-      ret['user'] = result.service_user
-      ret['cwd']  = result.base_dir
-      ret['port'] = result.bind_management_http
+      ret['user']    = result.service_user
+      ret['group']   = result.service_group
+      ret['dir']     = result.base_dir
+      ret['service'] = result.service_name
+      ret['port']    = result.bind_management_http
       ret
     end
 
     def jb_cli(cmd, instance = 'wildfly')
       # => Grab Configuration
-      cfg = jb_cli_cfg('wildfly', instance)
+      cfg = wildfly_cfg(instance)
       Chef::Log.warn("Running JB-CLI(#{cfg['port']}): " + cmd)
       cmd = Mixlib::ShellOut.new("bin/jboss-cli.sh --controller=remote+http://localhost:#{cfg['port']} -c '#{cmd}'")
       cmd.user = cfg['user']
-      cmd.cwd  = cfg['cwd']
+      cmd.cwd  = cfg['dir']
       cmd.environment = { 'HOME' => ::Dir.home(cmd.user), 'USER' => cmd.user }
       cmd.run_command
       Chef::Log.warn(cmd.stdout)
