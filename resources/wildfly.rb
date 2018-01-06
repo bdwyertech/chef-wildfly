@@ -43,6 +43,15 @@ property :launch_arguments,  Array, default: []
 property :server_properties, Array, default: []
 # => JPDA Debugging Console
 property :jpda_port, String, required: false
+# => Management Interface Port
+property :bind_management_http, String, default: lazy {
+  # => Search Server Properties
+  port = server_properties.find { |prop| prop.include? 'jboss.management.http.port' }
+  offset = server_properties.find { |prop| prop.include? 'jboss.socket.binding.port-offset' }
+  port = port ? port.split('=')[1] : '9990'
+  return port unless offset
+  (offset.split('=')[1].to_i + port.to_i).to_s
+}
 
 #
 # => Define the Default Resource Action
@@ -124,15 +133,10 @@ action :install do
     action ::File.exist?(::File.join(new_resource.base_dir, '.chef_deployed')) ? :nothing : :run
   end
 
-  # Deploy Service Configuration
-  wf_cfgdir = directory 'WildFly Configuration Directory' do
-    path '/etc/wildfly'
-    action :create
-  end
-
+  # => Deploy Service Configuration
   wf_props = file 'WildFly Properties' do
     content new_resource.server_properties.join("\n")
-    path ::File.join(wf_cfgdir.path, new_resource.service_name + '.properties')
+    path ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'service.properties')
     action :create
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
@@ -222,6 +226,7 @@ action :standalone do
     source 'mgmt-users.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       mgmt_users: wildfly['users']['mgmt']
@@ -233,6 +238,7 @@ action :standalone do
     source 'application-users.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       app_users: wildfly['users']['app']
@@ -244,6 +250,7 @@ action :standalone do
     source 'application-roles.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       app_roles: wildfly['roles']['app']
@@ -255,6 +262,7 @@ action :standalone do
     source 'standalone.conf.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0644'
     variables(
       xms: wildfly['java_opts']['xms'],
@@ -278,6 +286,7 @@ action :domain do
     source 'mgmt-users.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       mgmt_users: wildfly['users']['mgmt']
@@ -289,6 +298,7 @@ action :domain do
     source 'application-users.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       app_users: wildfly['users']['app']
@@ -300,6 +310,7 @@ action :domain do
     source 'application-roles.properties.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0600'
     variables(
       app_roles: wildfly['roles']['app']
@@ -311,6 +322,7 @@ action :domain do
     source 'domain.conf.erb'
     user new_resource.service_user
     group new_resource.service_group
+    cookbook 'wildfly'
     mode '0644'
     variables(
       xms: wildfly['java_opts']['xms'],
