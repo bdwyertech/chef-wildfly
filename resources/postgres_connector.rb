@@ -22,16 +22,15 @@
 resource_name :wildfly_postgres_connector
 
 # => Shorten Hashes
-wildfly = node['wildfly']
 postgresql = node['wildfly']['postgresql']
 
 # => Define the Resource Properties
 property :instance, String, required: false
-property :base_dir, String, default: wildfly['base']
+property :base_dir, String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['dir'] }
 property :url,      String, default: postgresql['url']
 property :checksum, String, required: false
-property :user,     String, default: wildfly['user']
-property :group,    String, default: wildfly['group']
+property :user,     String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['user'] }
+property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['group'] }
 
 #
 # => Define the Default Resource Action
@@ -64,6 +63,7 @@ action :install do
     source 'module.xml.erb'
     user new_resource.user
     group new_resource.group
+    cookbook 'wildfly'
     mode '0644'
     variables(
       module_name: 'org.postgresql',
@@ -75,9 +75,9 @@ action :install do
   end
 
   if jdbc_driver_exists?
-    Chef::Log.info "#{@new_resource} already configured - nothing to do."
+    Chef::Log.info "#{new_resource} already configured - nothing to do."
   else
-    converge_by("Configure #{@new_resource}") do
+    converge_by("Configure #{new_resource}") do
       deploy_jdbc_driver
     end
   end
@@ -91,7 +91,7 @@ action_class.class_eval do
   include WildFly::Helper
 
   def jdbc_driver_exists?
-    result = jb_cli('/subsystem=datasources/jdbc-driver=postgresql:read-resource')
+    result = jb_cli('/subsystem=datasources/jdbc-driver=postgresql:read-resource', new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -102,7 +102,7 @@ action_class.class_eval do
       'driver-datasource-class-name=org.postgresql.Driver',
       'driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource',
     ].join(',')
-    jb_cli("/subsystem=datasources/jdbc-driver=postgresql:add(#{driver_params})")
+    jb_cli("/subsystem=datasources/jdbc-driver=postgresql:add(#{driver_params})", new_resource.instance)
   end
 
   # => Shorten Postgres Directory Name

@@ -58,7 +58,7 @@ suites:
       'centos-7',
       # 'ubuntu-16.04'
     ]
-suites:
+
   - name: 'resource'
     run_list:
       - recipe[test::resource]

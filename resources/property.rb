@@ -65,10 +65,10 @@ end
 action_class.class_eval do
   def notify?
     # Only notify if restart parameter is true
-    if @new_resource.restart
-      @new_resource.updated_by_last_action(true)
+    if new_resource.restart
+      new_resource.updated_by_last_action(true)
     else
-      @new_resource.updated_by_last_action(false)
+      new_resource.updated_by_last_action(false)
     end
   end
 

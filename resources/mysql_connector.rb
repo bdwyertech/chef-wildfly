@@ -88,9 +88,9 @@ action :install do
   end
 
   if jdbc_driver_exists?
-    Chef::Log.info "#{@new_resource} already configured - nothing to do."
+    Chef::Log.info "#{new_resource} already configured - nothing to do."
   else
-    converge_by("Configure #{@new_resource}") do
+    converge_by("Configure #{new_resource}") do
       deploy_jdbc_driver
     end
   end

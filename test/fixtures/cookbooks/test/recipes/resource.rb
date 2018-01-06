@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 # Resource Test
 
-include_recipe 'wildfly::default'
+include_recipe 'java'
 
 service 'wildfly2' do
   action :nothing
@@ -9,9 +9,8 @@ end
 
 wildfly 'wildfly2' do
   base_dir '/opt/wildfly2'
-  bind_management_http '9991'
   server_properties [
-    'jboss.socket.binding.port-offset=1',
+    'jboss.socket.binding.port-offset=2',
     'jboss.bind.address.management=0.0.0.0',
     # 'jboss.management.http.port=9990',
     # 'jboss.management.https.port=9993',
@@ -29,13 +28,6 @@ end
 # include_recipe 'wildfly::mysql_connector' if node['wildfly']['mysql']['enabled']
 # include_recipe 'wildfly::postgres_connector' if node['wildfly']['postgresql']['enabled']
 
-wildfly_property 'Database URL' do
-  property 'JdbcUrl'
-  value 'jdbc:mysql://1.2.3.4:3306/testdbb'
-  action :set
-  notifies :restart, 'service[wildfly]', :delayed
-end
-
 wildfly_property 'Database URL 2' do
   property 'JdbcUrl'
   value 'jdbc:mysql://1.2.3.4:3306/testdbb123'
@@ -44,22 +36,18 @@ wildfly_property 'Database URL 2' do
   notifies :restart, 'service[wildfly2]', :delayed
 end
 
-wildfly_mysql_connector 'wildfly' do
-  action :install
-end
-
-wildfly_postgres_connector 'wildfly' do
-  action :install
-end
-
 wildfly_mysql_connector 'wildfly2' do
-  base_dir '/opt/wildfly2'
-  user 'wildfly2'
-  group 'wildfly2'
+  instance 'wildfly2'
+  action :install
+end
+
+wildfly_postgres_connector 'wildfly2' do
+  instance 'wildfly2'
   action :install
 end
 
 wildfly_attribute 'postbox jndi-name' do
+  instance 'wildfly2'
   path '/subsystem=mail/mail-session="postbox"'
   parameter 'jndi-name'
   value 'java:/mail/postbox'
@@ -67,6 +55,7 @@ wildfly_attribute 'postbox jndi-name' do
 end
 
 wildfly_attribute 'postbox-escaped' do
+  instance 'wildfly2'
   path '/subsystem=mail/mail-session="postbox-escaped"'
   parameter 'jndi-name'
   value ' WTF BRUHHH /345%20'
@@ -74,6 +63,7 @@ wildfly_attribute 'postbox-escaped' do
 end
 
 wildfly_attribute 'postbox-noescaped' do
+  instance 'wildfly2'
   path '/subsystem=mail/mail-session="postboxnoescaped"'
   parameter 'jndi-name'
   value ' WTF BRUHHH /345%200'
@@ -82,6 +72,7 @@ wildfly_attribute 'postbox-noescaped' do
 end
 
 wildfly_attribute 'postbox-noescaped' do
+  instance 'wildfly2'
   path '/subsystem=mail/mail-session="postboxnoescapedsafe"'
   parameter 'jndi-name'
   value 'WTF'
@@ -94,6 +85,7 @@ end
 # end
 
 wildfly_datasource 'example' do
+  instance 'wildfly2'
   jndiname 'java:jboss/datasource/example'
   drivername 'mysql'
   connectionurl 'jdbc:some://127.0.0.1/example'
