@@ -1,4 +1,2 @@
-Metrics/LineLength:
-  Max: 99
-BlockLength:
-  Max: 99
+inherit_from:
+  - ./.cookstyle/default.yml
