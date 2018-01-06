@@ -1,6 +1,5 @@
 # Encoding: UTF-8
 
-# rubocop:disable LineLength
 #
 # Cookbook Name:: wildfly
 # Resource:: wildfly
@@ -35,7 +34,7 @@ property :service_group,  String, default: lazy { service_name }
 property :version,        String, default: wildfly['version']
 property :url,            String, default: wildfly['url']
 property :checksum,       String, default: wildfly['checksum']
-property :mode,           String, equal_to: %w[domain standalone], default: wildfly['mode']
+property :mode,           String, equal_to: %w(domain standalone), default: wildfly['mode']
 property :config,         String, default: 'standalone-full.xml'
 property :log_dir,        String, default: lazy { ::File.join(base_dir, mode, 'log') }
 # => Launch Arguments passed through to SystemD
@@ -56,7 +55,7 @@ default_action :install
 #
 # => Define the Install Action
 #
-action :install do # rubocop: disable BlockLength
+action :install do
   #
   # => Deploy the WildFly Application Server
   #
@@ -143,8 +142,8 @@ action :install do # rubocop: disable BlockLength
 
   systemd_service new_resource.service_name do
     unit_description 'The WildFly Application Server'
-    unit_before %w[httpd.service]
-    unit_after %w[syslog.target network.target remote-fs.target nss-lookup.target]
+    unit_before %w(httpd.service)
+    unit_after %w(syslog.target network.target remote-fs.target nss-lookup.target)
     install_wanted_by 'multi-user.target'
     service_pid_file "/var/run/wildfly/#{new_resource.service_name}.pid"
     service do
@@ -158,7 +157,7 @@ action :install do # rubocop: disable BlockLength
         "-c=#{new_resource.config}",
         "-b=#{new_resource.bind}",
         "-P=#{wf_props.path}",
-        new_resource.launch_arguments.join(' ')
+        new_resource.launch_arguments.join(' '),
       ].join(' ')
       nice '-5'.to_i
       private_tmp true

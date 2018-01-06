@@ -1,8 +1,5 @@
-# frozen_string_literal: true
-
 # Encoding: UTF-8
 
-# rubocop:disable LineLength
 #
 # Cookbook Name:: wildfly
 # Resource:: property
@@ -26,7 +23,7 @@
 resource_name :wildfly_property
 
 # => Define the Resource Properties
-property :property, String, required: true, name_attribute: true
+property :property, String, required: true, name_property: true
 property :value, String
 property :restart, [FalseClass, TrueClass], default: true
 property :enable_escape, [FalseClass, TrueClass], default: true
@@ -42,9 +39,9 @@ default_action :set
 #
 action :set do
   if property_value_exists?
-    Chef::Log.info "#{@new_resource} already set - nothing to do."
+    Chef::Log.info "#{new_resource} already set - nothing to do."
   else
-    converge_by("Set #{@new_resource}") do
+    converge_by("Set #{new_resource}") do
       property_set
     end
     notify?
@@ -56,12 +53,12 @@ end
 #
 action :delete do
   if property_exists?
-    converge_by("Delete #{@new_resource}") do
+    converge_by("Delete #{new_resource}") do
       property_delete
     end
     notify?
   else
-    Chef::Log.info "#{@new_resource} not present - nothing to do."
+    Chef::Log.info "#{new_resource} not present - nothing to do."
   end
 end
 
@@ -87,7 +84,7 @@ action_class.class_eval do
 
   def property_exists?
     result = jb_cli("/system-property=#{new_resource.property}:read-resource")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def property_set
@@ -96,17 +93,17 @@ action_class.class_eval do
           else
             value
           end
-    if property_exists?
+    if property_exists? # rubocop: disable Style/ConditionalAssignment
       result = jb_cli("/system-property=#{new_resource.property}:write-attribute(name=value,value=\"#{val}\")")
     else
       result = jb_cli("/system-property=#{new_resource.property}:add(value=\"#{val}\")")
     end
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def property_delete
     result = jb_cli("/system-property=#{new_resource.property}:remove()")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def convert_to_hash(txt)

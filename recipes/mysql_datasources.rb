@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-# rubocop:disable LineLength
-
-# encoding: UTF-8
+# Encoding: UTF-8
 
 # Cookbook Name:: wildfly
 # Recipe:: mysql_datasources

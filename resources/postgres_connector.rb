@@ -66,7 +66,7 @@ action :install do
     group new_resource.group
     mode '0644'
     variables(
-      module_name: postgresql['mod_name'],
+      module_name: 'org.postgresql',
       resource_path: postgres_jar,
       module_dependencies: postgresql['mod_deps'],
       optional_dependencies: postgresql['mod_deps_optional']
@@ -92,7 +92,7 @@ action_class.class_eval do
 
   def jdbc_driver_exists?
     result = jb_cli('/subsystem=datasources/jdbc-driver=postgresql:read-resource')
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def deploy_jdbc_driver
@@ -100,7 +100,7 @@ action_class.class_eval do
       'driver-name=postgresql',
       'driver-module-name=org.postgresql',
       'driver-datasource-class-name=org.postgresql.Driver',
-      'driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource'
+      'driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=postgresql:add(#{driver_params})")
   end

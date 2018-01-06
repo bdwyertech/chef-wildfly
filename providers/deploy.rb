@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-# rubocop:disable LineLength, Metrics/AbcSize
-
-# encoding: UTF-8
+# Encoding: UTF-8
 
 # Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
 #

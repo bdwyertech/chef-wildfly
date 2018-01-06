@@ -1,10 +1,10 @@
-# frozen_string_literal: true
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# LWRP that provisions a datasource
 #
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Cookbook Name:: wildfly
+# Resource:: datasource
+#
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

@@ -1,6 +1,5 @@
 # Encoding: UTF-8
 
-# rubocop: disable AbcSize, LineLength, MethodLength
 #
 # Cookbook:: wildfly
 # Library:: config

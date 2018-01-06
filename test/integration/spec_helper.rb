@@ -1,7 +1,5 @@
 # Encoding: UTF-8
 
-# rubocop: disable AbcSize, MethodLength
-
 #
 # => WildFly
 #

@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-# rubocop:disable LineLength
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

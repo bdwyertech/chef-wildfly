@@ -37,12 +37,12 @@ Vagrant.configure('2') do |config|
     chef.json = {}
 
     chef.run_list = [
-      'recipe[wildfly::default]'
+      'recipe[wildfly::default]',
     ]
   end
 
   # => VMware Customization
-  %w[vmware_workstation vmware_fusion].each do |platform|
+  %w(vmware_workstation vmware_fusion).each do |platform|
     config.vm.provider platform do |v|
       v.vmx['memsize'] = '4096'
       v.vmx['numvcpus'] = '4'
