@@ -41,9 +41,6 @@ property :log_dir,        String, default: lazy { ::File.join(base_dir, mode, 'l
 property :launch_arguments,  Array, default: []
 # => Properties to be dropped into service.properties file
 property :server_properties, Array, default: []
-# => Interface Binding
-property :bind, String, default: '0.0.0.0'
-property :bind_management_http, String, default: '9990'
 # => JPDA Debugging Console
 property :jpda_port, String, required: false
 
@@ -155,7 +152,6 @@ action :install do
       exec_start [
         ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
         "-c=#{new_resource.config}",
-        "-b=#{new_resource.bind}",
         "-P=#{wf_props.path}",
         new_resource.launch_arguments.join(' '),
       ].join(' ')
