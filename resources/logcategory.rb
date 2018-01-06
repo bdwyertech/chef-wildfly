@@ -1,10 +1,10 @@
-# frozen_string_literal: true
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# LWRP that provisions a datasource
 #
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Cookbook Name:: wildfly
+# Resource:: logcategory
+#
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,12 +19,74 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+# => Define the Resource Name
+resource_name :wildfly_logcategory
+
+attribute :logger, String, name_property: true
+attribute :use_parent_handlers, String
+attribute :level,    String
+attribute :handlers, Array
+
+#
+# => Define the Default Resource Action
+#
 default_action :create
 
-attribute :name, kind_of: String, required: true, name_attribute: true
-attribute :use_parent_handlers, kind_of: String
-attribute :level,    kind_of: String
-attribute :handlers, kind_of: Array
+#
+# => Create a Log Category
+#
+action :create do
+  if logcategory_exists?
+    Chef::Log.info "#{new_resource} already exists - nothing to do."
+  else
+    converge_by("Create #{new_resource}") do
+      create_logcategory
+    end
+  end
+end
 
-attr_accessor :exists
+#
+# => Delete a Log Category
+#
+action :delete do
+  if logcategory_exists?
+    converge_by("Delete #{new_resource}") do
+      delete_logcategory
+    end
+  else
+    Chef::Log.info "#{new_resource} doesn't exist - can't delete."
+  end
+end
+
+action_class.class_eval do
+  # => Include Helper Modules
+  include WildFly::Helper
+
+  def logcategory_exists?
+    result = jb_cli("/subsystem=logging/logger=#{new_resource.logger}:read-resource")
+    result.exitstatus == 0
+  end
+
+  def create_logcategory
+    handlers = '['
+    unless new_resource.handlers.nil? || new_resource.handlers.empty?
+      new_resource.handlers.each_with_index do |_item, index|
+        handlers += '"' + new_resource.handlers[index] + '"'
+        handlers += ', ' if new_resource.handlers.length - 1 != index
+      end
+    end
+    handlers += ']'
+
+    params = [
+      "use-parent-handlers=#{new_resource.use_parent_handlers}",
+      "level=#{new_resource.level}",
+      "handlers=#{handlers}",
+    ].join(',')
+
+    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:add(#{params})")
+  end
+
+  def delete_logcategory
+    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:remove")
+  end
+end

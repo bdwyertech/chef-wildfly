@@ -1,5 +1,6 @@
 # Encoding: UTF-8
 
+#
 # Cookbook Name:: wildfly
 # Resource:: mysql_connector
 #
@@ -77,7 +78,7 @@ action :install do
     group new_resource.group
     mode '0644'
     variables(
-      module_name: mysql['mod_name'],
+      module_name: 'com.mysql',
       resource_path: connectorj_jar,
       module_dependencies: mysql['mod_deps'],
       optional_dependencies: mysql['mod_deps_optional']
@@ -104,7 +105,7 @@ action_class.class_eval do
 
   def jdbc_driver_exists?
     result = jb_cli('/subsystem=datasources/jdbc-driver=mysql:read-resource')
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def deploy_jdbc_driver
@@ -112,7 +113,7 @@ action_class.class_eval do
       'driver-name=mysql',
       'driver-module-name=com.mysql',
       'driver-datasource-class-name=com.mysql.jdbc.Driver',
-      'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource'
+      'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})")
   end

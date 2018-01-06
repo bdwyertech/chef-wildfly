@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Encoding: UTF-8
 
 #
@@ -25,7 +23,7 @@
 resource_name :wildfly_attribute
 
 # => Define the Resource Properties
-property :parameter, String, required: true, name_attribute: true
+property :parameter, String, required: true, name_property: true
 property :value,     String, coerce: proc { |m| enable_escape ? Shellwords.escape(m) : m }
 property :path,      String
 property :restart,   [FalseClass, TrueClass], default: true
@@ -42,9 +40,9 @@ default_action :set
 #
 action :set do
   if attribute_value_exists?
-    Chef::Log.info "#{@new_resource} already set - nothing to do."
+    Chef::Log.info "#{new_resource} already set - nothing to do."
   else
-    converge_by("Set #{@new_resource}") do
+    converge_by("Set #{new_resource}") do
       if attribute_exists?
         attribute_set
       else
@@ -60,7 +58,7 @@ action_class.class_eval do
 
   def attribute_exists?
     result = jb_cli("#{new_resource.path}:read-attribute(name=#{new_resource.parameter})")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def attribute_value_exists?
@@ -70,13 +68,12 @@ action_class.class_eval do
   end
 
   def attribute_add
-    # => Allow setting parameters ('/subsystem=mail/mail-session="postbox":add(jndi-name="java:/mail/postbox",debug=true)')
     result = jb_cli("#{new_resource.path}:add(#{new_resource.parameter})")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def attribute_set
     result = jb_cli("#{new_resource.path}:write-attribute(name=#{new_resource.parameter},value=#{new_resource.value})")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 end

@@ -42,9 +42,9 @@ default_action :create
 #
 action :create do
   if datasource_exists?
-    Chef::Log.info "#{@new_resource} already exists - nothing to do."
+    Chef::Log.info "#{new_resource} already exists - nothing to do."
   else
-    converge_by("Create #{@new_resource}") do
+    converge_by("Create #{new_resource}") do
       create_datasource
     end
   end
@@ -52,11 +52,11 @@ end
 
 action :delete do
   if datasource_exists?
-    converge_by("Delete #{@new_resource}") do
+    converge_by("Delete #{new_resource}") do
       delete_datasource
     end
   else
-    Chef::Log.info "#{@current_resource} doesn't exist - can't delete."
+    Chef::Log.info "#{current_resource} doesn't exist - can't delete."
   end
 end
 
@@ -66,16 +66,16 @@ action_class.class_eval do
 
   def datasource_exists?
     result = jb_cli("/subsystem=datasources/data-source=#{new_resource.dsname.gsub('/', '\/')}:read-resource")
-    result.exitstatus.zero?
+    result.exitstatus == 0
   end
 
   def create_datasource
-    params = %W[
+    params = %W(
       --name=#{new_resource.dsname}
       --jndi-name=#{new_resource.jndiname}
       --driver-name=#{new_resource.drivername}
       --connection-url=#{new_resource.connectionurl}
-    ]
+    )
     params << "--user-name=#{new_resource.username}" if new_resource.username
     params << "--password=#{new_resource.password}" if new_resource.password
 
