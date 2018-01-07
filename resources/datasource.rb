@@ -29,7 +29,6 @@ property :drivername,    String
 property :connectionurl, String
 property :username,      [String, NilClass]
 property :password,      [String, NilClass]
-property :sensitive,     [TrueClass, FalseClass], default: true
 property :instance,      String, required: false
 
 #
