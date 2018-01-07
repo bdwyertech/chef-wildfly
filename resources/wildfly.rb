@@ -193,6 +193,64 @@ action :install do
   #   create '644 root root'
   # end
 
+  #
+  # => WildFly Configuration
+  #
+
+  # => Configure Wildfly - MGMT Users
+  template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'mgmt-users.properties') do
+    source 'mgmt-users.properties.erb'
+    user new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    mode '0600'
+    variables(
+      mgmt_users: wildfly['users']['mgmt']
+    )
+  end
+
+  # => Configure Wildfly - Application Users
+  template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'application-users.properties') do
+    source 'application-users.properties.erb'
+    user new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    mode '0600'
+    variables(
+      app_users: wildfly['users']['app']
+    )
+  end
+
+  # => Configure Wildfly - Application Roles
+  template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'application-roles.properties') do
+    source 'application-roles.properties.erb'
+    user new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    mode '0600'
+    variables(
+      app_roles: wildfly['roles']['app']
+    )
+  end
+
+  # => Configure Java Options
+  template ::File.join(new_resource.base_dir, 'bin', "#{new_resource.mode}.conf") do
+    source "#{new_resource.mode}.conf.erb"
+    user new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    mode '0644'
+    variables(
+      xms: wildfly['java_opts']['xms'],
+      xmx: wildfly['java_opts']['xmx'],
+      maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
+      preferipv4: wildfly['java_opts']['preferipv4'],
+      headless: wildfly['java_opts']['headless'],
+      jpda: new_resource.jpda_port || false
+    )
+    notifies :restart, "service[#{new_resource.service_name}]", :delayed
+  end
+
   # => Create file to indicate deployment and prevent recurring configuration deployment
   file ::File.join(new_resource.base_dir, '.chef_deployed') do
     content new_resource.version
@@ -201,139 +259,10 @@ action :install do
     action :create_if_missing
   end
 
-  # => Deploy Configuration
-  ruby_block "Deploy WildFly Configuration (#{new_resource.service_name})" do
-    block do
-      new_resource.run_action(new_resource.mode.to_sym)
-    end
-  end
-
   # => Start the WildFly Service
   service new_resource.service_name do
     supports status: true, restart: true, reload: true
     action [:enable, :start]
-  end
-end
-
-# => Define the Configure Standalone Mode Action
-action :standalone do
-  #
-  # => Configure Standalone Mode
-  #
-
-  # => Configure Wildfly Standalone - MGMT Users
-  template ::File.join(new_resource.base_dir, 'standalone', 'configuration', 'mgmt-users.properties') do
-    source 'mgmt-users.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      mgmt_users: wildfly['users']['mgmt']
-    )
-  end
-
-  # => Configure Wildfly Standalone - Application Users
-  template ::File.join(new_resource.base_dir, 'standalone', 'configuration', 'application-users.properties') do
-    source 'application-users.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      app_users: wildfly['users']['app']
-    )
-  end
-
-  # => Configure Wildfly Standalone - Application Roles
-  template ::File.join(new_resource.base_dir, 'standalone', 'configuration', 'application-roles.properties') do
-    source 'application-roles.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      app_roles: wildfly['roles']['app']
-    )
-  end
-
-  # => Configure Java Options - Standalone
-  template ::File.join(new_resource.base_dir, 'bin', 'standalone.conf') do
-    source 'standalone.conf.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0644'
-    variables(
-      xms: wildfly['java_opts']['xms'],
-      xmx: wildfly['java_opts']['xmx'],
-      maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
-      preferipv4: wildfly['java_opts']['preferipv4'],
-      headless: wildfly['java_opts']['headless'],
-      jpda: new_resource.jpda_port || false
-    )
-    notifies :restart, "service[#{service_name}]", :delayed
-  end
-end
-
-action :domain do
-  #
-  # => Configure Domain Mode
-  #
-
-  # => Configure Wildfly Domain - MGMT Users
-  template ::File.join(new_resource.base_dir, 'domain', 'configuration', 'mgmt-users.properties') do
-    source 'mgmt-users.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      mgmt_users: wildfly['users']['mgmt']
-    )
-  end
-
-  # => Configure Wildfly Domain - Application Users
-  template ::File.join(new_resource.base_dir, 'domain', 'configuration', 'application-users.properties') do
-    source 'application-users.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      app_users: wildfly['users']['app']
-    )
-  end
-
-  # => Configure Wildfly Domain - Application Roles
-  template ::File.join(new_resource.base_dir, 'domain', 'configuration', 'application-roles.properties') do
-    source 'application-roles.properties.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0600'
-    variables(
-      app_roles: wildfly['roles']['app']
-    )
-  end
-
-  # => Configure Java Options - Domain
-  template ::File.join(new_resource.base_dir, 'bin', 'domain.conf') do
-    source 'domain.conf.erb'
-    user new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    mode '0644'
-    variables(
-      xms: wildfly['java_opts']['xms'],
-      xmx: wildfly['java_opts']['xmx'],
-      maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
-      preferipv4: wildfly['java_opts']['preferipv4'],
-      headless: wildfly['java_opts']['headless'],
-      jpda: new_resource.jpda_port || false
-    )
-    notifies :restart, "service[#{service_name}]", :delayed
-    only_if { wildfly['mode'] == 'domain' }
   end
 end
 
