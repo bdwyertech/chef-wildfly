@@ -31,6 +31,7 @@ property :port,     String, default: '514'
 property :level,    String, default: 'ALL'
 property :server_address, String, default: 'localhost'
 property :syslog_format, String, default: 'RFC5424'
+property :instance, String, required: false
 
 #
 # => Define the Default Resource Action
@@ -68,7 +69,7 @@ action_class.class_eval do
   include WildFly::Helper
 
   def loghandler_exists?
-    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:read-resource")
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:read-resource", new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -77,12 +78,12 @@ action_class.class_eval do
       "hostname=#{new_resource.hostname}",
       "app-name=#{new_resource.app_name}",
     ].join(',')
-    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:add(#{params})")
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:add(#{params})", new_resource.instance)
     result.exitstatus == 0
   end
 
   def delete_loghandler
-    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:remove")
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:remove", new_resource.instance)
     result.exitstatus == 0
   end
 end

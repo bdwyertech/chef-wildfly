@@ -26,6 +26,7 @@ property :logger, String, name_property: true
 property :use_parent_handlers, String
 property :level,    String
 property :handlers, Array
+property :instance, String, required: false
 
 #
 # => Define the Default Resource Action
@@ -63,7 +64,7 @@ action_class.class_eval do
   include WildFly::Helper
 
   def logcategory_exists?
-    result = jb_cli("/subsystem=logging/logger=#{new_resource.logger}:read-resource")
+    result = jb_cli("/subsystem=logging/logger=#{new_resource.logger}:read-resource", new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -83,10 +84,10 @@ action_class.class_eval do
       "handlers=#{handlers}",
     ].join(',')
 
-    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:add(#{params})")
+    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:add(#{params})", new_resource.instance)
   end
 
   def delete_logcategory
-    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:remove")
+    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:remove", new_resource.instance)
   end
 end
