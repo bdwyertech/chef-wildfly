@@ -113,8 +113,8 @@ action :install do
   end
 
   # => Download WildFly Tarball
-  remote_file "Download WildFly #{new_resource.version}" do
     path ::File.join(Chef::Config[:file_cache_path], "#{new_resource.version}.tar.gz")
+  wf_tar = remote_file "Download WildFly #{new_resource.version}" do
     source new_resource.url
     checksum new_resource.checksum
     action :create
@@ -124,9 +124,8 @@ action :install do
 
   # => Extract WildFly
   bash "Extract WildFly #{new_resource.version}" do
-    cwd Chef::Config[:file_cache_path]
     code <<-EOF
-    tar xzf #{new_resource.version}.tar.gz -C #{new_resource.base_dir} --strip 1
+    tar xzf #{wf_tar.path} -C #{new_resource.base_dir} --strip 1
     chown #{new_resource.service_user}:#{new_resource.service_group} -R #{new_resource.base_dir}
     rm -f #{::File.join(new_resource.base_dir, '.chef_deployed')}
     EOF
@@ -146,23 +145,25 @@ action :install do
     unit_before %w(httpd.service)
     unit_after %w(syslog.target network.target remote-fs.target nss-lookup.target)
     install_wanted_by 'multi-user.target'
-    service_pid_file "/var/run/wildfly/#{new_resource.service_name}.pid"
     service do
+      service_user new_resource.service_user
+      service_group new_resource.service_group
+      working_directory new_resource.base_dir
+      runtime_directory new_resource.service_name
       environment(
         LAUNCH_JBOSS_IN_BACKGROUND: 1
       )
-      service_user new_resource.service_user
-      service_group new_resource.service_group
+      pass_environment environment.keys
       exec_start [
         ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
         "-c=#{new_resource.config}",
         "-P=#{wf_props.path}",
         new_resource.launch_arguments.join(' '),
       ].join(' ')
+      exec_start_post '/bin/sleep 5'
       nice '-5'.to_i
       private_tmp true
       # standard_output 'null'
-      verify false
     end
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
