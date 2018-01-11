@@ -48,7 +48,7 @@ end
 
 wildfly_attribute 'postbox jndi-name' do
   instance 'wildfly2'
-  path '/subsystem=mail/mail-session="postbox"'
+  path '/subsystem=mail/mail-session=postbox'
   parameter 'jndi-name'
   value 'java:/mail/postbox'
   action :set
@@ -56,7 +56,7 @@ end
 
 wildfly_attribute 'postbox-escaped' do
   instance 'wildfly2'
-  path '/subsystem=mail/mail-session="postbox-escaped"'
+  path '/subsystem=mail/mail-session=postbox-escaped'
   parameter 'jndi-name'
   value ' WTF BRUHHH /345%20'
   action :set
@@ -64,7 +64,7 @@ end
 
 wildfly_attribute 'postbox-noescaped' do
   instance 'wildfly2'
-  path '/subsystem=mail/mail-session="postboxnoescaped"'
+  path '/subsystem=mail/mail-session=postboxnoescaped'
   parameter 'jndi-name'
   value ' WTF BRUHHH /345%200'
   enable_escape false
@@ -73,20 +73,27 @@ end
 
 wildfly_attribute 'postbox-noescaped' do
   instance 'wildfly2'
-  path '/subsystem=mail/mail-session="postboxnoescapedsafe"'
+  path '/subsystem=mail/mail-session=postboxnoescapedsafe'
   parameter 'jndi-name'
   value 'WTF'
   enable_escape false
   action :set
 end
 
-# wildfly_deploy 'helloworld' do
-#   url 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
-# end
-
 wildfly_datasource 'example' do
   instance 'wildfly2'
   jndiname 'java:jboss/datasource/example'
   drivername 'mysql'
   connectionurl 'jdbc:some://127.0.0.1/example'
+end
+
+wildfly_deploy 'helloworld' do
+  instance 'wildfly2'
+  url 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
+end
+
+wildfly_deploy 'cluster-demo-v1' do
+  instance 'wildfly2'
+  url 'https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war'
+  runtime_name 'cluster-demo'
 end

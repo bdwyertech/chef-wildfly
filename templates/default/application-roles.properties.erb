@@ -24,6 +24,6 @@
 #
 #admin=PowerUser,BillingAdmin,
 #guest=guest
-<% @app_roles.each do |user| -%>
-<%= user['id'] %>=<%= user['roles'] %>
+<% @app_roles.each do |user, roles| -%>
+<%= user %>=<%= roles %>
 <% end -%>

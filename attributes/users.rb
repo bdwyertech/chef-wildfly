@@ -24,18 +24,18 @@ default['wildfly']['acp'] = 'simple'
 # => # => username=HEX( MD5( username ':' realm ':' password))
 
 # => Default user - wildfly - wildfly
-default['wildfly']['users']['mgmt'] = [
-  { id: 'wildfly', passhash: '2c6368f4996288fcc621c5355d3e39b7' },
-]
+default['wildfly']['users']['mgmt'].tap do |user|
+  user['wildfly'] = '2c6368f4996288fcc621c5355d3e39b7'
+end
 
 # Add application users to the hash 'app'  eg.
 #
-default['wildfly']['users']['app'] = [
-  { id: 'wildfly', passhash: '2c6368f4996288fcc621c5355d3e39b7' },
-]
+default['wildfly']['users']['app'].tap do |user|
+  user['wildfly'] = '2c6368f4996288fcc621c5355d3e39b7'
+end
 
 # Add application roles eg.
 #
-default['wildfly']['roles']['app'] = [
-  { id: 'wildfly', roles: 'role1,role2' },
-]
+default['wildfly']['roles']['app'].tap do |role|
+  role['wildfly'] = 'role1,role2'
+end

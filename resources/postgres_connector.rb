@@ -31,6 +31,7 @@ property :url,      String, default: postgresql['url']
 property :checksum, String, required: false
 property :user,     String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['user'] }
 property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['group'] }
+property :api,      [FalseClass, TrueClass], default: true
 
 #
 # => Define the Default Resource Action
@@ -38,10 +39,10 @@ property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance
 default_action :install
 
 #
-# => Install the PostGRES Connector
+# => Install the PostgreSQL Connector
 #
 action :install do
-  # => Create Postgres Directory
+  # => Create PostgreSQL Directory
   directory postgres_dir do
     owner new_resource.user
     group new_resource.group
@@ -49,7 +50,7 @@ action :install do
     recursive true
   end
 
-  # => Download PostreSQL driver
+  # => Download PostgreSQL driver
   remote_file ::File.join(postgres_dir, postgres_jar) do
     source new_resource.url
     checksum new_resource.checksum if new_resource.checksum
@@ -58,7 +59,7 @@ action :install do
     action :create
   end
 
-  # => Configure Postgres Module
+  # => Configure PostgreSQL Module
   template ::File.join(postgres_dir, 'module.xml') do
     source 'module.xml.erb'
     user new_resource.user
@@ -74,7 +75,17 @@ action :install do
     action :create
   end
 
-  if jdbc_driver_exists?
+  if new_resource.api
+    wildfly_resource 'PostgreSQL JDBC Driver' do
+      instance new_resource.instance
+      path '/subsystem=datasources/jdbc-driver=postgresql'
+      parameters 'driver-name' => 'postgresql',
+                 'driver-module-name' => 'org.postgresql',
+                 'driver-class-name' => 'org.postgresql.Driver',
+                 'driver-datasource-class-name' => 'org.postgresql.ds.PGConnectionPoolDataSource',
+                 'driver-xa-datasource-class-name' => 'org.postgresql.xa.PGXADataSource'
+    end
+  elsif jdbc_driver_exists?
     Chef::Log.info "#{new_resource} already configured - nothing to do."
   else
     converge_by("Configure #{new_resource}") do
@@ -99,7 +110,8 @@ action_class.class_eval do
     driver_params = [
       'driver-name=postgresql',
       'driver-module-name=org.postgresql',
-      'driver-datasource-class-name=org.postgresql.Driver',
+      'driver-class-name=org.postgresql.Driver',
+      'driver-datasource-class-name=org.postgresql.ds.PGConnectionPoolDataSource',
       'driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=postgresql:add(#{driver_params})", new_resource.instance)

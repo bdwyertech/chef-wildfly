@@ -16,7 +16,7 @@ wildfly_datasource 'example' do
 end
 
 wildfly_attribute 'postbox jndi-name' do
-  path '/subsystem=mail/mail-session="postbox"'
+  path '/subsystem=mail/mail-session=postbox'
   parameter 'jndi-name'
   value 'java:/mail/postbox'
   action :set

@@ -37,6 +37,7 @@ property :checksum,       String, default: wildfly['checksum']
 property :mode,           String, equal_to: %w(domain standalone), default: wildfly['mode']
 property :config,         String, default: 'standalone-full.xml'
 property :log_dir,        String, default: lazy { ::File.join(base_dir, mode, 'log') }
+property :create_mgmt_user, [FalseClass, TrueClass], default: true
 # => Launch Arguments passed through to SystemD
 property :launch_arguments,  Array, default: []
 # => Properties to be dropped into service.properties file
@@ -49,8 +50,8 @@ property :bind_management_http, String, default: lazy {
   port = server_properties.find { |prop| prop.include? 'jboss.management.http.port' }
   offset = server_properties.find { |prop| prop.include? 'jboss.socket.binding.port-offset' }
   port = port ? port.split('=')[1] : '9990'
-  return port unless offset
-  (offset.split('=')[1].to_i + port.to_i).to_s
+  offset = offset ? offset.split('=')[1] : '0'
+  (offset.to_i + port.to_i).to_s
 }
 
 #
@@ -113,13 +114,13 @@ action :install do
   end
 
   # => Download WildFly Tarball
-    path ::File.join(Chef::Config[:file_cache_path], "#{new_resource.version}.tar.gz")
   wf_tar = remote_file "Download WildFly #{new_resource.version}" do
+    path ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url))
     source new_resource.url
     checksum new_resource.checksum
     action :create
     notifies :run, "bash[Extract WildFly #{new_resource.version}]", :immediately
-    not_if { deployed? }
+    not_if { deployed_version? }
   end
 
   # => Extract WildFly
@@ -129,15 +130,35 @@ action :install do
     chown #{new_resource.service_user}:#{new_resource.service_group} -R #{new_resource.base_dir}
     rm -f #{::File.join(new_resource.base_dir, '.chef_deployed')}
     EOF
-    action ::File.exist?(::File.join(new_resource.base_dir, '.chef_deployed')) ? :nothing : :run
+    action deployed_version? ? :nothing : :run
+    notifies :stop, "service[#{new_resource.service_name}]", :before if deployed?
   end
 
   # => Deploy Service Configuration
-  wf_props = file 'WildFly Properties' do
+  wf_props = file 'WildFly - Service Properties' do
     content new_resource.server_properties.join("\n")
     path ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'service.properties')
+    owner new_resource.service_user
+    group new_resource.service_group
+    mode 0640
     action :create
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
+  end
+
+  start_marker = ::File.join(new_resource.base_dir, new_resource.mode, 'tmp', 'startup-marker')
+
+  helper = template 'WildFly - SystemD Helper' do
+    source 'systemd-helper.sh.erb'
+    path ::File.join(new_resource.base_dir, 'bin', 'systemd-helper.sh')
+    owner new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    variables(
+      start_marker: start_marker,
+      timeout: 60
+    )
+    mode 0750
+    action :create
   end
 
   systemd_service new_resource.service_name do
@@ -154,13 +175,15 @@ action :install do
         LAUNCH_JBOSS_IN_BACKGROUND: 1
       )
       pass_environment environment.keys
+      exec_start_pre "/bin/rm -f #{start_marker}"
       exec_start [
         ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
         "-c=#{new_resource.config}",
         "-P=#{wf_props.path}",
         new_resource.launch_arguments.join(' '),
       ].join(' ')
-      exec_start_post '/bin/sleep 5'
+      exec_start_post "#{helper.path} start"
+      exec_stop_post "#{helper.path} stop"
       nice '-5'.to_i
       private_tmp true
       # standard_output 'null'
@@ -198,6 +221,26 @@ action :install do
   # => WildFly Configuration
   #
 
+  mgmt_user = file 'WildFly - Chef Management User' do
+    path ::File.join(new_resource.base_dir, '.chef_user')
+    content Chef::JSONCompat.to_json_pretty(WildFly::Helper.wildfly_user) unless ::File.exist?(path)
+    sensitive true
+    owner 'root'
+    group 'root'
+    mode 0600
+    action new_resource.create_mgmt_user ? :create : :delete
+  end
+
+  if new_resource.create_mgmt_user
+    ruby_block 'WildFly - Grab Management User' do
+      block do
+        user = Chef::JSONCompat.parse(::File.read(mgmt_user.path))
+        node.run_state['wf_chef_user_' + new_resource.service_name] = user
+      end
+      action :run
+    end
+  end
+
   # => Configure Wildfly - MGMT Users
   template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'mgmt-users.properties') do
     source 'mgmt-users.properties.erb'
@@ -206,8 +249,10 @@ action :install do
     cookbook 'wildfly'
     mode '0600'
     variables(
-      mgmt_users: wildfly['users']['mgmt']
+      mgmt_users: wildfly['users']['mgmt'],
+      api_user: lazy { node.run_state['wf_chef_user_' + new_resource.service_name] }
     )
+    action :create
   end
 
   # => Configure Wildfly - Application Users
@@ -220,6 +265,7 @@ action :install do
     variables(
       app_users: wildfly['users']['app']
     )
+    action :create
   end
 
   # => Configure Wildfly - Application Roles
@@ -232,6 +278,7 @@ action :install do
     variables(
       app_roles: wildfly['roles']['app']
     )
+    action :create
   end
 
   # => Configure Java Options
@@ -244,11 +291,13 @@ action :install do
     variables(
       xms: wildfly['java_opts']['xms'],
       xmx: wildfly['java_opts']['xmx'],
-      maxpermsize: wildfly['java_opts']['xx_maxpermsize'],
+      xx_metaspacesize: wildfly['java_opts']['xx_metaspacesize'],
+      xx_maxmetaspacesize: wildfly['java_opts']['xx_maxmetaspacesize'],
       preferipv4: wildfly['java_opts']['preferipv4'],
       headless: wildfly['java_opts']['headless'],
       jpda: new_resource.jpda_port || false
     )
+    action :create
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
 
@@ -257,7 +306,7 @@ action :install do
     content new_resource.version
     user new_resource.service_user
     group new_resource.service_group
-    action :create_if_missing
+    action :create
   end
 
   # => Start the WildFly Service
@@ -271,6 +320,10 @@ action_class.class_eval do
   def deployed?
     marker = ::File.join(new_resource.base_dir, '.chef_deployed')
     return false unless ::File.exist?(marker)
-    ::File.read(marker) == new_resource.version
+    ::File.read(marker)
+  end
+
+  def deployed_version?
+    deployed? == new_resource.version
   end
 end

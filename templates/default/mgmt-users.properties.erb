@@ -28,6 +28,11 @@
 # The following illustrates how an admin user could be defined, this
 # is for illustration only and does not correspond to a usable password.
 #
-<% @mgmt_users.each do |user| -%>
-<%= user['id'] %>=<%= user['passhash'] %>
+<% @mgmt_users.each do |user, passhash| -%>
+<%= user %>=<%= passhash %>
+<% end -%>
+
+<% if @api_user -%>
+# Chef HTTP API User
+<%= @api_user['user'] %>=<%= @api_user['passhash'] %>
 <% end -%>

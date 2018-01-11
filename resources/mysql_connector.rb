@@ -33,6 +33,7 @@ property :url,      String, default: mysql['url']
 property :checksum, String, default: mysql['checksum']
 property :user,     String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['user'] }
 property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['group'] }
+property :api,      [FalseClass, TrueClass], default: true
 
 #
 # => Define the Default Resource Action
@@ -87,7 +88,18 @@ action :install do
     action :create
   end
 
-  if jdbc_driver_exists?
+  if new_resource.api
+    wildfly_resource 'MySQL Connector/J JDBC Driver' do
+      instance new_resource.instance
+      path '/subsystem=datasources/jdbc-driver=mysql'
+      parameters 'driver-name' => 'mysql',
+                 'driver-module-name' => 'com.mysql',
+                 'driver-class-name' => 'com.mysql.jdbc.Driver',
+                 # => com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
+                 'driver-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+                 'driver-xa-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource'
+    end
+  elsif jdbc_driver_exists?
     Chef::Log.info "#{new_resource} already configured - nothing to do."
   else
     converge_by("Configure #{new_resource}") do
@@ -112,7 +124,8 @@ action_class.class_eval do
     driver_params = [
       'driver-name=mysql',
       'driver-module-name=com.mysql',
-      'driver-datasource-class-name=com.mysql.jdbc.Driver',
+      'driver-class-name=com.mysql.jdbc.Driver',
+      'driver-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
       'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})", new_resource.instance)

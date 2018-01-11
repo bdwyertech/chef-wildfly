@@ -25,7 +25,6 @@ resource_name :wildfly_property
 # => Define the Resource Properties
 property :property, String, required: true, name_property: true
 property :value, String
-property :restart, [FalseClass, TrueClass], default: true
 property :enable_escape, [FalseClass, TrueClass], default: true
 property :instance, String, required: false
 
@@ -44,7 +43,6 @@ action :set do
     converge_by("Set #{new_resource}") do
       property_set
     end
-    notify?
   end
 end
 
@@ -56,22 +54,12 @@ action :delete do
     converge_by("Delete #{new_resource}") do
       property_delete
     end
-    notify?
   else
     Chef::Log.info "#{new_resource} not present - nothing to do."
   end
 end
 
 action_class.class_eval do
-  def notify?
-    # Only notify if restart parameter is true
-    if new_resource.restart
-      new_resource.updated_by_last_action(true)
-    else
-      new_resource.updated_by_last_action(false)
-    end
-  end
-
   def jb_cli(cmd)
     WildFly::Helper.jb_cli(cmd, new_resource.instance)
   end

@@ -26,23 +26,49 @@ module WildFly
     # => Search for a WildFly Instance and grab its Configuration Properties
     def wildfly_cfg(resource_name = 'wildfly')
       resource_type = 'wildfly'
+
       rc = Chef.run_context.resource_collection if Chef.run_context
       result = rc.find(resource_type => resource_name) rescue nil # rubocop: disable RescueModifier
-      ret = {}
+
+      cfg = {}
       unless result
-        ret['user']    = Chef.node['wildfly']['user']
-        ret['group']   = Chef.node['wildfly']['group']
-        ret['dir']     = Chef.node['wildfly']['base']
-        ret['service'] = Chef.node['wildfly']['service']
-        ret['port']    = '9990'
-        return ret
+        cfg['user']    = Chef.node['wildfly']['user']
+        cfg['group']   = Chef.node['wildfly']['group']
+        cfg['dir']     = Chef.node['wildfly']['base']
+        cfg['service'] = Chef.node['wildfly']['service']
+        cfg['port']    = '9990'
+        return cfg
       end
-      ret['user']    = result.service_user
-      ret['group']   = result.service_group
-      ret['dir']     = result.base_dir
-      ret['service'] = result.service_name
-      ret['port']    = result.bind_management_http
-      ret
+      cfg['user']    = result.service_user
+      cfg['group']   = result.service_group
+      cfg['dir']     = result.base_dir
+      cfg['service'] = result.service_name
+      cfg['port']    = result.bind_management_http
+      cfg
+    end
+
+    def wildfly_api_cfg(resource_name = 'wildfly')
+      # => Grab the Instance Configuration
+      cfg = wildfly_cfg(resource_name)
+
+      # => Grab the Management User
+      user = Chef::JSONCompat.parse(::File.read(::File.join(cfg['dir'], '.chef_user'))) rescue {} # rubocop: disable RescueModifier
+
+      cfg['api_url'] = "http://127.0.0.1:#{cfg['port']}/management"
+      cfg['api_user'] = user['user'] || 'wildfly'
+      cfg['api_pass'] = user['pass'] || 'wildfly'
+      cfg
+    end
+
+    def wildfly_user(user = nil, pass = nil, realm = 'ManagementRealm')
+      user ||= 'chef-wildfly-' + SecureRandom.urlsafe_base64(5)
+      pass ||= SecureRandom.urlsafe_base64(40)
+      passhash = Digest::MD5.hexdigest "#{user}:#{realm}:#{pass}"
+      {
+        user: user.to_s,
+        pass: pass.to_s,
+        passhash: passhash.to_s,
+      }
     end
 
     def jb_cli(cmd, instance = 'wildfly')

@@ -3,7 +3,11 @@ driver:
   name: dokken
   privileged: true # because Docker and SystemD/Upstart
   chef_version: current
-  ports: '9990:9990'
+  # chef_version: '12.21.31'
+  ports: [
+    '8080',
+    '9990'
+  ]
 
 transport:
   name: dokken
@@ -27,7 +31,7 @@ platforms:
     #   - label:enable # Enable SELinux
     intermediate_instructions:
       - RUN yum clean all
-      - RUN yum -y install lsof initscripts net-tools systemd-sysv wget which
+      - RUN yum -y install lsof initscripts net-tools systemd-sysv wget which bash-completion
       - RUN yum -y install crontabs selinux-policy-targeted
 
 - name: ubuntu-16.04
@@ -36,7 +40,7 @@ platforms:
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo -y
+      - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
       - RUN /usr/bin/apt-get install cron -y
 
 #
@@ -56,7 +60,7 @@ suites:
       #  system_tuning: false
     includes: [
       'centos-7',
-      # 'ubuntu-16.04'
+      'ubuntu-16.04'
     ]
 
   - name: 'resource'
@@ -70,6 +74,23 @@ suites:
       #  version: '11.0.0'
       #  # => Disable System Tuning
       #  system_tuning: false
+    includes: [
+      'centos-7',
+      'ubuntu-16.04'
+    ]
+
+  - name: 'api'
+    run_list:
+      - recipe[test::api]
+    verifier:
+      inspec_tests:
+        - test/integration/api
+    attributes:
+      wildfly:
+        mysql:
+          enabled: true
+        postgresql:
+          enabled: true
     includes: [
       'centos-7',
       # 'ubuntu-16.04'
