@@ -248,10 +248,12 @@ action :install do
     group new_resource.service_group
     cookbook 'wildfly'
     mode '0600'
-    variables(
-      mgmt_users: wildfly['users']['mgmt'],
-      api_user: lazy { node.run_state['wf_chef_user_' + new_resource.service_name] }
-    )
+    variables lazy {
+      {
+        mgmt_users: wildfly['users']['mgmt'],
+        api_user: node.run_state['wf_chef_user_' + new_resource.service_name],
+      }
+    }
     action :create
   end
 

@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+require 'shellwords'
+
 # => Define the Resource Name
 resource_name :wildfly_attribute
 
