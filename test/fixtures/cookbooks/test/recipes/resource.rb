@@ -36,6 +36,21 @@ wildfly_property 'Database URL 2' do
   notifies :restart, 'service[wildfly2]', :delayed
 end
 
+wildfly_property 'Create DummyProperty' do
+  property 'DummyProperty'
+  value 'DummyValue'
+  action :set
+  instance 'wildfly2'
+  notifies :restart, 'service[wildfly2]', :delayed
+end
+
+wildfly_property 'Remove DummyProperty' do
+  property 'DummyProperty'
+  action :delete
+  instance 'wildfly2'
+  notifies :restart, 'service[wildfly2]', :delayed
+end
+
 wildfly_mysql_connector 'wildfly2' do
   instance 'wildfly2'
   action :install
@@ -71,7 +86,7 @@ wildfly_attribute 'postbox-noescaped' do
   action :set
 end
 
-wildfly_attribute 'postbox-noescaped' do
+wildfly_attribute 'postbox-noescapedsafe' do
   instance 'wildfly2'
   path '/subsystem=mail/mail-session=postboxnoescapedsafe'
   parameter 'jndi-name'

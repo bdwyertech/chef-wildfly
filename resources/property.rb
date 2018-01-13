@@ -26,7 +26,7 @@ resource_name :wildfly_property
 
 # => Define the Resource Properties
 property :property, String, required: true, name_property: true
-property :value, String
+property :value, String, coerce: proc { |m| enable_escape ? Shellwords.escape(m) : m }
 property :enable_escape, [FalseClass, TrueClass], default: true
 property :instance, String, required: false
 
@@ -78,15 +78,10 @@ action_class do
   end
 
   def property_set
-    val = if new_resource.enable_escape
-            Shellwords.escape(new_resource.value)
-          else
-            value
-          end
     if property_exists? # rubocop: disable Style/ConditionalAssignment
-      result = jb_cli("/system-property=#{new_resource.property}:write-attribute(name=value,value=\"#{val}\")")
+      result = jb_cli("/system-property=#{new_resource.property}:write-attribute(name=value,value=\"#{new_resource.value}\")")
     else
-      result = jb_cli("/system-property=#{new_resource.property}:add(value=\"#{val}\")")
+      result = jb_cli("/system-property=#{new_resource.property}:add(value=\"#{new_resource.value}\")")
     end
     result.exitstatus == 0
   end

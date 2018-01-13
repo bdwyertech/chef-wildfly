@@ -313,7 +313,7 @@ action :install do
 
   # => Start the WildFly Service
   service new_resource.service_name do
-    supports status: true, restart: true, reload: true
+    supports status: true, restart: true
     action [:enable, :start]
   end
 end
