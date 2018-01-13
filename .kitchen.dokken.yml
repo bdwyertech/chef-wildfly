@@ -14,7 +14,8 @@ transport:
 
 provisioner:
   name: dokken
-  chef_options: '--config-option file_cache_path=/tmp/chef -z'
+  # Config-option only support on Chef 12.13+
+  # chef_options: '--config-option file_cache_path=/tmp/chef -z'
 
 verifier:
   name: inspec

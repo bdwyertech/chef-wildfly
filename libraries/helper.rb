@@ -75,7 +75,7 @@ module WildFly
       # => Grab Configuration
       cfg = wildfly_cfg(instance)
       Chef::Log.warn("Running JB-CLI(#{cfg['port']}): " + cmd)
-      cmd = Mixlib::ShellOut.new("bin/jboss-cli.sh --controller=remote+http://localhost:#{cfg['port']} -c '#{cmd}'")
+      cmd = Mixlib::ShellOut.new("bin/jboss-cli.sh --controller=remote+http://127.0.0.1:#{cfg['port']} -c '#{cmd}'")
       cmd.user = cfg['user']
       cmd.cwd  = cfg['dir']
       cmd.environment = { 'HOME' => ::Dir.home(cmd.user), 'USER' => cmd.user }

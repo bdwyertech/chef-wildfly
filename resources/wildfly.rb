@@ -184,6 +184,12 @@ action :install do
       ].join(' ')
       exec_start_post "#{helper.path} start"
       exec_stop_post "#{helper.path} stop"
+      exec_reload [
+        ::File.join(new_resource.base_dir, 'bin', 'jboss-cli.sh'),
+        '--connect',
+        "--controller=remote+http://127.0.0.1:#{new_resource.bind_management_http}",
+        "-c '#{new_resource.mode == 'domain' ? ':reload-servers' : ':reload'}'",
+      ].join(' ')
       nice '-5'.to_i
       private_tmp true
       # standard_output 'null'
@@ -313,7 +319,7 @@ action :install do
 
   # => Start the WildFly Service
   service new_resource.service_name do
-    supports status: true, restart: true
+    supports status: true, restart: true, reload: true
     action [:enable, :start]
   end
 end
