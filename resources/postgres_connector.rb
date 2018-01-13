@@ -97,7 +97,7 @@ end
 #
 # => Helpers
 #
-action_class.class_eval do
+action_class do
   # => Include Helper Modules
   include WildFly::Helper
 

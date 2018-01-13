@@ -59,7 +59,7 @@ action :delete do
   end
 end
 
-action_class.class_eval do
+action_class do
   def jb_cli(cmd)
     WildFly::Helper.jb_cli(cmd, new_resource.instance)
   end

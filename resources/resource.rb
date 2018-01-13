@@ -138,7 +138,7 @@ action :delete do
   end
 end
 
-action_class.class_eval do
+action_class do
   def api_client
     @api_client ||= begin
       cfg = WildFly::Helper.wildfly_api_cfg(new_resource.instance)
