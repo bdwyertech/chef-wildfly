@@ -212,9 +212,9 @@ action :install do
         jboss_mode: new_resource.mode,
         jboss_config: new_resource.config,
         jboss_opts: [
-                      "-P=#{wf_props.path}",
-                      new_resource.launch_arguments.join(' '),
-                    ].join(' ')
+          "-P=#{wf_props.path}",
+          new_resource.launch_arguments.join(' '),
+        ].join(' ')
       )
       action :create
       mode '0644'

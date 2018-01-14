@@ -205,7 +205,7 @@ end
 wildfly 'wildfly2' do
   base_dir '/opt/wildfly2'
   launch_arguments [
-    '-Dorg.jboss.as.logging.per-deployment=false'
+    '-Dorg.jboss.as.logging.per-deployment=false',
   ]
   server_properties [
     'jboss.socket.binding.port-offset=2',

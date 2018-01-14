@@ -24,6 +24,16 @@ verifier:
 # Platforms
 #
 platforms:
+- name: amazon
+  driver:
+    image: amazonlinux:latest
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - >
+        RUN yum install -y lsof initscripts net-tools passwd wget which
+        crontabs
+        && yum clean all
+
 - name: centos-7
   driver:
     image: centos:7
@@ -37,6 +47,16 @@ platforms:
         bash-completion crontabs selinux-policy-targeted
         && yum clean all
 
+- name: ubuntu-14.04
+  driver:
+    image: ubuntu:14.04
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - >
+        RUN /usr/bin/apt-get update
+        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
+        && /usr/bin/apt-get install cron -y
+
 - name: ubuntu-16.04
   driver:
     image: ubuntu:16.04
@@ -46,16 +66,6 @@ platforms:
         RUN /usr/bin/apt-get update
         && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
         && /usr/bin/apt-get install cron -y
-
-- name: amazon
-  driver:
-    image: amazonlinux:latest
-    pid_one_command: /sbin/init
-    intermediate_instructions:
-      - >
-        RUN yum install -y lsof initscripts net-tools passwd wget which
-        crontabs
-        && yum clean all
 
 #
 # Test Suites
@@ -73,9 +83,10 @@ suites:
       #  # => Disable System Tuning
       #  system_tuning: false
     includes: [
+      'amazon',
       'centos-7',
+      'ubuntu-14.04',
       'ubuntu-16.04',
-      'amazon'
     ]
 
   - name: 'resource'
@@ -90,9 +101,10 @@ suites:
       #  # => Disable System Tuning
       #  system_tuning: false
     includes: [
+      'amazon',
       'centos-7',
-      'ubuntu-16.04',
-      'amazon'
+      'ubuntu-14.04',
+      'ubuntu-16.04'
     ]
 
   - name: 'api'
@@ -108,7 +120,8 @@ suites:
         postgresql:
           enabled: true
     includes: [
-      'centos-7',
       'amazon',
-      # 'ubuntu-16.04'
+      'centos-7',
+      'ubuntu-14.04',
+      'ubuntu-16.04'
     ]
