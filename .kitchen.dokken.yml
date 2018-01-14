@@ -32,18 +32,30 @@ platforms:
     # security_opt:
     #   - label:enable # Enable SELinux
     intermediate_instructions:
-      - RUN yum clean all
-      - RUN yum -y install lsof initscripts net-tools systemd-sysv wget which bash-completion
-      - RUN yum -y install crontabs selinux-policy-targeted
+      - >
+        RUN yum -y install lsof initscripts net-tools systemd-sysv wget which
+        bash-completion crontabs selinux-policy-targeted
+        && yum clean all
 
 - name: ubuntu-16.04
   driver:
     image: ubuntu:16.04
     pid_one_command: /bin/systemd
     intermediate_instructions:
-      - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
-      - RUN /usr/bin/apt-get install cron -y
+      - >
+        RUN /usr/bin/apt-get update
+        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
+        && /usr/bin/apt-get install cron -y
+
+- name: amazon
+  driver:
+    image: amazonlinux:latest
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - >
+        RUN yum install -y lsof initscripts net-tools passwd wget which
+        crontabs
+        && yum clean all
 
 #
 # Test Suites
@@ -62,7 +74,8 @@ suites:
       #  system_tuning: false
     includes: [
       'centos-7',
-      'ubuntu-16.04'
+      'ubuntu-16.04',
+      'amazon'
     ]
 
   - name: 'resource'
@@ -78,7 +91,8 @@ suites:
       #  system_tuning: false
     includes: [
       'centos-7',
-      'ubuntu-16.04'
+      'ubuntu-16.04',
+      'amazon'
     ]
 
   - name: 'api'
@@ -95,5 +109,6 @@ suites:
           enabled: true
     includes: [
       'centos-7',
+      'amazon',
       # 'ubuntu-16.04'
     ]
