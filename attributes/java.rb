@@ -19,8 +19,5 @@
 default['java']['install_flavor'] = 'oracle'
 default['java']['oracle']['accept_oracle_download_terms'] = true
 default['java']['jdk_version'] = '8'
-default['java']['jdk']['8']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz'
-default['java']['jdk']['8']['x86_64']['checksum'] = 'da1ad819ce7b7ec528264f831d88afaa5db34b7955e45422a7e380b1ead6b04d'
-
-# => default['java']['jdk']['7']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz'
-# => default['java']['jdk']['7']['x86_64']['checksum'] = '460959219b534dc23e34d77abc306e180b364069b9fc2b2265d964fa2c281610'
+default['java']['jdk']['8']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jdk-8u152-linux-x64.tar.gz'
+default['java']['jdk']['8']['x86_64']['checksum'] = '218b3b340c3f6d05d940b817d0270dfe0cfd657a636bad074dcabe0c111961bf'

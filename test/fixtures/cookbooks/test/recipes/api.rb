@@ -10,6 +10,14 @@ wildfly_resource 'Transaction - Node Identifier' do
   action :create
 end
 
+# => Ensure ASYNCIO for Messaging Journal (LibAIO)
+wildfly_resource 'Messaging Journal - ASYNCIO' do
+  path '/subsystem=messaging-activemq/server=default'
+  parameters 'journal-type' => 'ASYNCIO'
+  operation_headers 'allow-resource-service-restart' => true
+  action :create
+end
+
 wildfly_resource 'Set Dummy System Property' do
   path ['system-property', 'DummyUrl']
   parameters value: 'ABC124'
@@ -126,6 +134,7 @@ wildfly_resource 'DataSource PostgreSQL' do
              'user-name' => 'dbuser',
              'valid-connection-checker-class-name' => 'org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker',
              'exception-sorter-class-name' => 'org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter'
+  action :create
 end
 
 # => Provision the XA initially set to disabled
@@ -138,7 +147,7 @@ wildfly_resource 'DataSource PostgreSQL XA - Bootstrap' do
 end
 
 # => Create the XA Parameters
-wildfly_resource 'MySQL XA DataSource Test - URL' do
+wildfly_resource 'DataSource PostgreSQL XA - URL' do
   path ['subsystem', 'datasources', 'xa-data-source', 'TestPostgreSQLXADS', 'xa-datasource-properties', 'URL']
   parameters value: 'jdbc:postgresql://localhost:5432/'
   action :create
@@ -195,6 +204,9 @@ end
 # => Second Instance
 wildfly 'wildfly2' do
   base_dir '/opt/wildfly2'
+  launch_arguments [
+    '-Dorg.jboss.as.logging.per-deployment=false'
+  ]
   server_properties [
     'jboss.socket.binding.port-offset=2',
     'jboss.bind.address.management=0.0.0.0',
@@ -211,7 +223,7 @@ wildfly 'wildfly2' do
   action :install
 end
 
-wildfly_resource 'SMTP - Default' do
+wildfly_resource 'WF2 - SMTP - Default' do
   instance 'wildfly2'
   path ['subsystem', 'mail', 'mail-session', 'default', 'server']
   parameters 'from' => 'mailuser@gmail.com'

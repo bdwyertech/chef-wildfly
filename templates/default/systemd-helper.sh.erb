@@ -16,10 +16,10 @@ wildfly_start() {
       exit 1
     fi
   done
-  if [ $(grep -i 'success:' startup-marker >/dev/null) ]; then
+  if [ $(grep -i 'success:' "$start_marker" >/dev/null) ]; then
     exit 0
   fi
-  if [ $(grep -i 'error:' startup-marker >/dev/null) ]; then
+  if [ $(grep -i 'error:' "$start_marker" >/dev/null) ]; then
     echo "WildFly started with errors, please see server log for details."
     exit 0
   fi

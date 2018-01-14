@@ -140,61 +140,98 @@ action :install do
     path ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'service.properties')
     owner new_resource.service_user
     group new_resource.service_group
-    mode 0640
+    mode '0640'
     action :create
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
 
+  #
+  # => Service Definition
+  #
   start_marker = ::File.join(new_resource.base_dir, new_resource.mode, 'tmp', 'startup-marker')
 
-  helper = template 'WildFly - SystemD Helper' do
-    source 'systemd-helper.sh.erb'
-    path ::File.join(new_resource.base_dir, 'bin', 'systemd-helper.sh')
-    owner new_resource.service_user
-    group new_resource.service_group
-    cookbook 'wildfly'
-    variables(
-      start_marker: start_marker,
-      timeout: 60
-    )
-    mode 0750
-    action :create
-  end
-
-  systemd_service new_resource.service_name do
-    unit_description 'The WildFly Application Server'
-    unit_before %w(httpd.service)
-    unit_after %w(syslog.target network.target remote-fs.target nss-lookup.target)
-    install_wanted_by 'multi-user.target'
-    service do
-      service_user new_resource.service_user
-      service_group new_resource.service_group
-      working_directory new_resource.base_dir
-      runtime_directory new_resource.service_name
-      environment(
-        LAUNCH_JBOSS_IN_BACKGROUND: 1
+  if node['init_package'] == 'systemd'
+    helper = template 'WildFly - SystemD Helper' do
+      source 'systemd-helper.sh.erb'
+      path ::File.join(new_resource.base_dir, 'bin', 'systemd-helper.sh')
+      owner new_resource.service_user
+      group new_resource.service_group
+      mode '0750'
+      cookbook 'wildfly'
+      variables(
+        start_marker: start_marker,
+        timeout: 60
       )
-      pass_environment environment.keys
-      exec_start_pre "/bin/rm -f #{start_marker}"
-      exec_start [
-        ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
-        "-c=#{new_resource.config}",
-        "-P=#{wf_props.path}",
-        new_resource.launch_arguments.join(' '),
-      ].join(' ')
-      exec_start_post "#{helper.path} start"
-      exec_stop_post "#{helper.path} stop"
-      exec_reload [
-        ::File.join(new_resource.base_dir, 'bin', 'jboss-cli.sh'),
-        '--connect',
-        "--controller=remote+http://127.0.0.1:#{new_resource.bind_management_http}",
-        "-c '#{new_resource.mode == 'domain' ? ':reload-servers' : ':reload'}'",
-      ].join(' ')
-      nice '-5'.to_i
-      private_tmp true
-      # standard_output 'null'
+      action :create
     end
-    notifies :restart, "service[#{new_resource.service_name}]", :delayed
+
+    systemd_service new_resource.service_name do
+      unit_description 'The WildFly Application Server'
+      unit_before %w(httpd.service)
+      unit_after %w(syslog.target network.target remote-fs.target nss-lookup.target)
+      install_wanted_by 'multi-user.target'
+      service do
+        service_user new_resource.service_user
+        service_group new_resource.service_group
+        working_directory new_resource.base_dir
+        runtime_directory new_resource.service_name
+        environment(
+          LAUNCH_JBOSS_IN_BACKGROUND: 1
+        )
+        pass_environment environment.keys
+        exec_start_pre "/bin/rm -f #{start_marker}"
+        exec_start [
+          ::File.join(new_resource.base_dir, 'bin', new_resource.mode + '.sh'),
+          "-c=#{new_resource.config}",
+          "-P=#{wf_props.path}",
+          new_resource.launch_arguments.join(' '),
+        ].join(' ')
+        exec_start_post "#{helper.path} start"
+        exec_stop_post "#{helper.path} stop"
+        exec_reload [
+          ::File.join(new_resource.base_dir, 'bin', 'jboss-cli.sh'),
+          '--connect',
+          "--controller=remote+http://127.0.0.1:#{new_resource.bind_management_http}",
+          "-c '#{new_resource.mode == 'domain' ? ':reload-servers' : ':reload'}'",
+        ].join(' ')
+        nice '-5'.to_i
+        private_tmp true
+        # standard_output 'null'
+      end
+      notifies :restart, "service[#{new_resource.service_name}]", :delayed
+    end
+  else
+    template 'WildFly - Service Configuration' do
+      source 'wildfly.conf.erb'
+      path ::File.join(::File::SEPARATOR, 'etc', 'default', new_resource.service_name)
+      cookbook 'wildfly'
+      mode '0644'
+      variables(
+        jboss_home: new_resource.base_dir,
+        jboss_user: new_resource.service_user,
+        jboss_mode: new_resource.mode,
+        jboss_config: new_resource.config,
+        jboss_opts: [
+                      "-P=#{wf_props.path}",
+                      new_resource.launch_arguments.join(' '),
+                    ].join(' ')
+      )
+      action :create
+      mode '0644'
+      notifies :restart, "service[#{new_resource.service_name}]", :delayed
+    end
+
+    template 'WildFly - Init.D Script' do
+      source 'wildfly-init-redhat.sh.erb' if platform_family?('rhel')
+      source 'wildfly-init-debian.sh.erb' if platform_family?('debian')
+      path ::File.join(::File::SEPARATOR, 'etc', 'init.d', new_resource.service_name)
+      cookbook 'wildfly'
+      owner 'root'
+      group 'root'
+      mode '0755'
+      action :create
+      notifies :restart, "service[#{new_resource.service_name}]", :delayed
+    end
   end
 
   # => Configure Logrotate for WildFly
@@ -233,7 +270,7 @@ action :install do
     sensitive true
     owner 'root'
     group 'root'
-    mode 0600
+    mode '0600'
     action new_resource.create_mgmt_user ? :create : :delete
   end
 
@@ -312,8 +349,7 @@ action :install do
   # => Create file to indicate deployment and prevent recurring configuration deployment
   file ::File.join(new_resource.base_dir, '.chef_deployed') do
     content new_resource.version
-    user new_resource.service_user
-    group new_resource.service_group
+    mode '0600'
     action :create
   end
 
