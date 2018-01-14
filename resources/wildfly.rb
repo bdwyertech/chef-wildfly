@@ -222,8 +222,12 @@ action :install do
     end
 
     template 'WildFly - Init.D Script' do
-      source 'wildfly-init-redhat.sh.erb' if platform_family?('rhel')
-      source 'wildfly-init-debian.sh.erb' if platform_family?('debian')
+      case node['platform_family']
+      when 'debian'
+        source 'wildfly-init-debian.sh.erb'
+      when 'rhel', 'amazon'
+        source 'wildfly-init-redhat.sh.erb'
+      end
       path ::File.join(::File::SEPARATOR, 'etc', 'init.d', new_resource.service_name)
       cookbook 'wildfly'
       owner 'root'
