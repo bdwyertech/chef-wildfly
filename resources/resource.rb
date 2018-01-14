@@ -73,7 +73,7 @@ action :create do
       Chef::Log.warn("#{new_resource}: Setting #{k} = #{v}")
       param = { 'name' => k, 'value' => v }
       converge_by("#{new_resource}: Updating Parameter: #{k} = #{v}") do
-        resp = api_client.do('write-attribute', new_resource.path, param)
+        resp = api_client.do('write-attribute', new_resource.path, param, new_resource.operation_headers)
         response_handler(resp)
       end
     end
@@ -81,7 +81,7 @@ action :create do
     # => Add the new resource with all its parameters
     # => :add(k1=v1, k2=v2, k3=v3)
     converge_by("#{new_resource}: Creating Resource") do
-      resp = api_client.do('add', new_resource.path, new_resource.parameters)
+      resp = api_client.do('add', new_resource.path, new_resource.parameters, new_resource.operation_headers)
       response_handler(resp)
     end
   else
@@ -132,7 +132,7 @@ action :delete do
   if resp['outcome'] == 'success'
     # => Delete the Resource
     converge_by("#{new_resource}: Deleting Resource") do
-      resp = api_client.do('remove', new_resource.path)
+      resp = api_client.do('remove', new_resource.path, {}, new_resource.operation_headers)
       response_handler(resp)
     end
   end
