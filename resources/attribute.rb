@@ -70,7 +70,7 @@ action_class do
   end
 
   def attribute_add
-    result = jb_cli("#{new_resource.path}:add(#{new_resource.parameter})", new_resource.instance)
+    result = jb_cli("#{new_resource.path}:add(#{new_resource.parameter}=#{new_resource.value})", new_resource.instance)
     result.exitstatus == 0
   end
 

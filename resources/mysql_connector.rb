@@ -23,8 +23,7 @@
 resource_name :wildfly_mysql_connector
 
 # => Shorten Hashes
-wildfly = node['wildfly']
-mysql   = wildfly['mysql']
+mysql = node['wildfly']['mysql']
 
 # => Define the Resource Properties
 property :instance, String, required: false

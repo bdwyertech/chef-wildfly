@@ -62,52 +62,31 @@ action :delete do
 end
 
 action_class do
-  def jb_cli(cmd)
-    WildFly::Helper.jb_cli(cmd, new_resource.instance)
-  end
+  # => Include Helper Modules
+  include WildFly::Helper
 
   def property_value_exists?
-    result = jb_cli("/system-property=#{new_resource.property}:read-attribute(name=value)")
+    result = jb_cli("/system-property=#{new_resource.property}:read-attribute(name=value)", new_resource.instance)
     return false if result.error?
-    convert_to_hash(result.stdout)['result'] == new_resource.value
+    jb_cli_to_hash(result.stdout)['result'] == new_resource.value
   end
 
   def property_exists?
-    result = jb_cli("/system-property=#{new_resource.property}:read-resource")
+    result = jb_cli("/system-property=#{new_resource.property}:read-resource", new_resource.instance)
     result.exitstatus == 0
   end
 
   def property_set
     if property_exists? # rubocop: disable Style/ConditionalAssignment
-      result = jb_cli("/system-property=#{new_resource.property}:write-attribute(name=value,value=\"#{new_resource.value}\")")
+      result = jb_cli("/system-property=#{new_resource.property}:write-attribute(name=value,value=\"#{new_resource.value}\")", new_resource.instance)
     else
-      result = jb_cli("/system-property=#{new_resource.property}:add(value=\"#{new_resource.value}\")")
+      result = jb_cli("/system-property=#{new_resource.property}:add(value=\"#{new_resource.value}\")", new_resource.instance)
     end
     result.exitstatus == 0
   end
 
   def property_delete
-    result = jb_cli("/system-property=#{new_resource.property}:remove()")
+    result = jb_cli("/system-property=#{new_resource.property}:remove()", new_resource.instance)
     result.exitstatus == 0
-  end
-
-  def convert_to_hash(txt)
-    # convert_to_hash(result)['result']['value']
-    # Transform object string symbols to quoted strings
-    txt.gsub!(/([{,]\s*):([^>\s]+)\s*=>/, '\1"\2"=>')
-
-    # Transform object string numbers to quoted strings
-    txt.gsub!(/([{,]\s*)([0-9]+\.?[0-9]*)\s*=>/, '\1"\2"=>')
-
-    # Transform object value symbols to quotes strings
-    txt.gsub!(/([{,]\s*)(".+?"|[0-9]+\.?[0-9]*)\s*=>\s*:([^,}\s]+\s*)/, '\1\2=>"\3"')
-
-    # Transform array value symbols to quotes strings
-    txt.gsub!(/([\[,]\s*):([^,\]\s]+)/, '\1"\2"')
-
-    # Transform object string object value delimiter to colon delimiter
-    txt.gsub!(/([{,]\s*)(".+?"|[0-9]+\.?[0-9]*)\s*=>/, '\1\2:')
-
-    JSON.parse(txt) rescue {} # rubocop: disable RescueModifier
   end
 end

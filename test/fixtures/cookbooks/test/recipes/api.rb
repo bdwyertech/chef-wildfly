@@ -238,9 +238,3 @@ end
     action :create
   end
 end
-
-# wildfly_deploy 'cluster-demo' do
-#   url 'https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war'
-# end
-
-# /deployment=abc:add(content=[{url=https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war}],enabled=true,runtime-name=cluster-demo)

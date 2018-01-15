@@ -53,11 +53,13 @@ end
 
 wildfly_mysql_connector 'wildfly2' do
   instance 'wildfly2'
+  api false
   action :install
 end
 
 wildfly_postgres_connector 'wildfly2' do
   instance 'wildfly2'
+  api false
   action :install
 end
 

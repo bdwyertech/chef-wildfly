@@ -118,6 +118,7 @@ action :install do
     path ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url))
     source new_resource.url
     checksum new_resource.checksum
+    retries 2
     action :create
     notifies :run, "bash[Extract WildFly #{new_resource.version}]", :immediately
     not_if { deployed_version? }

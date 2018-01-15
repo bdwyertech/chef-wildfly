@@ -28,7 +28,7 @@ postgresql = node['wildfly']['postgresql']
 property :instance, String, required: false
 property :base_dir, String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['dir'] }
 property :url,      String, default: postgresql['url']
-property :checksum, String, required: false
+property :checksum, String, default: postgresql['checksum']
 property :user,     String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['user'] }
 property :group,    String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['group'] }
 property :api,      [FalseClass, TrueClass], default: true
