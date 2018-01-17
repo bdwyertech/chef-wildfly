@@ -36,39 +36,42 @@ module WildFly
       @user     = user     || 'wildfly'
       @password = password || 'wildfly'
       yield self if block_given?
+
+      # => HTTP Client
+      @uri = URI.parse @url
+      @uri.user = CGI.escape(@user)
+      @uri.password = CGI.escape(@password)
+      ssl_opts = {}
+      if @uri.scheme == 'https'
+        ssl_opts[:use_ssl] = true
+        ssl_opts[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
+      end
+
+      @http_client = Net::HTTP.start(@uri.host, @uri.port, ssl_opts)
     end
 
     #
     # => HTTP Client
     #
-    def client(request, url = @url)
-      uri = URI.parse url
-      uri.user = CGI.escape(@user)
-      uri.password = CGI.escape(@password)
+    def client(request)
       request.content_type = 'application/json'
       # => Chef::Log.warn(request.path) # => DEBUG
-      ssl_opts = {}
-      if uri.scheme == 'https'
-        ssl_opts[:use_ssl] = true
-        ssl_opts[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
-      end
       response = api_retry do
-        client = Net::HTTP.start(uri.host, uri.port, ssl_opts)
-        response = client.request(request)
+        response = @http_client.request(request)
         # => Handle Message Digest Authentication
         if response['www-authenticate'] && response.code == '401'
           if response['www-authenticate'] =~ /digest/i
             # => Message Digest Authentication
             digest_auth = Net::HTTP::DigestAuth.new
-            auth = digest_auth.auth_header uri, response['www-authenticate'], request.method
+            auth = digest_auth.auth_header @uri, response['www-authenticate'], request.method
             sleep 0.05 # => Wait before using the auth header to avoid a 401
             request['Authorization'] = auth
           else
             # => Basic Authentication
-            request.basic_auth uri.user, uri.password
+            request.basic_auth @uri.user, @uri.password
           end
           # => Do the Request
-          response = client.request(request)
+          response = @http_client.request(request)
           if response.is_a?(Net::HTTPServiceUnavailable)
             raise Net::HTTPFatalError.new(response.msg, response)
           end
