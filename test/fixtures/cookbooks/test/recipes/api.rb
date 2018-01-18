@@ -238,3 +238,49 @@ end
     action :create
   end
 end
+
+wildfly_deploy_api 'ClusterDemo Deployment' do
+  # => instance 'wildfly2'
+  deploy_name 'cluster-demo-V1'
+  runtime_name 'cluster-demo.war'
+  parameters 'url' => 'https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war'
+  action [:install, :enable]
+end
+
+wildfly_deploy_api 'HelloWorld URL Deployment' do
+  # => instance 'wildfly2'
+  deploy_name 'HelloWorld-url-V5'
+  runtime_name 'helloworld-url.war'
+  parameters 'url' => 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
+end
+
+# => File-Based Deployment
+hw = remote_file 'helloworld' do
+  source 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
+  path ::File.join(Chef::Config[:file_cache_path], 'hello-world.war')
+  mode '0644'
+  action :create
+end
+
+wildfly_deploy_api 'HelloWorld File Deployment' do
+  deploy_name "HelloWorld-file-V#{Random.rand(10)}"
+  runtime_name 'helloworld-file.war'
+  parameters 'url' => 'file://' + hw.path
+end
+
+wildfly_deploy_api 'Sample' do
+  deploy_name 'sample-v1'
+  runtime_name 'sample.war'
+  parameters 'url' => 'https://github.com/apcera/sample-apps/raw/master/example-java-war/sample.war'
+end
+
+wildfly_deploy_api 'Sample - Disable' do
+  deploy_name 'sample-v3'
+  runtime_name 'sample.war'
+  action :disable
+end
+
+wildfly_deploy_api 'Sample2 - Disable' do
+  deploy_name 'sample-v2'
+  action :disable
+end
