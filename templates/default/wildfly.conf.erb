@@ -2,97 +2,48 @@
 # Managed by Chef - local changes may be overwritten
 #
 
-# General configuration for the init.d scripts,
-# not necessarily for JBoss AS itself.
-# default location: /etc/default/wildfly
+#################################################
+# General configuration for the init.d scripts, #
+# not necessarily for WildFly itself.           #
+# default location: /etc/default/wildfly        #
+#################################################
 
-# Location of JDK	
-#
-<%- if node['wildfly']['java']['enforce_java_home'] === true %>
-<%- if node['java']['java_home'] && ::File.exists?(node['java']['java_home']) %>
-JAVA_HOME="<%= node['java']['java_home'] %>"
-<%- else %>
+## Location of JDK
 # JAVA_HOME="/usr/lib/jvm/default-java"
-<%- end %>
-<%- else %>
-# JAVA_HOME="/usr/lib/jvm/default-java"
-<%- end %>
 
-# Location of WildFly
-#
-<%- if node['wildfly']['base'] && ::File.exists?(node['wildfly']['base']) %>
-JBOSS_HOME="<%= node['wildfly']['base'] %>"
-<%- else %>
+## Location of WildFly
 # JBOSS_HOME="/opt/wildfly"
-<%- end %>
+JBOSS_HOME="<%= @jboss_home %>"
 
-# The username who should own the process.
-#
-<%- if node['wildfly']['user'] %>
-JBOSS_USER=<%= node['wildfly']['user'] %>
-<%- else %>
+## The username who should own the process.
 # JBOSS_USER=wildfly
-<%- end %>
+JBOSS_USER=<%= @jboss_user %>
 
-# The mode WildFly should start, standalone or domain
-#
-<%- if node['wildfly']['mode'] %>
-JBOSS_MODE=<%= node['wildfly']['mode'] %>
-<%- else %>
+## The mode WildFly should start, standalone or domain
 # JBOSS_MODE=standalone
-<%- end %>
+JBOSS_MODE=<%= @jboss_mode %>
 
-# Configuration for standalone mode
-#
-<%- if node['wildfly']['sa']['conf'] %>
-JBOSS_CONFIG=<%= node['wildfly']['sa']['conf'] %>
-<%- else %>
+## Configuration for standalone mode
 # JBOSS_CONFIG=standalone.xml
-<%- end %>
+JBOSS_CONFIG=<%= @jboss_config %>
 
-# Configuration for port bindings
-#
-<%- if node['wildfly']['int']['mgmt']['bind'] %>
-#JBOSS_MANAGEMENT_BIND=-bmanagement=<%= node['wildfly']['int']['mgmt']['bind'] %>
-<%- end %>
-
-<%- if node['wildfly']['int']['pub']['bind'] %>
-#JBOSS_PORT_BIND=-b=<%= node['wildfly']['int']['pub']['bind'] %>
-<%- end %>
-
-# Configuration for domain mode
-#
-<%- if node['wildfly']['dom']['conf'] %>
-JBOSS_DOMAIN_CONFIG=<%= node['wildfly']['dom']['conf'] %>
-<%- else %>
+## Configuration for domain mode
 # JBOSS_DOMAIN_CONFIG=domain.xml
-<%- end %>
-<%- if node['wildfly']['dom']['host_conf'] %>
-JBOSS_HOST_CONFIG=<%= node['wildfly']['dom']['host_conf'] %>
-<%- else %>
 # JBOSS_HOST_CONFIG=host-master.xml
+<%- if @jboss_config == 'domain' %>
+JBOSS_DOMAIN_CONFIG=<%= @jboss_domain_config %>
+JBOSS_HOST_CONFIG=<%= @jboss_host_config %>
 <%- end %>
 
-# The amount of time to wait for startup
-#
-<%- if node['wildfly']['initd']['startup_wait'] %>
-STARTUP_WAIT=<%= node['wildfly']['initd']['startup_wait'] %>
-<%- else %>
+## The amount of time to wait for startup
 # STARTUP_WAIT=60
-<%- end %>
 
-# The amount of time to wait for shutdown
-#
-<%- if node['wildfly']['initd']['shutdown_wait'] %>
-SHUTDOWN_WAIT=<%= node['wildfly']['initd']['shutdown_wait'] %>
-<%- else %>
+## The amount of time to wait for shutdown
 # SHUTDOWN_WAIT=60
-<%- end %>
 
-# Location to keep the console log
-#
-<%- if node['wildfly']['log']['console_log'] %>
-JBOSS_CONSOLE_LOG="<%= node['wildfly']['log']['console_log'] %>"
-<%- else %>
+## Location to keep the console log
 # JBOSS_CONSOLE_LOG="/var/log/wildfly/console.log"
-<%- end %>
+
+## Additionals args to include in startup
+# JBOSS_OPTS="--admin-only -b 127.0.0.1"
+JBOSS_OPTS="<%= @jboss_opts %>"

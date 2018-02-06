@@ -1,0 +1,52 @@
+#!/bin/sh
+# WildFly SystemD Helper Functions
+
+# Time to wait for WildFly Startup/Shutdown
+timewait=${2:-<%= @timeout || '60' %>}
+
+# Markerfile to indicate WildFly Start/Stop
+start_marker="<%= @start_marker %>"
+
+wildfly_start() {
+  until [ -f "$start_marker" ]; do
+    (( COUNTER++ ))
+    sleep 1
+    if [ $COUNTER == "${timewait}" ]; then
+      echo "Timed out waiting for WildFly to start"
+      exit 1
+    fi
+  done
+  if [ $(grep -i 'success:' "$start_marker" >/dev/null) ]; then
+    exit 0
+  fi
+  if [ $(grep -i 'error:' "$start_marker" >/dev/null) ]; then
+    echo "WildFly started with errors, please see server log for details."
+    exit 0
+  fi
+}
+
+wildfly_stop() {
+  until [ ! -f "$start_marker" ]; do
+    (( COUNTER++ ))
+    sleep 1
+    if [ $COUNTER == "${timewait}" ]; then
+      echo "Timed out waiting for WildFly to stop"
+      exit 1
+    fi
+  done
+}
+
+case "$1" in
+  start)
+    wildfly_start
+    ;;
+  stop)
+    wildfly_stop
+    ;;
+  *)
+    echo "Supported commands are:"
+    echo "   start - waits for WildFly to start"
+    echo "   stop  - waits for WildFly to stop"
+    echo "2nd argument is start/stop timeout (${timewait})"
+    ;;
+esac

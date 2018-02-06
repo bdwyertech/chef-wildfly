@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-# rubocop:disable LineLength
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,13 +15,15 @@
 # limitations under the License.
 #
 
-# => PostgreSQL Database Configuration
-# => PostgreSQL driver
-default['wildfly']['postgresql']['enabled'] = true
-default['wildfly']['postgresql']['url'] = 'http://central.maven.org/maven2/org/postgresql/postgresql/9.3-1102-jdbc41/postgresql-9.3-1102-jdbc41.jar'
-default['wildfly']['postgresql']['checksum'] = 'c4530047d03bac8295a9c19fbd7b893b5981edbcd8e52e1597fa2385deec272f'
+# => PostgreSQL Driver
+default['wildfly']['postgresql'].tap do |postgresql|
+  postgresql['enabled'] = true
+  postgresql['url'] = 'https://jdbc.postgresql.org/download/postgresql-42.1.4.jar'
+  postgresql['checksum'] = '4523ed32e9245e762e1df9f0942a147bece06561770a9195db093d9802297735'
 
-# => PostgreSQL driver JDBC Module Name
-default['wildfly']['postgresql']['mod_name'] = 'org.postgresql'
-# => PostgreSQL driver Module Dependencies
-default['wildfly']['postgresql']['mod_deps'] = ['javax.api', 'javax.transaction.api']
+  # => PostgreSQL driver JDBC Module Name
+  postgresql['mod_name'] = 'org.postgresql'
+  # => PostgreSQL driver Module Dependencies
+  postgresql['mod_deps'] = ['javax.api', 'javax.transaction.api']
+  postgresql['mod_deps_optional'] = ['javax.servlet.api']
+end

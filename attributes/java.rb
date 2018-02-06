@@ -1,10 +1,6 @@
-# frozen_string_literal: true
-# rubocop:disable LineLength
-#
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +19,5 @@
 default['java']['install_flavor'] = 'oracle'
 default['java']['oracle']['accept_oracle_download_terms'] = true
 default['java']['jdk_version'] = '8'
-default['java']['jdk']['8']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/8u40-b26/jdk-8u40-linux-x64.tar.gz'
-default['java']['jdk']['8']['x86_64']['checksum'] = 'da1ad819ce7b7ec528264f831d88afaa5db34b7955e45422a7e380b1ead6b04d'
-
-# => default['java']['jdk']['7']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz'
-# => default['java']['jdk']['7']['x86_64']['checksum'] = '460959219b534dc23e34d77abc306e180b364069b9fc2b2265d964fa2c281610'
+default['java']['jdk']['8']['x86_64']['url'] = 'http://download.oracle.com/otn-pub/java/jdk/8u162-b12/0da788060d494f5095bf8624735fa2f1/jdk-8u162-linux-x64.tar.gz'
+default['java']['jdk']['8']['x86_64']['checksum'] = '68ec82d47fd9c2b8eb84225b6db398a72008285fafc98631b1ff8d2229680257'

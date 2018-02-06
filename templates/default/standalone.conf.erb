@@ -4,7 +4,7 @@
 
 ## -*- shell-script -*- ######################################################
 ##                                                                          ##
-##  JBoss Bootstrap Script Configuration                                    ##
+##  WildFly Bootstrap Script Configuration                                  ##
 ##                                                                          ##
 ##############################################################################
 
@@ -33,6 +33,9 @@
 #
 #JAVA_HOME="/opt/java/jdk"
 
+# tell linux glibc how many memory pools can be created that are used by malloc
+# MALLOC_ARENA_MAX="5"
+
 #
 # Specify the exact Java VM executable to use.
 #
@@ -51,7 +54,7 @@ fi
 # Specify options to pass to the Java VM.
 #
 if [ "x$JAVA_OPTS" = "x" ]; then
-   JAVA_OPTS="-Xms<%= @xms %> -Xmx<%= @xmx %> -XX:MaxPermSize=<%= @maxpermsize %> -Djava.net.preferIPv4Stack=<%= @preferipv4 %>"
+   JAVA_OPTS="-Xms<%= @xms %> -Xmx<%= @xmx %> -XX:MetaspaceSize=<%= @xx_metaspacesize %> -XX:MaxMetaspaceSize=<%= @xx_maxmetaspacesize %> -Djava.net.preferIPv4Stack=<%= @preferipv4 %>"
    JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=<%= @headless %>"
 <%- if !node['wildfly']['java_opts']['other'].empty? %>
    JAVA_OPTS="$JAVA_OPTS <%= node['wildfly']['java_opts']['other'].join(' ') %>"
@@ -61,8 +64,8 @@ else
 fi
 
 # Sample JPDA settings for remote socket debugging
-<%- if node['wildfly']['jpda']['enabled'] %>
-JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=<%= node['wildfly']['jpda']['port'] %>,server=y,suspend=n"
+<%- if @jpda %>
+JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=<%= @jpda %>,server=y,suspend=n"
 <%- else %>
 #JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n"
 <%- end %>
@@ -76,6 +79,12 @@ JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=<%= node['wildf
 # Uncomment to gather JBoss Modules metrics
 #JAVA_OPTS="$JAVA_OPTS -Djboss.modules.metrics=true"
 
+# Uncomment this to run with a security manager enabled
+# SECMGR="true"
+
 # Uncomment this in order to be able to run WildFly on FreeBSD
 # when you get "epoll_create function not implemented" message in dmesg output
 #JAVA_OPTS="$JAVA_OPTS -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.PollSelectorProvider"
+
+# Uncomment this out to control garbage collection logging
+# GC_LOG="true"

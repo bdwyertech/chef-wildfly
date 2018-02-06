@@ -1,8 +1,6 @@
-# frozen_string_literal: true
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +35,7 @@ default['wildfly']['mysql']['jndi']['datasources'] = [
     db_pass: 'test_pass',
     pool_min: '5',
     pool_max: '20',
-    timeout: '5'
+    timeout: '5',
   },
   {
     jndi_name: 'java:jboss/datasources/test2',
@@ -48,6 +46,6 @@ default['wildfly']['mysql']['jndi']['datasources'] = [
     db_pass: 'test_pass',
     pool_min: '5',
     pool_max: '20',
-    timeout: '5'
-  }
+    timeout: '5',
+  },
 ]

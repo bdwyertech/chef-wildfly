@@ -1,10 +1,10 @@
-# frozen_string_literal: true
+# Encoding: UTF-8
 
-# encoding: UTF-8
-
-# LWRP that provisions a datasource
 #
-# Copyright (C) 2014 Brian Dwyer - Intelligent Digital Services
+# Cookbook Name:: wildfly
+# Resource:: loghandler
+#
+# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,17 +19,71 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+# => Define the Resource Name
+resource_name :wildfly_loghandler
+
+property :handler,  String, name_property: true
+property :app_name, String, required: true
+property :type,     String, required: true
+property :enabled,  String, default: 'true'
+property :hostname, String, default: 'localhost'
+property :port,     String, default: '514'
+property :level,    String, default: 'ALL'
+property :server_address, String, default: 'localhost'
+property :syslog_format, String, default: 'RFC5424'
+property :instance, String, required: false
+
+#
+# => Define the Default Resource Action
+#
 default_action :create
 
-attribute :name, kind_of: String, required: true, name_attribute: true
-attribute :type, kind_of: String, required: true
-attribute :hostname, kind_of: String, default: 'localhost'
-attribute :server_address, kind_of: String, default: 'localhost'
-attribute :port, kind_of: String, default: '514'
-attribute :level, kind_of: String, default: 'ALL'
-attribute :syslog_format, kind_of: String, default: 'RFC5424'
-attribute :enabled, kind_of: String, default: 'true'
-attribute :app_name, kind_of: String, required: true
+#
+# => Create a Log Handler
+#
+action :create do
+  if loghandler_exists?
+    Chef::Log.info "#{new_resource} already exists - nothing to do."
+  else
+    converge_by("Create #{new_resource}") do
+      create_loghandler
+    end
+  end
+end
 
-attr_accessor :exists
+#
+# => Delete a Log Handler
+#
+action :delete do
+  if loghandler_exists?
+    converge_by("Delete #{new_resource}") do
+      delete_loghandler
+    end
+  else
+    Chef::Log.info "#{new_resource} doesn't exist - can't delete."
+  end
+end
+
+action_class do
+  # => Include Helper Modules
+  include WildFly::Helper
+
+  def loghandler_exists?
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:read-resource", new_resource.instance)
+    result.exitstatus == 0
+  end
+
+  def create_loghandler
+    params = [
+      "hostname=#{new_resource.hostname}",
+      "app-name=#{new_resource.app_name}",
+    ].join(',')
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:add(#{params})", new_resource.instance)
+    result.exitstatus == 0
+  end
+
+  def delete_loghandler
+    result = jb_cli("/subsystem=logging/#{new_resource.type}=#{new_resource.handler}:remove", new_resource.instance)
+    result.exitstatus == 0
+  end
+end

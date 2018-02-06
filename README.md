@@ -1,21 +1,23 @@
 # Wildfly Cookbook
-Cookbook to deploy Wildfly Java Application Server
+Cookbook to deploy the WildFly Java Application Server
 
 [![Cookbook](http://img.shields.io/cookbook/v/wildfly.svg)](https://github.com/bdwyertech/chef-wildfly)
 [![Build Status](https://travis-ci.org/bdwyertech/chef-wildfly.svg)](https://travis-ci.org/bdwyertech/chef-wildfly)
 [![Gitter chat](https://img.shields.io/badge/Gitter-bdwyertech%2Fwildfly-brightgreen.svg)](https://gitter.im/bdwyertech/chef-wildfly)
 
-# Requirements
-- Chef Client 11+
-- Java Cookbook (ignored if node['wildfly']['install_java'] is false)
+Provides resources for installing/configuring WildFly and managing WildFly service instances for use in wrapper cookbooks. Installs WildFly from tarballs on the Apache.org website and installs the appropriate configuration for your platform's init system.
 
-# Platform
-- CentOS, Red Hat
+## Requirements
 
-Tested on:
-- CentOS 6.6
+### Platforms
+- RHEL and derivatives
+- Ubuntu
 
-# Usage
+### Chef
+
+- Chef 12.11+
+
+## Usage
 You can add users in the proper format to `attributes\users.rb`
 
 You can customize the Java version, and the Connector/J if you'd like.
@@ -23,37 +25,98 @@ You can customize the Java version, and the Connector/J if you'd like.
 If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version,
 Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  
 This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  
-Currently, version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
+
+Version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
 
 # Attributes
 * `node['wildfly']['install_java']` - Install Java using Java Cookbook.  Default `true`
 * `node['wildfly']['base']` - Base directory to run Wildfly from
-
 * `node['wildfly']['version']` - Specify the version of Wildfly
 * `node['wildfly']['url']` - URL to Wildfly tarball
 * `node['wildfly']['checksum']` - SHA256 hash of said tarball
-
 * `node['wildfly']['user']` - User to run Wildfly as. DO NOT MODIFY AFTER INSTALLATION!!!
-* `node['wildfly']['group']` - Group which owns Wildfly directories
-* `node['wildfly']['server']` - Name of service and init.d script for daemonizing
-
-* `node['wildfly']['mysql']['enabled']` - Boolean indicating Connector/J support
-
-* `node['wildfly']['int'][*]` - Various hashes for setting interface & port bindings
-
-* `node['wildfly']['smtp']['host']` - SMTP Destination host
-* `node['wildfly']['smtp']['port']` - SMTP Destination port
+* `node['wildfly']['group']` - Group which owns WildFly directories
+* `node['wildfly']['server']` - Name of service for daemonizing
 
 
 # Recipes
-* `::default` - Installs Java (if node['wildfly']['install_java'] is true) & Wildfly.  
-Also installs Connector/J if you've got it enabled.
-* `::install` - Installs Wildfly.
-* `::mysql_connector` - Installs Connector/J into appropriate Wildfly directory.
+* `::default` - Installs Java, WildFly and any enabled connectors.
+* `::install` - Installs Wildfly using the wildfly resource
+* `::mysql_connector` - Installs MySQL Connector/J
+* `::postgres_connector` ` Installs PostgreSQL Java connector
 
-# Providers
+# Resource Providers
+### Wildfly
+* Installs and configures WildFly.
 
-Datasource LWRP
+```ruby
+wildfly_wildfly 'wildfly' do
+  mode 'standalone' # => WildFly Mode
+  config 'standalone-full.xml' # => The WildFly Configuration File
+  base_dir '/opt/wildfly' # => Directory to install WildFly to
+  service_user 'wildfly'
+  service_group 'wildfly'
+  provision_user true # => Whether to create the WildFly service user/group
+  create_mgmt_user true # => Provision a random, secure user for API interactions
+  url 'http://.../wildfly.tar.gz' # URL to WildFly tarball to download
+  checksum 'SHA256_CHECKSUM' # WildFly Tarball Checksum
+  version '1.2.3' # Version of WildFly (Should correspond to URL)
+end
+```
+
+##### Accessor Properties
+* `bind_management_http` - the HTTP port for the Management Interface & API
+
+### Resource
+* Flexible resource which allows provisioning of attributes and their parameters via the WildFly Management API.  This should be used over other resources as it affords more flexibility.
+
+```ruby
+wildfly_resource 'Syslog Handler' do
+  path ['subsystem', 'logging', 'syslog-handler', 'SYSLOG']
+  parameters 'app-name' => 'TEST',
+             'enabled'  => true,
+             'hostname' => 'localhost',
+             'level'    => 'ALL',
+             'port'     => 514,
+             'server-address' => 'test.syslog.local',
+             'syslog-format'  => 'RFC5424'
+  action :create
+end
+```
+
+### Deploy API
+* Resource to deploy applications via the API
+
+```ruby
+# => URL-Based Deployment
+wildfly_deploy_api 'Sample' do
+  deploy_name 'sample-v1'
+  runtime_name 'sample.war'
+  parameters 'url' => 'https://github.com/apcera/sample-apps/raw/master/example-java-war/sample.war'
+end
+```
+
+```ruby
+# => File-Based Deployment
+myapp = remote_file 'helloworld' do
+  source 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
+  path ::File.join(Chef::Config[:file_cache_path], 'hello-world.war')
+  mode '0644'
+  action :create
+end
+
+wildfly_deploy_api 'HelloWorld File Deployment' do
+  deploy_name "HelloWorld-file-V1"
+  runtime_name 'helloworld-file.war'
+  parameters 'url' => 'file://' + myapp.path
+end
+```
+
+
+# Legacy Resources
+* These will be deprecated in the future.  The `wildfly_resource` resource can do everything these can, and via the much faster Management API.  The `deploy_api` resource will replace the `deploy` resource as well.
+
+### Datasource
 
 ```ruby
 wildfly_datasource 'example' do
@@ -66,7 +129,7 @@ wildfly_datasource 'example' do
 end
 ```
 
-Deploy LWRP
+### Deploy
 
 Allows you to deploy JARs and WARs via chef
 
@@ -99,15 +162,15 @@ wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
 end
 ```
 
-Attribute LWRP
+### Attribute LWRP
 
 Allows you to set an attribute in the server config
 
 To change the max-post-size parameter
 ```xml
             <server name="default-server">
-			       <http-listener name="default" socket-binding="http" max-post-size="20971520"/>
-				   <host name="default-host" alias="localhost">
+             <http-listener name="default" socket-binding="http" max-post-size="20971520"/>
+           <host name="default-host" alias="localhost">
 
 ```
 
@@ -141,7 +204,7 @@ wildfly_attribute 'max-post-size' do
 end
 ```
 
-Property LWRP
+### Property LWRP
 
 Allows you to set or delete system properties in the server config. (Supported Actions: :set, :delete)
 
@@ -153,40 +216,6 @@ wildfly_property 'Database URL' do
    notifies :restart, 'service[wildfly]', :delayed
 end
 ```
-
-## ChefSpec Matchers
-
-This cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test
-your own cookbooks.
-
-Example Matcher Usage
-
-```ruby
-expect(chef_run).to create_wildfly_datasource('example').with(
-  jndiname 'java:jboss/datasource/example'
-  drivername 'some-jdbc-driver'
-  connectionurl 'jdbc:some://127.0.0.1/example'
-  username 'db_username'
-  password 'db_password'
-  sensitive: true
-)
-```
-
-Cookbook Matchers
-
-* set_wildfly_attribute(resource_name)
-* create_wildfly_datasource(resource_name)
-* delete_wildfly_datasource(resource_name)
-* install_wildfly_deploy(resource_name)
-* remove_wildfly_deploy(resource_name)
-* enable_wildfly_deploy(resource_name)
-* disable_wildfly_deploy(resource_name)
-* create_wildfly_logcategory(resource_name)
-* delete_wildfly_logcategory(resource_name)
-* create_wildfly_loghandler(resource_name)
-* delete_wildfly_loghandler(resource_name)
-* set_wildfly_property(resource_name)
-* delete_wildfly_property(resource_name)
 
 # Authors
 

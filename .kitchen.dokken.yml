@@ -1,0 +1,128 @@
+---
+driver:
+  name: dokken
+  privileged: true # because Docker and SystemD/Upstart
+  # chef_version: '12.21.31'
+  chef_version: <%= ENV['CHEF_VERSION'] || '13.7.19' %>
+  ports: [
+    '8080',
+    '9990'
+  ]
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+  # Config-option only support on Chef 12.13+
+  # chef_options: '--config-option file_cache_path=/tmp/chef -z'
+  chef_log_level: 'info'
+
+verifier:
+  name: inspec
+
+#
+# Platforms
+#
+platforms:
+- name: amazon
+  driver:
+    image: amazonlinux:latest
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - >
+        RUN yum install -y lsof initscripts net-tools passwd wget which
+        crontabs
+        && yum clean all
+
+- name: centos-7
+  driver:
+    image: centos:7
+    platform: rhel
+    pid_one_command: /usr/lib/systemd/systemd
+    # security_opt:
+    #   - label:enable # Enable SELinux
+    intermediate_instructions:
+      - >
+        RUN yum -y install lsof initscripts net-tools systemd-sysv wget which
+        bash-completion crontabs selinux-policy-targeted
+        && yum clean all
+
+- name: ubuntu-14.04
+  driver:
+    image: ubuntu:14.04
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - >
+        RUN /usr/bin/apt-get update
+        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
+        && /usr/bin/apt-get install cron -y
+
+- name: ubuntu-16.04
+  driver:
+    image: ubuntu:16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - >
+        RUN /usr/bin/apt-get update
+        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
+        && /usr/bin/apt-get install cron -y
+
+#
+# Test Suites
+#
+suites:
+  - name: 'default'
+    run_list:
+      - recipe[test::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      # wildfly:
+      #  version: '11.0.0'
+      #  # => Disable System Tuning
+      #  system_tuning: false
+    includes: [
+      'amazon',
+      'centos-7',
+      'ubuntu-14.04',
+      'ubuntu-16.04',
+    ]
+
+  - name: 'resource'
+    run_list:
+      - recipe[test::resource]
+    verifier:
+      inspec_tests:
+        - test/integration/resource
+    attributes:
+      # wildfly:
+      #  version: '11.0.0'
+      #  # => Disable System Tuning
+      #  system_tuning: false
+    includes: [
+      'amazon',
+      'centos-7',
+      'ubuntu-14.04',
+      'ubuntu-16.04'
+    ]
+
+  - name: 'api'
+    run_list:
+      - recipe[test::api]
+    verifier:
+      inspec_tests:
+        - test/integration/api
+    attributes:
+      wildfly:
+        mysql:
+          enabled: true
+        postgresql:
+          enabled: true
+    includes: [
+      'amazon',
+      'centos-7',
+      'ubuntu-14.04',
+      'ubuntu-16.04'
+    ]

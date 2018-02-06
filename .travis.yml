@@ -1,20 +1,56 @@
-language: ruby
-cache: bundler
-sudo: false
+sudo: required
+dist: trusty
 
-rvm:
-        #  - 2.0
-        #  - 2.1
-        #  - 2.2
-  - 2.2.3
-  - 2.3
+addons:
+  apt:
+    sources:
+      - chef-stable-trusty
+      # - chef-current-trusty
+    packages:
+      - chefdk
 
-bundler_args: --without development kitchen_docker kitchen_vagrant
+# Don't `bundle install` which takes about 1.5 mins
+install: echo "skip bundle install"
 
-script:
-  - bundle exec foodcritic -f any .
-  # - bundle exec rspec --color --format progress
-  - bundle exec rubocop
+branches:
+  # only:
+  #   - master
+
+services: docker
+
+env:
+  matrix:
+  - INSTANCE=default-centos-7
+  - INSTANCE=default-ubuntu-1404
+  - INSTANCE=default-ubuntu-1604
+  - INSTANCE=default-amazon
+  - INSTANCE=default-centos-7 CHEF_VERSION=12.11.18
+  - INSTANCE=default-ubuntu-1404 CHEF_VERSION=12.11.18
+  - INSTANCE=resource-centos-7
+  - INSTANCE=resource-ubuntu-1404
+  - INSTANCE=resource-ubuntu-1604
+  - INSTANCE=resource-amazon
+  - INSTANCE=resource-ubuntu-1604 CHEF_VERSION=12.11.18
+  - INSTANCE=resource-amazon CHEF_VERSION=12.11.18
+  - INSTANCE=api-centos-7
+  - INSTANCE=api-centos-7 CHEF_VERSION=12.11.18
+
+before_script:
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - /opt/chefdk/embedded/bin/chef --version
+  - /opt/chefdk/embedded/bin/cookstyle --version
+  - /opt/chefdk/embedded/bin/foodcritic --version
+
+script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
+
+matrix:
+  include:
+    - script:
+      - /opt/chefdk/bin/chef gem install net-http-digest_auth --no-document
+      - /opt/chefdk/bin/chef exec delivery local lint
+      - /opt/chefdk/bin/chef exec delivery local syntax
+      - /opt/chefdk/bin/chef exec delivery local unit
 
 notifications:
   webhooks:
