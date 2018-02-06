@@ -5,7 +5,9 @@ Cookbook to deploy the WildFly Java Application Server
 [![Build Status](https://travis-ci.org/bdwyertech/chef-wildfly.svg)](https://travis-ci.org/bdwyertech/chef-wildfly)
 [![Gitter chat](https://img.shields.io/badge/Gitter-bdwyertech%2Fwildfly-brightgreen.svg)](https://gitter.im/bdwyertech/chef-wildfly)
 
-Provides resources for installing/configuring WildFly and managing WildFly service instances for use in wrapper cookbooks. Installs WildFly from tarballs on the Apache.org website and installs the appropriate configuration for your platform's init system.
+Provides resources for installing/configuring WildFly and managing WildFly service instances for use in wrapper cookbooks. Installs WildFly from tarball and installs the appropriate configuration for your platform's init system.
+
+
 
 ## Requirements
 
@@ -14,19 +16,16 @@ Provides resources for installing/configuring WildFly and managing WildFly servi
 - Ubuntu
 
 ### Chef
-
 - Chef 12.11+
 
 ## Usage
-You can add users in the proper format to `attributes\users.rb`
 
-You can customize the Java version, and the Connector/J if you'd like.
+This cookbook has recently been rewritten to be resource-driven.  It was a large undertaking and breaks old behavior, hence the major version bump.  The API-driven configuration and deployment resources are much faster to converge.
 
-If running in production, I STRONGLY recommend you use a wrapper cookbook, and manually specify the Wildfly version,
-Java version (if node['wildfly']['install_java'] is true), and cookbook version as well.  
-This cookbook and configuration templates will continually be updated to support the latest stable release of Wildfly.  
+The old recipes were kept around for similar, legacy behavior, but using the resources directly in your wrapper cookbook will yield more flexibility.
 
-Version upgrades will trigger configuration enforcement, meaning any changes made outside of Chef will be wiped out.
+Example wrapper cookbook scenarios are available in the test cookbook, under `test/fixtures/cookbooks/test`
+
 
 # Attributes
 * `node['wildfly']['install_java']` - Install Java using Java Cookbook.  Default `true`
@@ -34,19 +33,19 @@ Version upgrades will trigger configuration enforcement, meaning any changes mad
 * `node['wildfly']['version']` - Specify the version of Wildfly
 * `node['wildfly']['url']` - URL to Wildfly tarball
 * `node['wildfly']['checksum']` - SHA256 hash of said tarball
-* `node['wildfly']['user']` - User to run Wildfly as. DO NOT MODIFY AFTER INSTALLATION!!!
+* `node['wildfly']['user']` - User to run WildFly as. DO NOT MODIFY AFTER INSTALLATION!!!
 * `node['wildfly']['group']` - Group which owns WildFly directories
-* `node['wildfly']['server']` - Name of service for daemonizing
+* `node['wildfly']['service']` - Name of service for daemonizing
 
 
 # Recipes
 * `::default` - Installs Java, WildFly and any enabled connectors.
 * `::install` - Installs Wildfly using the wildfly resource
 * `::mysql_connector` - Installs MySQL Connector/J
-* `::postgres_connector` ` Installs PostgreSQL Java connector
+* `::postgres_connector` - Installs PostgreSQL Java connector
 
 # Resource Providers
-### Wildfly
+### WildFly
 * Installs and configures WildFly.
 
 ```ruby
@@ -125,7 +124,7 @@ wildfly_datasource 'example' do
   connectionurl 'jdbc:some://127.0.0.1/example'
   username 'db_username'
   password 'db_password'
-  sensitive false  
+  sensitive false
 end
 ```
 

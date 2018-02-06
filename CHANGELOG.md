@@ -1,6 +1,12 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 1.0.0 (2018-2-6)
+* Rewrite as Resource-Driven Cookbook for added flexibility in deployment
+* Add resources for API-based configuration & deployment
+* WildFly 11
+* Adjust configuration to be primarily based on Java Properties and Launch Configuration.  This means we've removed XML template-driven configuration... The templates were simply clunky and not the ideal way to handle WildFly configuration.
+
 # 0.4.3 (2018-1-5)
 * Fix Chef version constraint in metadata
 
