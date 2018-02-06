@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 1.0.1 (2018-2-6)
+* Update README
+* Add support for Ubuntu on the Supermarket
+
 # 1.0.0 (2018-2-6)
 * Rewrite as Resource-Driven Cookbook for added flexibility in deployment
 * Add resources for API-based configuration & deployment
