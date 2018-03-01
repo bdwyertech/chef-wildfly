@@ -3,7 +3,7 @@ driver:
   name: dokken
   privileged: true # because Docker and SystemD/Upstart
   # chef_version: '12.21.31'
-  chef_version: <%= ENV['CHEF_VERSION'] || '13.7.19' %>
+  chef_version: <%= ENV['CHEF_VERSION'] || 'stable' %>
   ports: [
     '8080',
     '9990'
