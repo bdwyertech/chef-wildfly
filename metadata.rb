@@ -6,16 +6,16 @@ maintainer_email 'bdwyertech'
 license          'Apache-2.0'
 description      'Installs/Configures wildfly'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.1'
+version          '1.1.0'
 chef_version     '>= 12.11'
 
 supports 'centos'
 supports 'ubuntu'
 
-depends 'apt'
-depends 'yum'
+depends 'apt', '~> 7.0.0'
+depends 'yum', '~> 5.1.0'
 depends 'java', '~> 1.22'
-depends 'systemd'
+depends 'systemd', '= 3.2.2'
 
 gem 'net-http-digest_auth'
 
