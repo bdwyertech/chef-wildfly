@@ -22,7 +22,7 @@
 # => Define the Resource Name
 resource_name :wildfly_logcategory
 
-property :logger, String, name_property: true
+property :loggers, String, name_property: true
 property :use_parent_handlers, String
 property :level,    String
 property :handlers, Array
@@ -64,7 +64,7 @@ action_class do
   include WildFly::Helper
 
   def logcategory_exists?
-    result = jb_cli("/subsystem=logging/logger=#{new_resource.logger}:read-resource", new_resource.instance)
+    result = jb_cli("/subsystem=logging/logger=#{new_resource.loggers}:read-resource", new_resource.instance)
     result.exitstatus == 0
   end
 
@@ -84,10 +84,10 @@ action_class do
       "handlers=#{handlers}",
     ].join(',')
 
-    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:add(#{params})", new_resource.instance)
+    jb_cli("/subsystem=logging/logger=#{new_resource.loggers}:add(#{params})", new_resource.instance)
   end
 
   def delete_logcategory
-    jb_cli("/subsystem=logging/logger=#{new_resource.logger}:remove", new_resource.instance)
+    jb_cli("/subsystem=logging/logger=#{new_resource.loggers}:remove", new_resource.instance)
   end
 end
