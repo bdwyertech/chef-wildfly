@@ -24,16 +24,16 @@ env:
   - INSTANCE=default-ubuntu-1404
   - INSTANCE=default-ubuntu-1604
   - INSTANCE=default-amazon
-  - INSTANCE=default-centos-7 CHEF_VERSION=12.11.18
-  - INSTANCE=default-ubuntu-1404 CHEF_VERSION=12.11.18
+  - INSTANCE=default-centos-7 CHEF_VERSION=12.19.36
+  - INSTANCE=default-ubuntu-1404 CHEF_VERSION=12.19.36
   - INSTANCE=resource-centos-7
   - INSTANCE=resource-ubuntu-1404
   - INSTANCE=resource-ubuntu-1604
   - INSTANCE=resource-amazon
-  - INSTANCE=resource-ubuntu-1604 CHEF_VERSION=12.11.18
-  - INSTANCE=resource-amazon CHEF_VERSION=12.11.18
+  - INSTANCE=resource-ubuntu-1604 CHEF_VERSION=12.19.36
+  - INSTANCE=resource-amazon CHEF_VERSION=12.19.36
   - INSTANCE=api-centos-7
-  - INSTANCE=api-centos-7 CHEF_VERSION=12.11.18
+  - INSTANCE=api-centos-7 CHEF_VERSION=12.19.36
 
 before_script:
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
