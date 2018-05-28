@@ -121,7 +121,7 @@ action_class do
   def deploy_install(source, deploy_name, runtime_name)
     Chef::Log.info("Deploying #{deploy_name}")
     converge_by((source == '' ? 'Enabling' : 'Deploying') + " #{detailed_name(runtime_name, deploy_name)}") do
-      result = jb_cli("deploy #{source} --name=#{deploy_name} --runtime-name=#{runtime_name}", new_resource.instance)
+      result = jb_cli("deploy #{source} --name=#{deploy_name} --runtime-name=#{runtime_name} --force", new_resource.instance)
       result.error! if result.exitstatus != 0
     end
     true
