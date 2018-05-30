@@ -59,8 +59,10 @@ Procfile
 spec/*
 Rakefile
 .travis.yml
+.gitlab-ci.yml
 .foodcritic
 .codeclimate.yml
+scratchpad.rb
 
 # SCM #
 #######
