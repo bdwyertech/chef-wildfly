@@ -1,6 +1,13 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 1.1.0 (2018-5-28)
+* WildFly 12.0.0
+* Update Java to 8u171
+* Add support for Ubuntu on the Supermarket
+* Bump minimum supported Chef version due to Chef 12 and [compat_resource deprecation](https://github.com/chef-boneyard/compat_resource)
+* Adjust tests for CLI deploy resource seemingly ignoring --name when --url is specified in 12.0.0 (Works fine via API)
+
 # 1.0.1 (2018-2-6)
 * Update README
 * Add support for Ubuntu on the Supermarket

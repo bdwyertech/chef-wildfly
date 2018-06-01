@@ -109,8 +109,19 @@ wildfly_deploy 'helloworld' do
   url 'https://github.com/efsavage/hello-world-war/raw/master/dist/hello-world.war'
 end
 
+# => BUG: The deploy resource in WildFly 12.0.0.FINAL doesn't seem to respect the name attribute when a url is specified...
+# => Here, we use a remote_file instead to get around it.  It works above because runtime_name is equal to the name (runtime_name still respected)
+
+# => File-Based Deployment
+cd = remote_file 'cluster-demo' do
+  source 'https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war'
+  path ::File.join(Chef::Config[:file_cache_path], 'hello-world.war')
+  mode '0644'
+  action :create
+end
+
 wildfly_deploy 'cluster-demo-v1' do
   instance 'wildfly2'
-  url 'https://github.com/bdwyertech/cluster-demo/releases/download/011218/cluster-demo.war'
-  runtime_name 'cluster-demo'
+  path cd.path
+  runtime_name 'cluster-demo.war'
 end
