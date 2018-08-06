@@ -25,7 +25,7 @@ require 'shellwords'
 resource_name :wildfly_attribute
 
 # => Define the Resource Properties
-property :parameter, String, required: true, name_property: true
+property :parameter, String, name_property: true
 property :value,     String, coerce: proc { |m| enable_escape ? Shellwords.escape(m) : m }
 property :path,      String
 property :restart,   [FalseClass, TrueClass], default: true
