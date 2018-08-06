@@ -12,8 +12,6 @@ chef_version     '>= 12.19' if respond_to?(:chef_version)
 supports 'centos'
 supports 'ubuntu'
 
-depends 'apt'
-depends 'yum'
 depends 'systemd'
 
 gem 'net-http-digest_auth'
