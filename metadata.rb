@@ -1,12 +1,11 @@
 # Encoding: UTF-8
-
 name             'wildfly'
 maintainer       'Brian Dwyer - Intelligent Digital Services'
 maintainer_email 'bdwyertech'
 license          'Apache-2.0'
 description      'Installs/Configures wildfly'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.1.0'
+version          '2.0.0'
 chef_version     '>= 12.19' if respond_to?(:chef_version)
 
 supports 'centos'

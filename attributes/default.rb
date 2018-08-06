@@ -18,7 +18,7 @@
 # => Source
 default['wildfly']['version'] = '13.0.0'
 default['wildfly']['url'] = 'http://download.jboss.org/wildfly/13.0.0.Final/wildfly-13.0.0.Final.tar.gz'
-default['wildfly']['checksum'] = '42fa41b25a2cbf4782f78fd8c4d537a06acfa60688fcc0ece9299f140c76afe0'
+default['wildfly']['checksum'] = 'f74fa1882a83fc6650fb43d21ed4527eeb5478f39878f15f1f79d3dc01a997f9'
 
 # => Base Directory
 default['wildfly']['base'] = '/opt/wildfly'
