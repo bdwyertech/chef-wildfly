@@ -1,5 +1,6 @@
 # Encoding: UTF-8
 
+include_recipe 'java'
 include_recipe 'wildfly::default'
 
 # => Set Transaction Node Identifier

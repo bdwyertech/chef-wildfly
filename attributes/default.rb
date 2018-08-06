@@ -78,5 +78,3 @@ default['wildfly']['initd']['shutdown_wait'] = '60'
 # => Hardcode JAVA_HOME into init.d configuration.
 # => Based on value of node['java']['java_home']
 default['wildfly']['java']['enforce_java_home'] = true
-
-default['wildfly']['install_java'] = true

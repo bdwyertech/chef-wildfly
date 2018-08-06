@@ -18,7 +18,6 @@
 # limitations under the License.
 #
 
-include_recipe 'java' if node['wildfly']['install_java']
 include_recipe 'wildfly::install'
 include_recipe 'wildfly::mysql_connector' if node['wildfly']['mysql']['enabled']
 include_recipe 'wildfly::postgres_connector' if node['wildfly']['postgresql']['enabled']
