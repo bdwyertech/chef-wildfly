@@ -1,7 +1,11 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
-# 2.0.0 (2018-7-6)
+# 2.0.1 (2018-8-7)
+* Cleanup deprecated attributes and update resources
+* Update documentation
+
+# 2.0.0 (2018-8-6)
 * WildFly 13.0.0
 * Remove Java cookbook dependency -- Bring your own Java
 * Remove unnecessary `apt` & `yum` dependencies
