@@ -34,7 +34,7 @@ property :service_group,  String, default: lazy { service_name }
 property :version,        String, default: wildfly['version']
 property :url,            String, default: wildfly['url']
 property :checksum,       String, default: wildfly['checksum']
-property :mode,           String, equal_to: %w(domain standalone), default: wildfly['mode']
+property :mode,           String, equal_to: %w(domain standalone), default: 'standalone'
 property :config,         String, default: 'standalone-full.xml'
 property :log_dir,        String, default: lazy { ::File.join(base_dir, mode, 'log') }
 property :create_mgmt_user, [FalseClass, TrueClass], default: true

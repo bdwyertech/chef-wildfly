@@ -26,20 +26,14 @@ The old recipes were kept around for similar, legacy behavior, but using the res
 
 Example wrapper cookbook scenarios are available in the test cookbook, under `test/fixtures/cookbooks/test`
 
-
 # Attributes
-* `node['wildfly']['base']` - Base directory to run Wildfly from
 * `node['wildfly']['version']` - Specify the version of Wildfly
 * `node['wildfly']['url']` - URL to Wildfly tarball
 * `node['wildfly']['checksum']` - SHA256 hash of said tarball
-* `node['wildfly']['user']` - User to run WildFly as. DO NOT MODIFY AFTER INSTALLATION!!!
-* `node['wildfly']['group']` - Group which owns WildFly directories
-* `node['wildfly']['service']` - Name of service for daemonizing
-
 
 # Recipes
-* `::default` - Installs Java, WildFly and any enabled connectors.
-* `::install` - Installs Wildfly using the wildfly resource
+* `::default` - Installs WildFly and any enabled connectors.
+* `::install` - Installs Wildfly using the `wildfly` resource
 * `::mysql_connector` - Installs MySQL Connector/J
 * `::postgres_connector` - Installs PostgreSQL Java connector
 
@@ -131,21 +125,22 @@ end
 
 Allows you to deploy JARs and WARs via chef
 
-Example 1 (from a url)
+#### From a URL
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       url 'http://artifacts.company.com/artifacts/mssql-java-driver/sqljdbc4.jar'
 end
 ```
 
-Example 2 (from disk)
+#### From File
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       path '/opt/resources/sqljdb4.jar'
 end
 ```
 
-Example 3 with automated update (requires a common runtime_name and version specific name)
+#### With Automated Update
+*Requires a common runtime_name and version-specific name*
 ```ruby
 wildfly_deploy 'my-app-1.0.war' do
       url 'http://artifacts.company.com/artifacts/my-app.1.0.war'
@@ -153,7 +148,8 @@ wildfly_deploy 'my-app-1.0.war' do
 end
 ```
 
-Example 4 undeploy (use :disable to keep the contents, and :enable to re-deploy previously kept contents)
+#### Undeploy
+*Use `:disable` to keep the contents, and `:enable` to re-deploy previously kept contents*
 ```ruby
 wildfly_deploy 'jboss.jdbc-driver.sqljdbc4_jar' do
       action :remove
@@ -164,35 +160,24 @@ end
 
 Allows you to set an attribute in the server config
 
-To change the max-post-size parameter
+#### Example
 ```xml
-            <server name="default-server">
-             <http-listener name="default" socket-binding="http" max-post-size="20971520"/>
-           <host name="default-host" alias="localhost">
-
+<server name="default-server">
+  <http-listener name="default" socket-binding="http" max-post-size="20971520"/>
+  <host name="default-host" alias="localhost">
 ```
 
+#### Adjust `max-post-size`
 ```ruby
 wildfly_attribute 'max-post-size' do
    path '/subsystem=undertow/server=default-server/http-listener=default'
    parameter 'max-post-size'
    value '20971520L'
-   notifies :restart, 'service[wildfly]'
+   notifies :restart, 'service[wildfly]', :delayed
 end
 ```
 
-If the attribute restart is set to false, the wildfly will never restart
-
-```ruby
-wildfly_attribute 'max-post-size' do
-   path '/subsystem=undertow/server=default-server/http-listener=default'
-   parameter 'max-post-size'
-   value '20971520L'
-   restart false
-end
-```
-
-You can also add a new attribute
+#### Add Attribute
 
 ```ruby
 wildfly_attribute 'max-post-size' do
@@ -216,10 +201,13 @@ end
 ```
 
 # Authors
-
+```
 Author:: Brian Dwyer - Intelligent Digital Services
+```
 
 # Contributors
+```
 Contributor:: Hugo Trippaers
 
 Contributor:: Ian Southam
+```

@@ -20,32 +20,7 @@ default['wildfly']['version'] = '13.0.0'
 default['wildfly']['url'] = 'http://download.jboss.org/wildfly/13.0.0.Final/wildfly-13.0.0.Final.tar.gz'
 default['wildfly']['checksum'] = 'f74fa1882a83fc6650fb43d21ed4527eeb5478f39878f15f1f79d3dc01a997f9'
 
-# => Base Directory
-default['wildfly']['base'] = '/opt/wildfly'
-
-# => Set Wildfly User & Group
-default['wildfly']['user'] = 'wildfly'
-default['wildfly']['group'] = 'wildfly'
-
-# => Set Wildfly Service Name
-default['wildfly']['service'] = 'wildfly'
-
-# => Wildfly Deployment Type (standalone or domain)
-default['wildfly']['mode'] = 'standalone'
-
-# => Enforce Configuration (Force's redeployment of configuration, overwriting any local changes)
-default['wildfly']['enforce_config'] = false
-
-# => Standalone Mode Configuration
-# => (standalone/ha.xml, standalone-full/ha/ha-aws.xml)
-default['wildfly']['sa']['conf'] = 'standalone-full.xml'
-
-# => Domain Mode Configuration
-default['wildfly']['dom']['conf'] = 'domain.xml'
-default['wildfly']['dom']['host_conf'] = 'host-master.xml'
-
 # => Interface Configuration
-# => Should probably put a proxy in front of these... Maybe NginX?
 default['wildfly']['int']['mgmt']['bind'] = '0.0.0.0'
 default['wildfly']['int']['mgmt']['http_port'] = '9990'
 default['wildfly']['int']['mgmt']['https_port'] = '9993'
@@ -60,21 +35,6 @@ default['wildfly']['int']['ajp']['port'] = '8009'
 # => Use this to offset all port bindings.  Each binding will be incremented by this value.
 default['wildfly']['int']['port_binding_offset'] = '0'
 
-# => Debugging Settings
-default['wildfly']['jpda']['enabled'] = false
-default['wildfly']['jpda']['port'] = '8787'
-
-# => Console Log Location
-default['wildfly']['log']['console_log'] = '/var/log/wildfly/console.log'
-# => Enable Log Rotation on *.log in Console Log Directory
-default['wildfly']['log']['rotation'] = true
-# => Purge rotated logs older than this many days
-default['wildfly']['log']['max_age'] = 375
-
 # => Init Script Timeouts (Seconds)
 default['wildfly']['initd']['startup_wait'] = '60'
 default['wildfly']['initd']['shutdown_wait'] = '60'
-
-# => Hardcode JAVA_HOME into init.d configuration.
-# => Based on value of node['java']['java_home']
-default['wildfly']['java']['enforce_java_home'] = true

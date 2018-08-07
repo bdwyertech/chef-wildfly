@@ -28,7 +28,6 @@ resource_name :wildfly_attribute
 property :parameter, String, name_property: true
 property :value,     String, coerce: proc { |m| enable_escape ? Shellwords.escape(m) : m }
 property :path,      String
-property :restart,   [FalseClass, TrueClass], default: true
 property :enable_escape, [FalseClass, TrueClass], default: true
 property :instance, String, required: false
 
