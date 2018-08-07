@@ -28,7 +28,6 @@ Example wrapper cookbook scenarios are available in the test cookbook, under `te
 
 
 # Attributes
-* `node['wildfly']['install_java']` - Install Java using Java Cookbook.  Default `true`
 * `node['wildfly']['base']` - Base directory to run Wildfly from
 * `node['wildfly']['version']` - Specify the version of Wildfly
 * `node['wildfly']['url']` - URL to Wildfly tarball

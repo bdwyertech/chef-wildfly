@@ -29,7 +29,7 @@ verifier:
 platforms:
 - name: amazon
   driver:
-    image: amazonlinux:latest
+    image: amazonlinux:1
     pid_one_command: /sbin/init
     intermediate_instructions:
       - >
