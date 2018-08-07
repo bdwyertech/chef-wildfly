@@ -16,7 +16,7 @@ Provides resources for installing/configuring WildFly and managing WildFly servi
 - Ubuntu
 
 ### Chef
-- Chef 12.11+
+- Chef 12.19+
 
 ## Usage
 
@@ -28,12 +28,12 @@ Example wrapper cookbook scenarios are available in the test cookbook, under `te
 
 # Attributes
 * `node['wildfly']['version']` - Specify the version of Wildfly
-* `node['wildfly']['url']` - URL to Wildfly tarball
+* `node['wildfly']['url']` - URL to WildFly tarball
 * `node['wildfly']['checksum']` - SHA256 hash of said tarball
 
 # Recipes
 * `::default` - Installs WildFly and any enabled connectors.
-* `::install` - Installs Wildfly using the `wildfly` resource
+* `::install` - Installs WildFly using the `wildfly` resource
 * `::mysql_connector` - Installs MySQL Connector/J
 * `::postgres_connector` - Installs PostgreSQL Java connector
 
