@@ -29,7 +29,7 @@ mysql = node['wildfly']['mysql']
 
 mysql['jndi']['datasources'].each do |source|
   # => Configure MySQL Datasource
-  template ::File.join(wildfly['base'], 'standalone', 'deployments', "#{::File.basename(source['jndi_name'])}-ds.xml") do
+  template ::File.join(WildFly::Helper.wildfly_cfg['dir'], 'standalone', 'deployments', "#{::File.basename(source['jndi_name'])}-ds.xml") do
     source 'mysql-ds.xml.erb'
     user wildfly['user']
     group wildfly['group']

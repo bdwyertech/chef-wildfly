@@ -25,7 +25,7 @@ resource_name :wildfly_postgres_connector
 postgresql = node['wildfly']['postgresql']
 
 # => Define the Resource Properties
-property :instance, String, required: false
+property :instance, String, name_property: true
 property :base_dir, String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['dir'] }
 property :url,      String, default: postgresql['url']
 property :checksum, String, default: postgresql['checksum']

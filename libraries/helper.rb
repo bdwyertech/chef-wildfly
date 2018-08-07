@@ -2,7 +2,7 @@
 
 #
 # Cookbook:: wildfly
-# Library:: config
+# Library:: Helper
 #
 # Copyright:: 2018, Brian Dwyer - Intelligent Digital Services
 #
@@ -25,6 +25,7 @@ module WildFly
 
     # => Search for a WildFly Instance and grab its Configuration Properties
     def wildfly_cfg(resource_name = 'wildfly')
+      resource_name ||= 'wildfly'
       resource_type = 'wildfly'
 
       rc = Chef.run_context.resource_collection if Chef.run_context
@@ -32,10 +33,11 @@ module WildFly
 
       cfg = {}
       unless result
-        cfg['user']    = Chef.node['wildfly']['user']
-        cfg['group']   = Chef.node['wildfly']['group']
-        cfg['dir']     = Chef.node['wildfly']['base']
-        cfg['service'] = Chef.node['wildfly']['service']
+        Chef::Log.warn("WildFly::Helper:: Could not detect resource #{resource_name}... Returning sane defaults.")
+        cfg['user']    = resource_name
+        cfg['group']   = resource_name
+        cfg['dir']     = ::File.join(::File::SEPARATOR, 'opt', resource_name)
+        cfg['service'] = resource_name
         cfg['port']    = '9990'
         return cfg
       end

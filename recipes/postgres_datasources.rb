@@ -29,7 +29,7 @@ postgres = node['wildfly']['postgresql']
 
 postgres['jndi']['datasources'].each do |source|
   # => Configure PostgreSQL Datasource
-  template ::File.join(wildfly['base'], 'standalone', 'deployments', "#{::File.basename(source['jndi_name'])}-ds.xml") do
+  template ::File.join(WildFly::Helper.wildfly_cfg['dir'], 'standalone', 'deployments', "#{::File.basename(source['jndi_name'])}-ds.xml") do
     source 'postgres-ds.xml.erb'
     user wildfly['user']
     group wildfly['group']

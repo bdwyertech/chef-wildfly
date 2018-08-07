@@ -26,7 +26,7 @@ resource_name :wildfly_mysql_connector
 mysql = node['wildfly']['mysql']
 
 # => Define the Resource Properties
-property :instance, String, required: false
+property :instance, String, name_property: true
 property :base_dir, String, default: lazy { WildFly::Helper.wildfly_cfg(instance)['dir'] }
 property :url,      String, default: mysql['url']
 property :checksum, String, default: mysql['checksum']
