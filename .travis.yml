@@ -12,6 +12,10 @@ addons:
 # Don't `bundle install` which takes about 1.5 mins
 install: echo "skip bundle install"
 
+cache:
+  directories:
+  - .kitchen/cache
+
 branches:
   # only:
   #   - master
