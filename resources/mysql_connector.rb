@@ -94,7 +94,6 @@ action :install do
       parameters 'driver-name' => 'mysql',
                  'driver-module-name' => 'com.mysql',
                  'driver-class-name' => 'com.mysql.cj.jdbc.Driver',
-                 # => com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
                  'driver-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlDataSource',
                  'driver-xa-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlXADataSource'
     end
@@ -137,11 +136,15 @@ action_class do
 
   # => Connector/J JAR Name
   def connectorj_jar
-    connectorj_ver + '-bin.jar'
+    ::File.basename(new_resource.url, '.tar.gz') + if connectorj_ver.split('.')[0].to_i >= 8
+                                                     '.jar'
+                                                   else
+                                                     '-bin.jar'
+                                                   end
   end
 
   # => Connector/J Version Information
   def connectorj_ver
-    ::File.basename(new_resource.url, '.tar.gz')
+    new_resource.url.match(/[0-9]+\.[0-9]+\.[0-9]+/)[0]
   end
 end
