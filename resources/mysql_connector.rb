@@ -95,8 +95,8 @@ action :install do
                  'driver-module-name' => 'com.mysql',
                  'driver-class-name' => 'com.mysql.jdbc.Driver',
                  # => com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
-                 'driver-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                 'driver-xa-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource'
+                 'driver-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlDataSource',
+                 'driver-xa-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlXADataSource'
     end
   elsif jdbc_driver_exists?
     Chef::Log.info "#{new_resource} already configured - nothing to do."
@@ -124,8 +124,8 @@ action_class do
       'driver-name=mysql',
       'driver-module-name=com.mysql',
       'driver-class-name=com.mysql.jdbc.Driver',
-      'driver-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-      'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource',
+      'driver-datasource-class-name=com.mysql.cj.jdbc.MysqlDataSource',
+      'driver-xa-datasource-class-name=com.mysql.cj.jdbc.MysqlXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})", new_resource.instance)
   end
