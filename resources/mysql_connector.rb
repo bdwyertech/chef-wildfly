@@ -93,7 +93,7 @@ action :install do
       path '/subsystem=datasources/jdbc-driver=mysql'
       parameters 'driver-name' => 'mysql',
                  'driver-module-name' => 'com.mysql',
-                 'driver-class-name' => 'com.mysql.jdbc.Driver',
+                 'driver-class-name' => 'com.mysql.cj.jdbc.Driver',
                  # => com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
                  'driver-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlDataSource',
                  'driver-xa-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlXADataSource'
@@ -123,7 +123,7 @@ action_class do
     driver_params = [
       'driver-name=mysql',
       'driver-module-name=com.mysql',
-      'driver-class-name=com.mysql.jdbc.Driver',
+      'driver-class-name=com.mysql.cj.jdbc.Driver',
       'driver-datasource-class-name=com.mysql.cj.jdbc.MysqlDataSource',
       'driver-xa-datasource-class-name=com.mysql.cj.jdbc.MysqlXADataSource',
     ].join(',')
