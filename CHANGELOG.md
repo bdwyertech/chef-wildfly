@@ -6,6 +6,7 @@ WildFly Cookbook CHANGELOG
 * Bump MySQL ConnectorJ to 8.0.13
 * Bump Postgres Connector to 42.2.5
 * Adjust datasource logic
+* Update test framework JDK to 8u191
 
 # 2.0.1 (2018-8-7)
 * Cleanup deprecated attributes and update resources
