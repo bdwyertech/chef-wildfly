@@ -52,7 +52,7 @@ action :install do
   end
 
   # => Download MySQL Connector/J Tarball
-  remote_file ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url)) do
+  tgz = remote_file ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url)) do
     source new_resource.url
     checksum new_resource.checksum if new_resource.checksum
     action :create
@@ -65,7 +65,7 @@ action :install do
     cwd Chef::Config[:file_cache_path]
     code <<-EOF
     rm -f #{::File.join(connectorj_dir, 'mysql*.jar')}
-    tar xzf #{connectorj_ver}.tar.gz -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{connectorj_jar}
+    tar xzf #{tgz.path} -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{connectorj_jar}
     chown #{new_resource.user}:#{new_resource.group} -R #{connectorj_dir}/../
     EOF
     not_if { ::File.exist?(::File.join(connectorj_dir, connectorj_jar)) }
