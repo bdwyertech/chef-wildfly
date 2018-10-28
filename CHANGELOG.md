@@ -1,6 +1,12 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.1.0 (2018-10-24)
+* WildFly 14.0.1
+* Bump MySQL ConnectorJ to 8.0.13
+* Bump Postgres Connector to 42.2.5
+* Adjust datasource logic
+
 # 2.0.1 (2018-8-7)
 * Cleanup deprecated attributes and update resources
 * Update documentation

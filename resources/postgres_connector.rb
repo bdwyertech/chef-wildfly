@@ -82,7 +82,7 @@ action :install do
       parameters 'driver-name' => 'postgresql',
                  'driver-module-name' => 'org.postgresql',
                  'driver-class-name' => 'org.postgresql.Driver',
-                 'driver-datasource-class-name' => 'org.postgresql.ds.PGConnectionPoolDataSource',
+                 'driver-datasource-class-name' => 'org.postgresql.ds.PGSimpleDataSource',
                  'driver-xa-datasource-class-name' => 'org.postgresql.xa.PGXADataSource'
     end
   elsif jdbc_driver_exists?
@@ -111,7 +111,7 @@ action_class do
       'driver-name=postgresql',
       'driver-module-name=org.postgresql',
       'driver-class-name=org.postgresql.Driver',
-      'driver-datasource-class-name=org.postgresql.ds.PGConnectionPoolDataSource',
+      'driver-datasource-class-name=org.postgresql.ds.PGSimpleDataSource',
       'driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=postgresql:add(#{driver_params})", new_resource.instance)

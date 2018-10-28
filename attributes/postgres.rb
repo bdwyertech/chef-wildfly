@@ -18,8 +18,8 @@
 # => PostgreSQL Driver
 default['wildfly']['postgresql'].tap do |postgresql|
   postgresql['enabled'] = true
-  postgresql['url'] = 'https://jdbc.postgresql.org/download/postgresql-42.1.4.jar'
-  postgresql['checksum'] = '4523ed32e9245e762e1df9f0942a147bece06561770a9195db093d9802297735'
+  postgresql['url'] = 'https://jdbc.postgresql.org/download/postgresql-42.2.5.jar'
+  postgresql['checksum'] = '7ffa46f8c619377cdebcd17721b6b21ecf6659850179f96fec3d1035cf5a0cdc'
 
   # => PostgreSQL driver JDBC Module Name
   postgresql['mod_name'] = 'org.postgresql'

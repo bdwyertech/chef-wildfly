@@ -52,7 +52,7 @@ action :install do
   end
 
   # => Download MySQL Connector/J Tarball
-  remote_file ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url)) do
+  tgz = remote_file ::File.join(Chef::Config[:file_cache_path], ::File.basename(new_resource.url)) do
     source new_resource.url
     checksum new_resource.checksum if new_resource.checksum
     action :create
@@ -65,7 +65,7 @@ action :install do
     cwd Chef::Config[:file_cache_path]
     code <<-EOF
     rm -f #{::File.join(connectorj_dir, 'mysql*.jar')}
-    tar xzf #{connectorj_ver}.tar.gz -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{connectorj_jar}
+    tar xzf #{tgz.path} -C #{connectorj_dir} --strip 1 --no-anchored --wildcards #{connectorj_jar}
     chown #{new_resource.user}:#{new_resource.group} -R #{connectorj_dir}/../
     EOF
     not_if { ::File.exist?(::File.join(connectorj_dir, connectorj_jar)) }
@@ -93,10 +93,9 @@ action :install do
       path '/subsystem=datasources/jdbc-driver=mysql'
       parameters 'driver-name' => 'mysql',
                  'driver-module-name' => 'com.mysql',
-                 'driver-class-name' => 'com.mysql.jdbc.Driver',
-                 # => com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
-                 'driver-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-                 'driver-xa-datasource-class-name' => 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource'
+                 'driver-class-name' => 'com.mysql.cj.jdbc.Driver',
+                 'driver-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlDataSource',
+                 'driver-xa-datasource-class-name' => 'com.mysql.cj.jdbc.MysqlXADataSource'
     end
   elsif jdbc_driver_exists?
     Chef::Log.info "#{new_resource} already configured - nothing to do."
@@ -123,9 +122,9 @@ action_class do
     driver_params = [
       'driver-name=mysql',
       'driver-module-name=com.mysql',
-      'driver-class-name=com.mysql.jdbc.Driver',
-      'driver-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-      'driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource',
+      'driver-class-name=com.mysql.cj.jdbc.Driver',
+      'driver-datasource-class-name=com.mysql.cj.jdbc.MysqlDataSource',
+      'driver-xa-datasource-class-name=com.mysql.cj.jdbc.MysqlXADataSource',
     ].join(',')
     jb_cli("/subsystem=datasources/jdbc-driver=mysql:add(#{driver_params})", new_resource.instance)
   end
@@ -137,11 +136,15 @@ action_class do
 
   # => Connector/J JAR Name
   def connectorj_jar
-    connectorj_ver + '-bin.jar'
+    ::File.basename(new_resource.url, '.tar.gz') + if connectorj_ver.split('.')[0].to_i >= 8
+                                                     '.jar'
+                                                   else
+                                                     '-bin.jar'
+                                                   end
   end
 
   # => Connector/J Version Information
   def connectorj_ver
-    ::File.basename(new_resource.url, '.tar.gz')
+    new_resource.url.match(/[0-9]+\.[0-9]+\.[0-9]+/)[0]
   end
 end

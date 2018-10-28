@@ -18,8 +18,8 @@
 # => MySQL ConnectorJ
 default['wildfly']['mysql'].tap do |mysql|
   mysql['enabled']  = true
-  mysql['url']      = 'https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.45.tar.gz'
-  mysql['checksum'] = '1d289a056c7eb8290108a8d2e3c4717193662a9171adb56cfa3b769b32de3300'
+  mysql['url']      = 'https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.13.tar.gz'
+  mysql['checksum'] = '99501fbc74b4cb80cd75a4d06c38b662be01bfd39c409efa3c747ec83216329b'
 
   # => MySQL ConnectorJ JDBC Module Name
   mysql['mod_name'] = 'com.mysql'
