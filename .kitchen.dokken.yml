@@ -32,7 +32,7 @@ verifier:
 platforms:
 - name: amazon
   driver:
-    image: dokken/amazonlinux
+    image: dokken/amazonlinux-2
 
 - name: centos-7
   driver:
