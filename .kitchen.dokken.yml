@@ -32,46 +32,20 @@ verifier:
 platforms:
 - name: amazon
   driver:
-    image: amazonlinux:1
-    pid_one_command: /sbin/init
-    intermediate_instructions:
-      - >
-        RUN yum install -y lsof initscripts net-tools passwd wget which
-        crontabs
-        && yum clean all
+    image: dokken/amazonlinux-2
 
 - name: centos-7
   driver:
-    image: centos:7
+    image: dokken/centos-7
     platform: rhel
-    pid_one_command: /usr/lib/systemd/systemd
-    # security_opt:
-    #   - label:enable # Enable SELinux
-    intermediate_instructions:
-      - >
-        RUN yum -y install lsof initscripts net-tools systemd-sysv wget which
-        bash-completion crontabs selinux-policy-targeted
-        && yum clean all
 
 - name: ubuntu-14.04
   driver:
-    image: ubuntu:14.04
-    pid_one_command: /sbin/init
-    intermediate_instructions:
-      - >
-        RUN /usr/bin/apt-get update
-        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
-        && /usr/bin/apt-get install cron -y
+    image: dokken/ubuntu-14.04
 
 - name: ubuntu-16.04
   driver:
-    image: ubuntu:16.04
-    pid_one_command: /bin/systemd
-    intermediate_instructions:
-      - >
-        RUN /usr/bin/apt-get update
-        && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools sudo bash-completion -y
-        && /usr/bin/apt-get install cron -y
+    image: dokken/ubuntu-16.04
 
 #
 # Test Suites

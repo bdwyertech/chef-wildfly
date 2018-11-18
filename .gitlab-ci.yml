@@ -1,0 +1,37 @@
+image: chef/chefdk:current
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay
+  KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+
+services:
+  - docker:dind
+
+stages:
+  - sanity
+  - suites
+
+Sanity Tests:
+  stage: sanity
+  before_script:
+    - chef --version
+    - cookstyle --version
+    - foodcritic --version
+    - chef gem install net-http-digest_auth --no-document
+  script:
+    - chef exec delivery local lint
+    - chef exec delivery local syntax
+    - chef exec delivery local unit
+  tags:
+    - chefdk
+
+# Kitchen-Dokken yields high CPU utilization, watch concurrency
+Kitchen:
+  stage: suites
+  before_script:
+    - chef --version
+  script:
+    - chef exec kitchen test -c 5 --destroy=always
+  tags:
+    - chefdk
