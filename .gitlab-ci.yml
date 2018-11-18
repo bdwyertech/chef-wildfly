@@ -8,19 +8,17 @@ variables:
 services:
   - docker:dind
 
-before_script:
-  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
-  - chef --version
-  - cookstyle --version
-  - foodcritic --version
-  - chef gem install net-http-digest_auth --no-document
-
 stages:
   - sanity
   - suites
 
 Sanity Tests:
   stage: sanity
+  before_script:
+    - chef --version
+    - cookstyle --version
+    - foodcritic --version
+    - chef gem install net-http-digest_auth --no-document
   script:
     - chef exec delivery local lint
     - chef exec delivery local syntax
@@ -28,31 +26,12 @@ Sanity Tests:
   tags:
     - chefdk
 
-# Kitchen-Dokken yields high CPU utilization, do each suite one at a time
-.suites:
+# Kitchen-Dokken yields high CPU utilization, watch concurrency
+Kitchen:
+  stage: suites
+  before_script:
+    - chef --version
   script:
-    - chef exec kitchen test -c 5 --destroy=always $SUITE
-
-Default:
-  stage: suites
-  extends: .suites
-  variables:
-    SUITE: 'default'
-  tags:
-    - chefdk
-
-Resource:
-  stage: suites
-  extends: .suites
-  variables:
-    SUITE: 'resource'
-  tags:
-    - chefdk
-
-API:
-  stage: suites
-  extends: .suites
-  variables:
-    SUITE: 'api'
+    - chef exec kitchen test -c 5 --destroy=always
   tags:
     - chefdk
