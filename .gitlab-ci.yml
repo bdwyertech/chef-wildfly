@@ -1,0 +1,58 @@
+image: chef/chefdk:current
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay
+  KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+
+services:
+  - docker:dind
+
+before_script:
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - chef --version
+  - cookstyle --version
+  - foodcritic --version
+  - chef gem install net-http-digest_auth --no-document
+
+stages:
+  - sanity
+  - suites
+
+Sanity Tests:
+  stage: sanity
+  script:
+    - chef exec delivery local lint
+    - chef exec delivery local syntax
+    - chef exec delivery local unit
+  tags:
+    - chefdk
+
+# Kitchen-Dokken yields high CPU utilization, do each suite one at a time
+.suites:
+  script:
+    - chef exec kitchen test -c 5 --destroy=always $SUITE
+
+Default:
+  stage: suites
+  extends: .suites
+  variables:
+    SUITE: 'default'
+  tags:
+    - chefdk
+
+Resource:
+  stage: suites
+  extends: .suites
+  variables:
+    SUITE: 'resource'
+  tags:
+    - chefdk
+
+API:
+  stage: suites
+  extends: .suites
+  variables:
+    SUITE: 'api'
+  tags:
+    - chefdk
