@@ -47,6 +47,7 @@ platforms:
     pid_one_command: /sbin/init
     intermediate_instructions:
       - >
+        ENV container docker
         RUN /usr/bin/apt-get update
         && /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
         && /usr/bin/apt-get install cron -y

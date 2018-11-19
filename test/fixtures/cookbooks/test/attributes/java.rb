@@ -19,3 +19,6 @@
 default['java']['install_flavor'] = 'openjdk'
 default['java']['accept_license_agreement'] = true
 default['java']['jdk_version'] = '8'
+
+# => Ubuntu 14.04 Override -- Default trys to install GUI stuff in CI
+override['java']['openjdk_packages'] = ['openjdk-8-jdk-headless'] if platform?('ubuntu') && node['platform_version'] == '14.04'
