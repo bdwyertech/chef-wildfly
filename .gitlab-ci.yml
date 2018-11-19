@@ -26,12 +26,12 @@ Sanity Tests:
   tags:
     - chefdk
 
-# Kitchen-Dokken yields high CPU utilization, watch concurrency
+# Kitchen-Dokken can bring high CPU utilization, watch concurrency
 Kitchen:
   stage: suites
   before_script:
     - chef --version
   script:
-    - chef exec kitchen test -c 5 --destroy=always
+    - chef exec kitchen test -c 3 --destroy=always
   tags:
     - chefdk
