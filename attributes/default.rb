@@ -38,3 +38,6 @@ default['wildfly']['int']['port_binding_offset'] = '0'
 # => Init Script Timeouts (Seconds)
 default['wildfly']['initd']['startup_wait'] = '60'
 default['wildfly']['initd']['shutdown_wait'] = '60'
+
+# => SystemD Script Timeouts (Seconds)
+default['wildfly']['systemd']['timeout'] = '60'
