@@ -53,6 +53,8 @@ property :bind_management_http, String, default: lazy {
   offset = offset ? offset.split('=')[1] : '0'
   (offset.to_i + port.to_i).to_s
 }
+# => Timeout passed through to SystemD
+property :systemd_timeout, String, default: wildfly['systemd']['timeout']
 
 #
 # => Define the Default Resource Action
@@ -161,7 +163,7 @@ action :install do
       cookbook 'wildfly'
       variables(
         start_marker: start_marker,
-        timeout: 60
+        timeout: new_resource.systemd_timeout
       )
       action :create
     end
