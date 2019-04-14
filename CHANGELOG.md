@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.2.0 (2019-04-13)
+* WildFly 16.0.0
+* Make SystemD service timeout configurable
+
 # 2.1.0 (2018-10-28)
 * WildFly 14.0.1
 * Bump MySQL ConnectorJ to 8.0.13
