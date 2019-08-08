@@ -4,6 +4,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay
   KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+  CHEF_LICENSE: accept
 
 services:
   - docker:dind
