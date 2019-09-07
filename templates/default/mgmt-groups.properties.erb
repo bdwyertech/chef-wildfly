@@ -24,3 +24,6 @@
 # The following illustrates how an admin user could be defined.
 #
 #admin=PowerUser,BillingAdmin,
+<% @mgmt_groups.each do |user, groups| -%>
+<%= user %>=<%= groups %>
+<% end -%>

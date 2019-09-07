@@ -1,10 +1,10 @@
 # Encoding: UTF-8
 
 #
-# Cookbook Name:: wildfly
+# Cookbook:: wildfly
 # Resource:: wildfly
 #
-# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
+# Copyright:: 2019 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -291,6 +291,30 @@ action :install do
     end
   end
 
+  #
+  # Merge 'wildfly_user' Resources with Attributes
+  #
+  rc = Chef.run_context.resource_collection
+  wfusers = rc.select { |item| item.is_a?(Chef::Resource) && item.declared_type == :wildfly_user && [new_resource.service_name, '*'].include?(item.instance) }
+  mgmt_users = wildfly['users']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
+  mgmt_roles = wildfly['roles']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
+  app_users  = wildfly['users']['app'].to_h  rescue {} # rubocop: disable Style/RescueModifier
+  app_roles  = wildfly['roles']['app'].to_h  rescue {} # rubocop: disable Style/RescueModifier
+  wfusers.each do |u|
+    case u.realm
+    when 'ManagementRealm'
+      mgmt_users[u.username] = WildFly::Helper.wildfly_user(u.username, u.password, u.realm)[:passhash]
+      if u.roles.any?
+        mgmt_roles[u.username] = u.roles.join(',')
+      end
+    when 'ApplicationRealm'
+      app_users[u.username] = WildFly::Helper.wildfly_user(u.username, u.password, u.realm)[:passhash]
+      if u.roles.any?
+        app_roles[u.username] = u.roles.join(',')
+      end
+    end
+  end
+
   # => Configure Wildfly - MGMT Users
   template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'mgmt-users.properties') do
     source 'mgmt-users.properties.erb'
@@ -300,10 +324,23 @@ action :install do
     mode '0600'
     variables lazy {
       {
-        mgmt_users: wildfly['users']['mgmt'],
+        mgmt_users: mgmt_users,
         api_user: node.run_state['wf_chef_user_' + new_resource.service_name],
       }
     }
+    action :create
+  end
+
+  # => Configure Wildfly - MGMT Groups
+  template ::File.join(new_resource.base_dir, new_resource.mode, 'configuration', 'mgmt-groups.properties') do
+    source 'mgmt-groups.properties.erb'
+    user new_resource.service_user
+    group new_resource.service_group
+    cookbook 'wildfly'
+    mode '0600'
+    variables(
+      mgmt_groups: mgmt_roles
+    )
     action :create
   end
 
@@ -315,7 +352,7 @@ action :install do
     cookbook 'wildfly'
     mode '0600'
     variables(
-      app_users: wildfly['users']['app']
+      app_users: app_users
     )
     action :create
   end
@@ -328,7 +365,7 @@ action :install do
     cookbook 'wildfly'
     mode '0600'
     variables(
-      app_roles: wildfly['roles']['app']
+      app_roles: app_roles
     )
     action :create
   end

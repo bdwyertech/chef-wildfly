@@ -35,3 +35,7 @@ wildfly_loghandler 'loghandler' do
   hostname '1.2.3.4'
   app_name 'my.app'
 end
+
+wildfly_user 'wildfly' do
+  password 'wildfly'
+end

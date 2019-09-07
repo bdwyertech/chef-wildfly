@@ -1,7 +1,8 @@
 # Encoding: UTF-8
 
+#
 # Cookbook:: wildfly
-# Recipe:: postgres_connector
+# Resource:: user
 #
 # Copyright:: 2019 Brian Dwyer - Intelligent Digital Services
 #
@@ -18,6 +19,14 @@
 # limitations under the License.
 #
 
-wildfly_postgres_connector 'wildfly' do
-  action :install
+# => Define the Resource Name
+resource_name :wildfly_user
+
+property :username, String, name_property: true
+property :password, String, sensitive: true
+property :roles, Array, default: []
+property :realm, String, equal_to: %w(ManagementRealm ApplicationRealm), default: 'ManagementRealm'
+property :instance, String, default: 'wildfly'
+
+action :create do
 end

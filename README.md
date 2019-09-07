@@ -59,6 +59,18 @@ end
 ##### Accessor Properties
 * `bind_management_http` - the HTTP port for the Management Interface & API
 
+### User
+* A resource for deploying users to WildFly service instances.
+
+```ruby
+wildfly_user 'my_wildfly_user' do
+  password 'MySecretPassword' # The user's password, maybe pull it from Vault or ParameterStore
+  roles ['Administrator', 'SuperUser'] # String or Array of groups/roles to map to the user: Default: []
+  realm 'ManagementRealm' # ManagementRealm or ApplicationRealm
+  instance 'wildfly' # Choose the WildFly service instance the user is associated with.  * wildcard can be used to deploy globally.
+end
+```
+
 ### Resource
 * Flexible resource which allows provisioning of attributes and their parameters via the WildFly Management API.  This should be used over other resources as it affords more flexibility.
 

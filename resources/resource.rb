@@ -1,10 +1,10 @@
 # Encoding: UTF-8
 
 #
-# Cookbook Name:: wildfly
+# Cookbook:: wildfly
 # Resource:: resource
 #
-# Copyright (C) 2018 Brian Dwyer - Intelligent Digital Services
+# Copyright:: 2019 Brian Dwyer - Intelligent Digital Services
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ action :create do
     # => :write-attribute(name=k,value=v)
     to_update = new_resource.parameters.select do |k, v|
       # => Ensure the Key Exists
-      unless resp['result'].keys.include?(k.to_s)
+      unless resp['result'].key?(k.to_s)
         Chef::Log.warn("#{new_resource}: Unknown Key: #{k}")
         next
       end
@@ -165,10 +165,10 @@ action_class do
 
   def wf_log(message, type = 'Error')
     msg = begin
-      Chef::JSONCompat.to_json_pretty(message)
-    rescue
-      message
-    end
+            Chef::JSONCompat.to_json_pretty(message)
+          rescue
+            message
+          end
     Chef::Log.warn("#{new_resource}: #{type}: " + msg)
   end
 end
