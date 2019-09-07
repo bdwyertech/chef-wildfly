@@ -61,7 +61,7 @@ action :create do
     # => :write-attribute(name=k,value=v)
     to_update = new_resource.parameters.select do |k, v|
       # => Ensure the Key Exists
-      unless resp['result'].keys.include?(k.to_s)
+      unless resp['result'].key?(k.to_s)
         Chef::Log.warn("#{new_resource}: Unknown Key: #{k}")
         next
       end

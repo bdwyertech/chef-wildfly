@@ -25,7 +25,7 @@ resource_name :wildfly_user
 property :username, String, name_property: true
 property :password, String, sensitive: true
 property :roles, Array, default: []
-property :realm, String, equal_to: ['ManagementRealm', 'ApplicationRealm'], default: 'ManagementRealm'
+property :realm, String, equal_to: %w(ManagementRealm ApplicationRealm), default: 'ManagementRealm'
 property :instance, String, default: 'wildfly'
 
 action :create do
