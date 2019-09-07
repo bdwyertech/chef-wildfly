@@ -1,16 +1,8 @@
+---
 sudo: required
-dist: trusty
+dist: bionic
 
-addons:
-  apt:
-    sources:
-      - chef-stable-trusty
-      # - chef-current-trusty
-    packages:
-      - chefdk
-
-# Don't `bundle install` which takes about 1.5 mins
-install: echo "skip bundle install"
+install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 4.3.13
 
 cache:
   directories:
