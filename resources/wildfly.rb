@@ -295,7 +295,7 @@ action :install do
   # Merge 'wildfly_user' Resources with Attributes
   #
   rc = Chef.run_context.resource_collection
-  wfusers = rc.select { |item| item.is_a?(Chef::Resource) && item.declared_type == :wildfly_user && item.instance == new_resource.service_name }
+  wfusers = rc.select { |item| item.is_a?(Chef::Resource) && item.declared_type == :wildfly_user && [new_resource.service_name, '*'].include?(item.instance) }
   mgmt_users = wildfly['users']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
   mgmt_roles = wildfly['roles']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
   app_users  = wildfly['users']['app'].to_h  rescue {} # rubocop: disable Style/RescueModifier
