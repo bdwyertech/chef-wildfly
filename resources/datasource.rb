@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 #
-# Cookbook Name:: wildfly
+# Cookbook:: wildfly
 # Resource:: datasource
 #
 # Copyright:: 2019 Brian Dwyer - Intelligent Digital Services

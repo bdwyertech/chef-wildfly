@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 #
-# Cookbook Name:: wildfly
+# Cookbook:: wildfly
 # Resource:: deploy_api
 #
 # Copyright:: 2019 Brian Dwyer - Intelligent Digital Services
@@ -200,10 +200,10 @@ action_class do
 
   def wf_log(message, type = 'Error')
     msg = begin
-      Chef::JSONCompat.to_json_pretty(message)
-    rescue
-      message
-    end
+            Chef::JSONCompat.to_json_pretty(message)
+          rescue
+            message
+          end
     Chef::Log.warn("#{new_resource}: #{type}: " + msg)
   end
 end

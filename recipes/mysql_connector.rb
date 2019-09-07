@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-# Cookbook Name:: wildfly
+# Cookbook:: wildfly
 # Recipe:: mysql_connector
 #
 # Copyright:: 2019 Brian Dwyer - Intelligent Digital Services

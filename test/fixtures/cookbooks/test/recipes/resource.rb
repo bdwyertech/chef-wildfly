@@ -1,5 +1,4 @@
 # Encoding: UTF-8
-# Resource Test
 
 include_recipe 'java'
 

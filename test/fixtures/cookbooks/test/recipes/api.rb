@@ -1,4 +1,5 @@
 # Encoding: UTF-8
+# rubocop: disable Layout/AlignHash, Style/WordArray
 
 include_recipe 'java'
 include_recipe 'wildfly::default'
