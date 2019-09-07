@@ -286,3 +286,14 @@ wildfly_deploy_api 'Sample2 - Disable' do
   deploy_name 'sample-v2'
   action :disable
 end
+
+# => Users
+wildfly_user 'wildfly' do
+  password 'wildfly'
+end
+
+wildfly_user 'wildfly2' do
+  password 'wtf!'
+  instance 'wildfly2'
+  roles ['Craptacular']
+end
