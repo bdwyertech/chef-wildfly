@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.3.0 (2019-09-06)
+* WildFly 17.0.1
+* Add a `wildfly_user` resource for provisioning users
+
 # 2.2.0 (2019-04-13)
 * WildFly 16.0.0
 * Make SystemD service timeout configurable
