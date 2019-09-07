@@ -296,10 +296,10 @@ action :install do
   #
   rc = Chef.run_context.resource_collection
   wfusers = rc.select { |item| item.is_a?(Chef::Resource) && item.declared_type == :wildfly_user && item.instance == new_resource.service_name }
-  mgmt_users = wildfly['users']['mgmt'].clone || {}
-  mgmt_roles = wildfly['roles']['mgmt'].clone || {}
-  app_users  = wildfly['users']['app'].clone  || {}
-  app_roles  = wildfly['roles']['app'].clone  || {}
+  mgmt_users = wildfly['users']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
+  mgmt_roles = wildfly['roles']['mgmt'].to_h rescue {} # rubocop: disable Style/RescueModifier
+  app_users  = wildfly['users']['app'].to_h  rescue {} # rubocop: disable Style/RescueModifier
+  app_roles  = wildfly['roles']['app'].to_h  rescue {} # rubocop: disable Style/RescueModifier
   wfusers.each do |u|
     case u.realm
     when 'ManagementRealm'
