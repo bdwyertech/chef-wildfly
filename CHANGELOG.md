@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.4.0 (2020-05-11)
+* WildFly 19.1.0
+* Facilitate restart notifications without dummy service resource
+
 # 2.3.0 (2019-09-06)
 * WildFly 17.0.1
 * Add a `wildfly_user` resource for provisioning users

@@ -16,9 +16,9 @@
 
 # => Wildfly Configuration
 # => Source
-default['wildfly']['version'] = '17.0.1'
-default['wildfly']['url'] = 'https://download.jboss.org/wildfly/17.0.1.Final/wildfly-17.0.1.Final.tar.gz'
-default['wildfly']['checksum'] = '2812b43b6c8e61f2d764a12d5a11de79481461b8cac51434ea730ee5985d38de'
+default['wildfly']['version'] = '19.1.0'
+default['wildfly']['url'] = 'https://download.jboss.org/wildfly/19.1.0.Final/wildfly-19.1.0.Final.tar.gz'
+default['wildfly']['checksum'] = '3e1d7f3d6c4896b1807f9524be66cc937e156601c00cf1a2056ab6e23cc1f3e7'
 
 # => Interface Configuration
 default['wildfly']['int']['mgmt']['bind'] = '0.0.0.0'
