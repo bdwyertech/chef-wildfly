@@ -18,6 +18,17 @@ jobs:
           resource-amazon,
           api-centos-7,
         ]
+        include:
+          - instance: default-centos-7
+            chef_version: 12.19.36
+          - instance: default-ubuntu-1404
+            chef_version: 12.19.36
+          - instance: resource-amazon
+            chef_version: 12.19.36
+          - instance: resource-ubuntu-1604
+            chef_version: 12.19.36
+          - instance: api-centos-7
+            chef_version: 12.19.36
     runs-on: ubuntu-latest
     # container: ${{ matrix.image }}
     steps:
@@ -40,6 +51,19 @@ jobs:
           INSTANCE: ${{ matrix.instance }}
           KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
           CHEF_LICENSE: accept-no-persist
+        run: |
+          chef --version
+          cookstyle --version
+          foodcritic --version
+          kitchen verify ${INSTANCE}
+
+      - name: Run TestKitchen (Specific Chef Version)
+        if: (matrix.chef_version != '')
+        env:
+          INSTANCE: ${{ matrix.instance }}
+          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+          CHEF_LICENSE: accept-no-persist
+          CHEF_VERSION: ${{ matrix.chef_version }}
         run: |
           chef --version
           cookstyle --version
