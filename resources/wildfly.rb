@@ -404,6 +404,13 @@ action :install do
   end
 end
 
+action :restart do
+  # => Restart the WildFly Service
+  service new_resource.service_name do
+    action :restart
+  end
+end
+
 action_class do
   def deployed?
     marker = ::File.join(new_resource.base_dir, '.chef_deployed')

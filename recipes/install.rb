@@ -21,10 +21,6 @@
 # => Shorten Hashes
 wildfly = node['wildfly']
 
-service 'wildfly' do
-  action :nothing
-end
-
 wildfly 'wildfly' do
   launch_arguments [
     # => '-Dorg.jboss.as.logging.per-deployment=false'

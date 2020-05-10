@@ -7,7 +7,7 @@ wildfly_property 'Database URL' do
   property 'JdbcUrl'
   value 'jdbc:mysql://1.2.3.4:3306/testdbb'
   action :set
-  notifies :restart, 'service[wildfly]', :delayed
+  notifies :restart, 'wildfly[wildfly]', :delayed
 end
 
 wildfly_datasource 'example' do
