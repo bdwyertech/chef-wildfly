@@ -1,0 +1,46 @@
+name: Kitchen
+on: [push]
+jobs:
+
+  test:
+    name: TestKitchen
+    strategy:
+      matrix:
+        instance: [
+          default-centos-7,
+          default-ubuntu-1404,
+          default-ubuntu-1604,
+          default-amazon,
+          resource-centos-7,
+          resource-ubuntu-1404,
+          resource-ubuntu-1604,
+          resource-amazon,
+          api-centos-7,
+        ]
+    runs-on: ubuntu-latest
+    # container: ${{ matrix.image }}
+    steps:
+      - name: Install Chef Workstation
+        run: |
+          curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 0.18.3
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Git Info
+        id: git
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+      - name: Run TestKitchen
+        env:
+          INSTANCE: ${{ matrix.instance }}
+          KITCHEN_LOCAL_YAML: .kitchen.dokken.yml
+          CHEF_LICENSE: accept-no-persist
+        run: |
+          chef --version
+          cookstyle --version
+          foodcritic --version
+          kitchen verify ${INSTANCE}
