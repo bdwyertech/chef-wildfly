@@ -2,7 +2,7 @@
 sudo: required
 dist: bionic
 
-install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 4.3.13
+install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 0.18.3
 
 cache:
   directories:
