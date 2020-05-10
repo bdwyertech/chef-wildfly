@@ -5,6 +5,7 @@ jobs:
   test:
     name: TestKitchen
     strategy:
+      fail-fast: false
       matrix:
         instance: [
           default-centos-7,

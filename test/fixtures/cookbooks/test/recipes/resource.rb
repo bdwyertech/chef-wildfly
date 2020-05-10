@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-include_recipe 'java'
+openjdk_install '11'
 
 service 'wildfly2' do
   action :nothing

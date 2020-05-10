@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-include_recipe 'java'
+openjdk_install '11'
 include_recipe 'wildfly::default'
 
 wildfly_property 'Database URL' do

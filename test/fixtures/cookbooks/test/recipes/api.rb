@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 # rubocop: disable Layout/AlignHash, Style/WordArray
 
-include_recipe 'java'
+openjdk_install '11'
 include_recipe 'wildfly::default'
 
 # => Set Transaction Node Identifier

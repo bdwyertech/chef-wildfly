@@ -185,7 +185,7 @@ wildfly_attribute 'max-post-size' do
    path '/subsystem=undertow/server=default-server/http-listener=default'
    parameter 'max-post-size'
    value '20971520L'
-   notifies :restart, 'service[wildfly]', :delayed
+   notifies :restart, 'wildfly[wildfly]', :delayed
 end
 ```
 
@@ -208,7 +208,7 @@ wildfly_property 'Database URL' do
    property 'JdbcUrl'
    value 'jdbc:mysql://1.2.3.4:3306/testdb'
    action :set
-   notifies :restart, 'service[wildfly]', :delayed
+   notifies :restart, 'wildfly[wildfly]', :delayed
 end
 ```
 

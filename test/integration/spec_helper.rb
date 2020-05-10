@@ -9,7 +9,7 @@ def check_wildfly(java = false, instance = 'wildfly')
     describe command('java -version') do
       its(:exit_status) { should eq 0 }
       its(:stdout) { should eq '' }
-      its(:stderr) { should match(/openjdk version "1.8/) }
+      its(:stderr) { should match(/openjdk version "11/) }
     end
   end
 
