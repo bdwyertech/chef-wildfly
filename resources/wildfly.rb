@@ -57,6 +57,11 @@ property :bind_management_http, String, default: lazy {
 property :systemd_timeout, String, default: wildfly['systemd']['timeout']
 
 #
+# Define whether chef will manage standalone.conf 
+#
+property :manage_standalone_conf, [FalseClass, TrueClass], default: wildfly['manage_standalone_conf']['enabled'] 
+
+#
 # => Define the Default Resource Action
 #
 default_action :install
@@ -386,7 +391,7 @@ action :install do
       headless: wildfly['java_opts']['headless'],
       jpda: new_resource.jpda_port || false
     )
-    action :create
+    action new_resource.manage_standalone_conf ? :create : :create_if_missing
     notifies :restart, "service[#{new_resource.service_name}]", :delayed
   end
 
