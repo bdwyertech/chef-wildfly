@@ -1,6 +1,10 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.5.0 (2020-09-19)
+* WildFly 19.1.0
+* Adjust for Chef 16+ compatibility
+
 # 2.4.0 (2020-05-11)
 * WildFly 19.1.0
 * Facilitate restart notifications without dummy service resource
