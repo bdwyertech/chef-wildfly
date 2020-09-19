@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_user
+provides :wildfly_user
 
 property :username, String, name_property: true
 property :password, String, sensitive: true

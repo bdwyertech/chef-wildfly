@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_loghandler
+provides :wildfly_loghandler
 
 property :handler,  String, name_property: true
 property :app_name, String, required: true

@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_datasource
+provides :wildfly_datasource
 
 # => Define the Resource Properties
 property :dsname,        String, name_property: true

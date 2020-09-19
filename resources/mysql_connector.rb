@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_mysql_connector
+provides :wildfly_mysql_connector
 
 # => Shorten Hashes
 mysql = node['wildfly']['mysql']

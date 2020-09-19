@@ -24,6 +24,7 @@ wildfly = node['wildfly']
 
 # => Define the Resource Name
 resource_name :wildfly
+provides :wildfly
 
 # => Define the Resource Properties
 property :service_name,   String, name_property: true

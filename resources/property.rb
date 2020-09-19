@@ -23,6 +23,7 @@ require 'shellwords'
 
 # => Define the Resource Name
 resource_name :wildfly_property
+provides :wildfly_property
 
 # => Define the Resource Properties
 property :property, String, name_property: true

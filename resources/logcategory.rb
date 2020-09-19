@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_logcategory
+provides :wildfly_logcategory
 
 property :category, String, name_property: true
 property :use_parent_handlers, String

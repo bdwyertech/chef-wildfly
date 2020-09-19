@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_deploy
+provides :wildfly_deploy
 
 property :deploy_name,  String, name_property: true
 property :runtime_name, String, name_property: true

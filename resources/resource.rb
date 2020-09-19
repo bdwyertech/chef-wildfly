@@ -21,6 +21,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_resource
+provides :wildfly_resource
 
 # => Define the Resource Properties
 property :path,       [Array, String], default: [], coerce: proc { |x| x.is_a?(String) ? WildFly::ApiClient.address(x) : x }

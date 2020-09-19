@@ -20,6 +20,7 @@
 
 # => Define the Resource Name
 resource_name :wildfly_postgres_connector
+provides :wildfly_postgres_connector
 
 # => Shorten Hashes
 postgresql = node['wildfly']['postgresql']
