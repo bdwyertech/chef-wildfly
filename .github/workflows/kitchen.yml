@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Install Chef Workstation
         run: |
-          curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 0.18.3
+          curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 20.9.136
 
       - name: Check out code
         uses: actions/checkout@v1
