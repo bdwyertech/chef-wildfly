@@ -1,6 +1,9 @@
 WildFly Cookbook CHANGELOG
 ==========================
 
+# 2.5.1 (2021-02-11)
+* WildFly 22.0.0
+
 # 2.5.0 (2020-09-19)
 * WildFly 19.1.0
 * Adjust for Chef 16+ compatibility
