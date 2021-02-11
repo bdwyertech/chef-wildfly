@@ -9,19 +9,17 @@ jobs:
       matrix:
         instance: [
           default-centos-7,
-          default-ubuntu-1404,
           default-ubuntu-1604,
+          default-ubuntu-2004,
           default-amazon,
           resource-centos-7,
-          resource-ubuntu-1404,
           resource-ubuntu-1604,
+          resource-ubuntu-2004,
           resource-amazon,
           api-centos-7,
         ]
         include:
           - instance: default-centos-7
-            chef_version: 12.19.36
-          - instance: default-ubuntu-1404
             chef_version: 12.19.36
           - instance: resource-amazon
             chef_version: 12.19.36
@@ -34,7 +32,7 @@ jobs:
     steps:
       - name: Install Chef Workstation
         run: |
-          curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 20.9.136
+          curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chef-workstation -v 21.2.259
 
       - name: Check out code
         uses: actions/checkout@v1
